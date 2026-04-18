@@ -3586,7 +3586,7 @@ body { -webkit-overflow-scrolling: touch; }
 
     <!-- CV LANGUAGE SELECTOR — top of form, one clear choice -->
     <div style="display:flex;align-items:center;gap:10px;margin:0.6rem 0 1rem;flex-wrap:wrap;">
-      <label style="font-size:0.8rem;color:#94a3b8;font-weight:700;white-space:nowrap;" data-i18n="lCVLang">🌐 CV Language:</label>
+      <label style="font-size:0.8rem;color:#94a3b8;font-weight:700;white-space:nowrap;" data-i18n="lCVLang">🌐 CV Language: <span style="color:#f59e0b;font-size:0.72rem;font-weight:800;">28 languages</span></label>
       <select id="cvLangOverride" onchange="applyCvLangOverride()"
         style="background:#0f172a;border:1.5px solid rgba(245,158,11,0.5);color:#fbbf24;border-radius:10px;padding:6px 12px;font-size:0.82rem;font-weight:700;cursor:pointer;outline:none;flex:1;max-width:260px;">
         <option value="en" selected>🇬🇧 English (Default)</option>
@@ -9059,6 +9059,8 @@ var T_FORM = {
     lblNewPwd:'Nouveau mot de passe',
     resetTitle:'Réinitialiser le mot de passe',
     verCode:'Code de vérification',
+
+    expYear:'An', expYears:'Ans',
   },
   de:{
     applyH2:'📋 Meinen Lebenslauf erstellen', applySub:'Profil in 6 Schritten vervollständigen',
@@ -9132,6 +9134,8 @@ var T_FORM = {
     lblNewPwd:'Neues Passwort',
     resetTitle:'Passwort zurücksetzen',
     verCode:'Bestätigungscode',
+
+    expYear:'Jahr', expYears:'Jahre',
   },
   it:{
     applyH2:'📋 Crea il mio CV', applySub:'Completa il profilo in 6 passaggi',
@@ -9205,6 +9209,8 @@ var T_FORM = {
     lblNewPwd:'Nuova password',
     resetTitle:'Reimposta password',
     verCode:'Codice di verifica',
+
+    expYear:'Anno', expYears:'Anni',
   },
   pt:{
     applyH2:'📋 Criar meu CV', applySub:'Complete seu perfil em 6 etapas',
@@ -9278,6 +9284,8 @@ var T_FORM = {
     lblNewPwd:'Nova senha',
     resetTitle:'Redefinir senha',
     verCode:'Código de verificação',
+
+    expYear:'Ano', expYears:'Anos',
   },
   ja:{
     applyH2:'📋 履歴書を作成', applySub:'6ステップでプロフィールを完成させてください',
@@ -9351,6 +9359,8 @@ var T_FORM = {
     lblNewPwd:'新しいパスワード',
     resetTitle:'パスワードをリセット',
     verCode:'確認コード',
+
+    expYear:'年', expYears:'年',
   },
   ko:{
     applyH2:'📋 이력서 만들기', applySub:'6단계로 프로필을 완성하세요',
@@ -9424,6 +9434,8 @@ var T_FORM = {
     lblNewPwd:'새 비밀번호',
     resetTitle:'비밀번호 재설정',
     verCode:'인증 코드',
+
+    expYear:'년', expYears:'년',
   },
   zh:{
     applyH2:'📋 创建我的简历', applySub:'分6步完成您的个人资料',
@@ -9497,6 +9509,8 @@ var T_FORM = {
     lblNewPwd:'新密码',
     resetTitle:'重置密码',
     verCode:'验证码',
+
+    expYear:'年', expYears:'年',
   },
   hi:{
     applyH2:'📋 मेरा CV बनाएं', applySub:'6 आसान चरणों में अपना प्रोफाइल पूरा करें',
@@ -9570,6 +9584,8 @@ var T_FORM = {
     lblNewPwd:'नया पासवर्ड',
     resetTitle:'पासवर्ड रीसेट करें',
     verCode:'सत्यापन कोड',
+
+    expYear:'वर्ष', expYears:'वर्ष',
   },
   ne:{
     applyH2:'📋 मेरो CV बनाउनुस्', applySub:'६ सजिला चरणहरूमा आफ्नो प्रोफाइल पूरा गर्नुस्',
@@ -9643,6 +9659,8 @@ var T_FORM = {
     lblNewPwd:'नयाँ पासवर्ड',
     resetTitle:'पासवर्ड रिसेट',
     verCode:'प्रमाणीकरण कोड',
+
+    expYear:'वर्ष', expYears:'वर्ष',
   },
   ar:{
     applyH2:'📋 إنشاء سيرتي الذاتية', applySub:'أكمل ملفك الشخصي في 6 خطوات',
@@ -9716,6 +9734,8 @@ var T_FORM = {
     lblNewPwd:'كلمة المرور الجديدة',
     resetTitle:'إعادة تعيين كلمة المرور',
     verCode:'رمز التحقق',
+
+    expYear:'سنة', expYears:'سنوات',
   },
   ru:{
     applyH2:'📋 Создать моё резюме', applySub:'Заполните профиль за 6 шагов',
@@ -9789,6 +9809,8 @@ var T_FORM = {
     lblNewPwd:'Новый пароль',
     resetTitle:'Сбросить пароль',
     verCode:'Код подтверждения',
+
+    expYear:'Год', expYears:'Лет',
   },
   tr:{
     applyH2:'📋 Özgeçmişimi oluştur', applySub:'Profilinizi 6 adımda tamamlayın',
@@ -9862,6 +9884,8 @@ var T_FORM = {
     lblNewPwd:'Yeni şifre',
     resetTitle:'Şifre sıfırla',
     verCode:'Doğrulama kodu',
+
+    expYear:'Yıl', expYears:'Yıl',
   },
   id:{
     applyH2:'📋 Buat CV Saya', applySub:'Lengkapi profil Anda dalam 6 langkah',
@@ -9935,6 +9959,8 @@ var T_FORM = {
     lblNewPwd:'Kata sandi baru',
     resetTitle:'Reset kata sandi',
     verCode:'Kode verifikasi',
+
+    expYear:'Tahun', expYears:'Tahun',
   },
   ms:{
     applyH2:'📋 Buat CV Saya', applySub:'Lengkapkan profil anda dalam 6 langkah',
@@ -10005,6 +10031,8 @@ var T_FORM = {
     lblNewPwd:'Kata laluan baru',
     resetTitle:'Set semula kata laluan',
     verCode:'Kod pengesahan',
+
+    expYear:'Tahun', expYears:'Tahun',
   }
 };
 
@@ -11135,7 +11163,9 @@ var T_UI = {
     reqCustomer:'Досвід обслуговування клієнтів',
     hjTitle:'Post a Job Vacancy',
     lLivePreview:'Живий перегляд',
-    hjHero:'🍽️ Hiring Culinary Talent?'
+    hjHero:'🍽️ Hiring Culinary Talent?',
+
+    expYear:'Рік', expYears:'Років',
   },
   sr:{ navHome:'Почетна', navApply:'Мој CV', navPortal:'Мој Портал', navAssociates:'Тим', navPositions:'Позиције', navPostJob:'Огласи посао',
     navSignOut:'Одјава', stepPersonal:'Лично', stepPhoto:'Фотографија', stepProfile:'Профил', stepExp:'Искуство', stepSkills:'Вештине', stepVerify:'Верификација', lSelectPos:'-- Изаберите позицију --', lSelectDef:'-- Изаберите --', vacancyUrgent:'Хитно', vacancyFeatured:'Истакнуто', hjAddReq:'+ Додај захтев...', hjCompanyPh:'нпр. Restaurante Casa Madrid', hjContactPh:'+34 600 000 000 или info@restaurant.com', posSushiMan:'Суши мајстор (муш.)', posSushiWoman:'Суши мајстор (жен.)', posSushiChefM:'Суши куваr (м)', posSushiChefF:'Суши кувар (ж)', posExecChef:'Главни кувар', posSousChef:'Су куваr', posPastryChef:'Посластичаr', posLineCook:'Кувар', posWaiter:'Конобар/Конобарица', posBartender:'Бармен', posBarista:'Бариста', posHost:'Домаћин/Домаћица', posFBSup:'Надзорник Х&Б', posKitchenAssist:'Помоћник у кухињи', posDishwasher:'Перач судова', posRestMgr:'Менаџер ресторана', posReceptionist:'Рецепционер', posFrontDesk:'Агент рецепције', posConcierge:'Консијерж', posHousekeeper:'Собарица', posRoomAttendant:'Пратилац соба', posLaundry:'Радник пераонице', posPorter:'Носач/Портир', posNightAuditor:'Ноћни ревизор', posDeliveryDriver:'Достављач (ауто)', posDeliveryMoto:'Достављач (мото)', posDeliveryBike:'Достављач (бицикл)', posDriverHeavy:'Возач (тешко возило)', posDriverLight:'Возач (лако возило)', posCleaner:'Чистач', posGardener:'Баштован', posMaintenance:'Техничар одржавања', posGuestRelations:'Службеник за госте', posEvents:'Координатор догађаја', posSpa:'Спа терапеут', posSecurity:'Чувар', posBabysitter:'Дадиља', posDomestic:'Кућни помоћник', ogJapanese:'🍣 Јапанска кухиња', ogKitchen:'👨‍🍳 Кухиња', ogRestaurant:'🍽️ Ресторан и бар', ogHotel:'🏨 Хотел и собе', ogDelivery:'🚗 Возач и достава', ogCleaning:'🧹 Чишћење и одржавање', ogGuest:'🛎️ Услуге гостима', navSub:'Класа за припрему за интервју', hjHeroSub:'Objavi radno mesto — dohvati predodabrane kulinare u Španiji. <strong style="color:#34d399;">100% besplatno.</strong>', lSelectPos:'-- Izaberi poziciju --', lSelectDef:'-- Izaberi --', reqCustomer:'Iskustvo u radu sa klijentima', btnBack:'&#x2190; Назад', btnNext:'Следеће &#x2192;', lTapHere:'Додирни овде', lSendReset:'&#x1F4E8; Пошаљи Захтев', applyH2:'📋 Направи мој CV', applySub:'Попуните профил у 6 корака',
@@ -11282,7 +11312,9 @@ var T_UI = {
     reqParttime:'Part-time available',
     reqSpanish:'Spanish required',
     reqVehicle:'Own vehicle required',
-    reqWeekends:'Weekends required'
+    reqWeekends:'Weekends required',
+
+    expYear:'Година', expYears:'Година',
   },
 
   bg:{ navHome:'Начало', navApply:'Моето CV', navPortal:'Моят портал', navAssociates:'Екип', navPositions:'Позиции', navPostJob:'Публикувай работа',
@@ -11430,7 +11462,9 @@ var T_UI = {
     reqParttime:'Part-time available',
     reqSpanish:'Spanish required',
     reqVehicle:'Own vehicle required',
-    reqWeekends:'Weekends required'
+    reqWeekends:'Weekends required',
+
+    expYear:'Година', expYears:'Години',
   },
 
   sq:{ navHome:'Kryefaqja', navApply:'CV-ja ime', navPortal:'Portali im', navAssociates:'Ekipi', navPositions:'Pozicionet', navPostJob:'Posto punë',
@@ -11578,7 +11612,9 @@ var T_UI = {
     reqParttime:'Part-time available',
     reqSpanish:'Spanish required',
     reqVehicle:'Own vehicle required',
-    reqWeekends:'Weekends required'
+    reqWeekends:'Weekends required',
+
+    expYear:'Vit', expYears:'Vite',
   },
 
   sw:{ navHome:'Nyumbani', navApply:'CV yangu', navPortal:'Portali yangu', navAssociates:'Timu', navPositions:'Nafasi', navPostJob:'Tuma kazi',
@@ -11744,7 +11780,9 @@ var T_UI = {
     reqParttime:'Part-time available',
     reqSpanish:'Spanish required',
     reqVehicle:'Own vehicle required',
-    reqWeekends:'Weekends required'
+    reqWeekends:'Weekends required',
+
+    expYear:'Mwaka', expYears:'Miaka',
   },
 
   af:{ navHome:'Tuis', navApply:'My CV', navPortal:'My Portaal', navAssociates:'Span', navPositions:'Poste', navPostJob:'Plaas werk',
@@ -11910,7 +11948,9 @@ var T_UI = {
     reqParttime:'Part-time available',
     reqSpanish:'Spanish required',
     reqVehicle:'Own vehicle required',
-    reqWeekends:'Weekends required'
+    reqWeekends:'Weekends required',
+
+    expYear:'Jaar', expYears:'Jaar',
   },
 
   lt:{ navHome:'Pradžia', navApply:'Mano CV', navPortal:'Mano Portalas', navAssociates:'Komanda', navPositions:'Pozicijos', navPostJob:'Skelbti darbą',
@@ -12058,7 +12098,9 @@ var T_UI = {
     reqParttime:'Part-time available',
     reqSpanish:'Spanish required',
     reqVehicle:'Own vehicle required',
-    reqWeekends:'Weekends required'
+    reqWeekends:'Weekends required',
+
+    expYear:'Metai', expYears:'Metų',
   },
 
   lv:{ navHome:'Sākums', navApply:'Mans CV', navPortal:'Mans Portāls', navAssociates:'Komanda', navPositions:'Pozīcijas', navPostJob:'Publicēt darbu', stepPersonal:'Personīgais', stepPhoto:'Foto', stepProfile:'Profils', stepExp:'Pieredze', stepSkills:'Prasmes', stepVerify:'Verifikācija', lSelectPos:'-- Izvēlieties amatu --', lSelectDef:'-- Izvēlieties --', vacancyUrgent:'Steidzami', vacancyFeatured:'Ieteicams', hjAddReq:'+ Pievienot prasību...', hjCompanyPh:'piem. Restaurante Casa Madrid', hjContactPh:'+34 600 000 000 vai info@restaurant.com', posSushiMan:'Suši meistars (v)', posSushiWoman:'Suši meistare (s)', posSushiChefM:'Suši šefpavārs (v)', posSushiChefF:'Suši šefpavāre (s)', posExecChef:'Galvenais šefpavārs', posSousChef:'Sous Chef', posPastryChef:'Konditors', posLineCook:'Pavārs', posWaiter:'Viesmīlis/Viesmīle', posBartender:'Bārmenis', posBarista:'Barista', posKitchenAssist:'Virtuves palīgs', posDishwasher:'Trauku mazgātājs', posRestMgr:'Restorāna vadītājs', posReceptionist:'Viesnīcas reģistrators', posFrontDesk:'Reģistratūras aģents', posConcierge:'Konsjeržs', posHousekeeper:'Istabene', posRoomAttendant:'Istabu apkopējs', posLaundry:'Veļas mazgātavas darbinieks', posPorter:'Nesējs/Portjē', posNightAuditor:'Nakts auditors', posDeliveryDriver:'Piegādes vadītājs (auto)', posDeliveryMoto:'Piegādes vadītājs (motorollers)', posDeliveryBike:'Kurjeris (velosipēds)', posDriverHeavy:'Vadītājs (smagā tehnika)', posDriverLight:'Vadītājs (vieglā tehnika)', posCleaner:'Tīrītājs', posGardener:'Dārznieks', posMaintenance:'Apkopes tehniķis', posGuestRelations:'Viesu attiecību darbinieks', posEvents:'Pasākumu koordinators', posSpa:'Spa terapeits', posSecurity:'Apsargs', posBabysitter:'Aukle', posDomestic:'Mājas palīgs', ogJapanese:'🍣 Japāņu virtuve', ogKitchen:'👨‍🍳 Virtuve', ogRestaurant:'🍽️ Restorāns un bārs', ogHotel:'🏨 Viesnīca un istabas', ogDelivery:'🚗 Vadītājs un piegāde', ogCleaning:'🧹 Tīrīšana un apkope', ogGuest:'🛎️ Viesu apkalpošana',
@@ -12209,7 +12251,9 @@ var T_UI = {
     reqWeekends:'Weekends required',
 
     posFBSup:'F&B Supervisor',
-    posHost:'Host/Hostess'
+    posHost:'Host/Hostess',
+
+    expYear:'Gads', expYears:'Gadi',
   },
 
   et:{ navHome:'Avaleht', navApply:'Minu CV', navPortal:'Minu Portaal', navAssociates:'Meeskond', navPositions:'Positsioonid', navPostJob:'Lisa töökuulutus',
@@ -12357,7 +12401,9 @@ var T_UI = {
     reqParttime:'Part-time available',
     reqSpanish:'Spanish required',
     reqVehicle:'Own vehicle required',
-    reqWeekends:'Weekends required'
+    reqWeekends:'Weekends required',
+
+    expYear:'Aasta', expYears:'Aastat',
   },
 
   hy:{ 'navHome':'Գլխավոր', 'navApply':'Իմ CV', 'navPortal':'Իմ Պորտալ', 'navSignOut':'Ելք', 'portalLoginBtn':'🔑 Մուտք', 'lRememberMe':'Հիշել ինձ', 'succTitle':'Դիմումն ուղարկված է!', 'succClose':'Փակել', 'filterAll':'Բոլորը', 'vacancyApplyBtn':'Դիմել', 'hjSubmit':'📤 Ուղարկել — Անվճար!', 'openPositions':'Բաց Պաշտոններ', 'ourAssociates':'Մեր Գործընկերները', 'lDobShow':'Ցուցադրել CV-ում:', 'lDobFull':'Ամբողջ ամսաթիվ', 'lDobAge':'Միայն տարիք', 'lDobHide':'Թաքցնել' },
@@ -12534,7 +12580,9 @@ var T_UI = {
     statHiredLbl:'Zatrudnieni',
     statQuizPass:'Klasa 16+ zaliczona',
     statRatingLbl:'Śr. ocena',
-    whatApplicantsSay:'Co mówią wnioskodawcy'
+    whatApplicantsSay:'Co mówią wnioskodawcy',
+
+    expYear:'Rok', expYears:'Lat',
   },
 
   ro:{ navHome:'Acasă', navApply:'CV-ul meu', navPortal:'Portalul meu', navAssociates:'Echipă', navPositions:'Poziții', navPostJob:'Postează job',
@@ -12679,7 +12727,9 @@ var T_UI = {
     statHiredLbl:'Angajați',
     statQuizPass:'Curs 16+ promovat',
     statRatingLbl:'Rating mediu',
-    whatApplicantsSay:'Ce spun candidații'
+    whatApplicantsSay:'Ce spun candidații',
+
+    expYear:'An', expYears:'Ani',
   },
   hr:{ navHome:'Početna', navApply:'Moj CV', navPortal:'Moj Portal', navAssociates:'Tim', navPositions:'Pozicije', navPostJob:'Objavi posao',
     navSignOut:'Odjava', navSub:'Razred za pripremu intervjua', applyH2:'📋 Izradi moj CV', applySub:'Ispunite profil u 6 koraka',
@@ -12829,7 +12879,9 @@ var T_UI = {
     statHiredLbl:'Zaposleni',
     statQuizPass:'Tečaj 16+ položen',
     statRatingLbl:'Prosj. ocjena',
-    whatApplicantsSay:'Što kažu kandidati'
+    whatApplicantsSay:'Što kažu kandidati',
+
+    expYear:'Godina', expYears:'Godina',
   },
 };
 // Merge T_UI into T object
@@ -12846,6 +12898,19 @@ function t(key){
         || (T['en']&&T['en'][key])
         || key; 
   }catch(e){ return key; }
+}
+
+function _translateExpYearsDropdown(){
+  var sel = document.getElementById('expYears');
+  if(!sel) return;
+  var yearSingle = t('expYear') || 'Year';
+  var yearPlural = t('expYears') || 'Years';
+  var opts = sel.querySelectorAll('option[data-i18n-exp]');
+  opts.forEach(function(opt){
+    var n = parseInt(opt.getAttribute('data-i18n-exp'));
+    var label = n === 1 ? (n + ' ' + yearSingle) : (n + ' ' + yearPlural);
+    opt.textContent = label;
+  });
 }
 
 function applyTranslations(){
@@ -12881,6 +12946,7 @@ function applyTranslations(){
     else el.innerHTML = val;
   });
   // data-i18n-placeholder → placeholder
+  try{ _translateExpYearsDropdown(); }catch(e){}
   document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){
     el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
   });
@@ -13971,6 +14037,8 @@ window.setLang=function(lang){
   setTimeout(function(){ try{ _initHjDeadlinePicker(); }catch(e){} }, 200);
   // Re-render vacancies with translated titles
   setTimeout(function(){ try{ renderVacancies(); }catch(e){} try{ _highlightVacancyBadges(); }catch(e){} }, 250);
+  // Translate expYears dropdown
+  try{ _translateExpYearsDropdown(); }catch(e){}
   // Re-render hjPosition dropdown with new language labels
   setTimeout(function(){
     try{
@@ -15884,10 +15952,12 @@ var CV_LABELS = {
 
 // Get CV language from phone country code
 function getCvLang(){
-  // Simply read the top-of-form language selector
+  // Priority 1: CV Language dropdown — always honour user's explicit choice
   var ovEl = document.getElementById('cvLangOverride');
   if(ovEl && ovEl.value) return ovEl.value;
-  // Fallback: detect from currentUser phone (portal view)
+  // Priority 2: saved in localStorage
+  try{ var saved=localStorage.getItem('jc_cv_lang'); if(saved) return saved; }catch(e){}
+  // Priority 3: detect from phone only if no explicit choice was made
   if(typeof currentUser !== 'undefined' && currentUser && currentUser.phone){
     var ph = currentUser.phone.trim();
     if(typeof COUNTRY_LANG !== 'undefined'){
@@ -16529,26 +16599,49 @@ function workPhotosHtml(d, cvLangOverride){
       '<div class="cv-wph">'+String.fromCharCode(128247)+'<br><span>'+t('cvWorkPhoto')+' '+(i+1)+'</span></div>';
   }).join('');
 }
+
+// Translate stored English dropdown values to CV language
+function _translateDropdownValue(val, type, cvLang){
+  if(!val) return val;
+  // Maps: English stored value → translation key
+  var maps = {
+    permit: {
+      'Not Required':'optPermitNone', 'Authorized to Work':'optAuthorized',
+      'Work Permit Available':'optPermitAvail'
+    },
+    driving: {
+      'Not Available':'optDrivingNo', 'Available':'optDrivingYes'
+    },
+    avail: {
+      'Full-time':'optFulltime', 'Part-time':'optParttime',
+      'Immediate Start':'optImmediate'
+    },
+    gender: {
+      'Male':'optMale', 'Female':'optFemale', 'Other':'optOther'
+    }
+  };
+  var map = maps[type];
+  if(!map || !map[val]) return val;
+  var key = map[val];
+  // Look up in T_FORM for cvLang
+  if(typeof T_FORM !== 'undefined' && T_FORM[cvLang] && T_FORM[cvLang][key])
+    return T_FORM[cvLang][key];
+  if(typeof T !== 'undefined' && T[cvLang] && T[cvLang][key])
+    return T[cvLang][key];
+  return val;
+}
+
 function buildCV(d){
   // ── Determine CV language ──────────────────────────────────────
   var cvLang = (function(){
-    // Priority 1: CV Language form dropdown (user explicitly chose)
+    // Priority 1: CV Language form dropdown — ALWAYS honour user's explicit choice (including 'en')
     var ovEl = document.getElementById('cvLangOverride');
-    if(ovEl && ovEl.value && ovEl.value !== 'en') return ovEl.value;
-    // Priority 2: phone country code on the form
-    var cc = document.getElementById('phoneCC');
-    if(cc && cc.value && typeof COUNTRY_LANG !== 'undefined' && COUNTRY_LANG[cc.value]) return COUNTRY_LANG[cc.value];
-    // Priority 3: phone on the data object being rendered
-    if(d && d.phone && typeof COUNTRY_LANG !== 'undefined'){
-      var ph = d.phone.trim();
-      var keys = Object.keys(COUNTRY_LANG).sort(function(a,b){return b.length-a.length;});
-      for(var ki=0;ki<keys.length;ki++){ if(ph.startsWith(keys[ki])) return COUNTRY_LANG[keys[ki]]||'en'; }
-    }
-    // Priority 4: cvLangOverride if en
     if(ovEl && ovEl.value) return ovEl.value;
-    // Priority 5: currentUser
+    // Priority 2: saved CV lang in localStorage
+    try{ var saved=localStorage.getItem('jc_cv_lang'); if(saved) return saved; }catch(e){}
+    // Priority 3: currentUser getCvLang
     if(typeof getCvLang === 'function') return getCvLang();
-    return LANG || 'en';
+    return 'en';
   })();
   var L = (typeof CV_LABELS !== 'undefined') ? (CV_LABELS[cvLang] || CV_LABELS['en']) : {};
   function lbl(key){ return L[key] || CV_LABELS['en'][key] || key; }
@@ -16674,9 +16767,9 @@ function buildCV(d){
     +'</div>'
 
     /* Group: Contact */
-    +'<div class="cv-side-group">'    +'<div class="cv-side-title">'+lbl('contact')+'</div>'    +row('✉',lbl('email'), (_userRole==='admin'||_userRole==='staff') ? maskEmail(sv(d.email,'')) : sv(d.email,''))    +row('📱',lbl('phone'), (_userRole==='admin'||_userRole==='staff') ? maskPhone(sv(d.phone,'')) : sv(d.phone,''))    +row('📍',lbl('location'),sv(d.address,''))    +(dobCvVal ? row('🎂',lbl('dob'),dobCvVal) : '')    +row('🧑',lbl('gender'),sv(d.gender,''))    +row('🌐',lbl('langs'),sv(d.langs,''))    +'</div>'
+    +'<div class="cv-side-group">'    +'<div class="cv-side-title">'+lbl('contact')+'</div>'    +row('✉',lbl('email'), (_userRole==='admin'||_userRole==='staff') ? maskEmail(sv(d.email,'')) : sv(d.email,''))    +row('📱',lbl('phone'), (_userRole==='admin'||_userRole==='staff') ? maskPhone(sv(d.phone,'')) : sv(d.phone,''))    +row('📍',lbl('location'),sv(d.address,''))    +(dobCvVal ? row('🎂',lbl('dob'),dobCvVal) : '')    +row('🧑',lbl('gender'),_translateDropdownValue(sv(d.gender,''),'gender',cvLang))    +row('🌐',lbl('langs'),sv(d.langs,''))    +'</div>'
     /* Group: Details */
-    +'<div class="cv-side-group">'    +'<div class="cv-side-title">'+lbl('details')+'</div>'    +row('⏰',lbl('avail'),sv(d.avail,''))    +row('📄',lbl('permit'),sv(d.permit,''))    +row('🚗',lbl('driving'),sv(d.driving,''))    +row('🎓',lbl('education'),sv(d.education,''))    +row('⌛',lbl('exp'),sv(d.expYears,''))    +'</div>'
+    +'<div class="cv-side-group">'    +'<div class="cv-side-title">'+lbl('details')+'</div>'    +row('⏰',lbl('avail'),_translateDropdownValue(sv(d.avail,''),'avail',cvLang))    +row('📄',lbl('permit'),_translateDropdownValue(sv(d.permit,''),'permit',cvLang))    +row('🚗',lbl('driving'),_translateDropdownValue(sv(d.driving,''),'driving',cvLang))    +row('🎓',lbl('education'),sv(d.education,''))    +row('⌛',lbl('exp'),sv(d.expYears,''))    +'</div>'
     /* Group: Portfolio */
     +'<div class="cv-side-group">'    +'<div class="cv-side-title">'+lbl('portfolio')+'</div>'    +'<div class="cv-works">'+workPhotosHtml(d)+'</div>'    +'</div>'
     /* Group: Strengths */
@@ -17570,9 +17663,76 @@ function getSavedResult(email){
   return null;
 }
 
+
+// ── Quiz translation via AI proxy ───────────────────────────────
+var _quizTranslationCache = {}; // cache: "lang_pos" -> translated questions
+
+function translateQuizQuestions(questions, lang, callback) {
+  if(lang === 'en') { callback(questions); return; }
+  var cacheKey = lang + '_' + (qState.pos || 'default');
+  if(_quizTranslationCache[cacheKey]) { callback(_quizTranslationCache[cacheKey]); return; }
+
+  // Build language name for the prompt
+  var langNames = {es:'Spanish',fr:'French',de:'German',it:'Italian',pt:'Portuguese',
+    ja:'Japanese',ko:'Korean',zh:'Chinese (Simplified)',hi:'Hindi',ne:'Nepali',
+    ar:'Arabic',ru:'Russian',tr:'Turkish',id:'Indonesian',ms:'Malay',
+    pl:'Polish',ro:'Romanian',hr:'Croatian',uk:'Ukrainian',sr:'Serbian',
+    bg:'Bulgarian',sq:'Albanian',lt:'Lithuanian',lv:'Latvian',et:'Estonian',
+    sw:'Swahili',af:'Afrikaans'};
+  var langName = langNames[lang] || lang;
+
+  // Prepare minimal data for API (text + options only)
+  var minimal = questions.map(function(q){ return {id:q.id, text:q.text, options:q.options}; });
+
+  // Show loading on quiz screen
+  var qs = document.getElementById('qScreen');
+  if(qs) qs.innerHTML = '<div style="text-align:center;padding:3rem;color:#94a3b8;font-size:0.9rem;">🌐 Translating quiz to '+langName+'...</div>';
+
+  fetch('/.netlify/functions/ai', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      model:'claude-haiku-4-5-20251001',
+      max_tokens:4000,
+      messages:[{role:'user', content:'Translate these hospitality quiz questions to '+langName+'. Return ONLY valid JSON array, no other text. Same structure. Do NOT change the correct index. Only translate text and options values.'+JSON.stringify(minimal)}]
+    })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    var txt = data.content && data.content[0] && data.content[0].text || '[]';
+    // Strip markdown code fences if present
+    txt = txt.replace(/^```[a-z]*\n?/,'').replace(/\n?```$/,'').trim();
+    var translated = JSON.parse(txt);
+    // Merge back correct index from originals
+    var result = questions.map(function(orig){
+      var tr = translated.find(function(t){ return t.id === orig.id; });
+      if(!tr) return orig;
+      return {id:orig.id, text:tr.text, options:tr.options, correct:orig.correct};
+    });
+    _quizTranslationCache[cacheKey] = result;
+    callback(result);
+  })
+  .catch(function(){
+    // On error, fall back to English
+    callback(questions);
+  });
+}
+
 function initQuiz(u){
   var aq=getQuizForPos(u.position);
-  qState.activeQ=aq;qState.email=u.email;qState.name=u.name;qState.pos=u.position||'';
+  qState.email=u.email;qState.name=u.name;qState.pos=u.position||'';
+  // Translate quiz if site language is not English
+  if(typeof LANG !== 'undefined' && LANG !== 'en' && typeof translateQuizQuestions === 'function'){
+    translateQuizQuestions(aq, LANG, function(translated){
+      qState.activeQ = translated;
+      _initQuizUI(u, translated);
+    });
+    return;
+  }
+  qState.activeQ=aq;
+  _initQuizUI(u, aq);
+}
+function _initQuizUI(u, aq){
   var total=aq.length;
   var tb=document.getElementById('qb-total');if(tb)tb.textContent=total+' Qs';
   var pb=document.getElementById('qb-pass');if(pb)pb.textContent='Pass: '+PASS+'/'+total;
@@ -17608,6 +17768,7 @@ function updateQBadges(){
   var cb=document.getElementById('qb-correct');if(cb)cb.textContent='✓ '+qState.correct;
   var wb=document.getElementById('qb-wrong');if(wb)wb.textContent='✗ '+qState.wrong;
 }
+
 
 function startQuiz(){
   qState.idx=0;qState.correct=0;qState.wrong=0;qState.answered=false;
