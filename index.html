@@ -23987,7 +23987,7 @@ function startQuiz(){
   updateQBadges();
   var pg=document.getElementById('qProg');if(pg)pg.style.width='0%';
   var curLang=(typeof LANG!=='undefined')?LANG:'en';
-  if(curLang!=='en' && typeof translateQuizQuestions==='function' && qState.pos){
+  if(curLang!=='en' && typeof translateQuizQuestions==='function'){
     var origQ=getQuizForPos(qState.pos);
     if(typeof _quizTranslationCache!=='undefined') delete _quizTranslationCache[curLang+'_'+(qState.pos||'default')];
     translateQuizQuestions(origQ, curLang, function(translated){
