@@ -3558,7 +3558,7 @@ body { -webkit-overflow-scrolling: touch; }
     <div class="hero-section-label" style="text-align:center;margin-bottom:1rem;">&#x1F91D; <span data-t="ourAssociates">Our Associates</span></div>
     <!-- Search + Stats bar -->
     <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;justify-content:center;margin-bottom:1rem;">
-      <input id="assocSearch" type="text" id="assocSearchInput" placeholder="🔍 Search associates..." oninput="filterAssociates()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#f1f5f9;border-radius:50px;padding:8px 18px;font-size:0.85rem;font-family:inherit;outline:none;width:220px;max-width:100%;">
+      <input id="assocSearch" type="text" data-i18n-placeholder="assocSearchPh" placeholder="🔍 Search associates..." oninput="filterAssociates()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#f1f5f9;border-radius:50px;padding:8px 18px;font-size:0.85rem;font-family:inherit;outline:none;width:220px;max-width:100%;">
       <button onclick="filterAssociates('hiring')" id="assocHiringBtn" style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.35);color:#fbbf24;border-radius:50px;padding:7px 16px;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><span data-i18n="assocHiringOnly">🟡 Hiring Only</span></button>
       <button onclick="filterAssociates('all')" id="assocAllBtn" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#94a3b8;border-radius:50px;padding:7px 16px;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit;"><span data-i18n="filterAll">All</span></button>
       <span id="assocCount" style="font-size:0.75rem;color:#475569;"></span>
@@ -4509,7 +4509,7 @@ body { -webkit-overflow-scrolling: touch; }
       <span style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);color:#34d399;border-radius:50px;padding:4px 12px;font-size:0.75rem;font-weight:700;"><span data-i18n="hj24h">⚡ 24h Review</span></span>
       <span style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);color:#fbbf24;border-radius:50px;padding:4px 12px;font-size:0.75rem;font-weight:700;"><span data-i18n="hjPrescreened">🎯 Pre-screened CVs</span></span>
       <span style="background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2);color:#a78bfa;border-radius:50px;padding:4px 12px;font-size:0.75rem;font-weight:700;"><span data-i18n="hjClassPassed">📋 Class Passed</span></span>
-      <span style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);color:#60a5fa;border-radius:50px;padding:4px 12px;font-size:0.75rem;font-weight:700;">🇪🇸 Spain</span>
+      <span style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);color:#60a5fa;border-radius:50px;padding:4px 12px;font-size:0.75rem;font-weight:700;"><span data-i18n="hjSpainBadge">🇪🇸 Spain</span></span>
       <span style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);color:#34d399;border-radius:50px;padding:4px 12px;font-size:0.75rem;font-weight:700;"><span data-i18n="hjZeroCost">💰 Zero Cost</span></span>
     </div>
 
@@ -4696,7 +4696,7 @@ function V(name){
 
       var slice = filtered.slice((page-1)*PER_PAGE, page*PER_PAGE);
 
-      if(cnt) cnt.textContent = filtered.length + ' associate' + (filtered.length!==1?'s':'') + (totalPages>1?' · Page '+page+'/'+totalPages:'');
+      if(cnt) cnt.textContent = filtered.length + ' ' + t('assocCountLabel') + (totalPages>1?' · Page '+page+'/'+totalPages:'');
 
       if(!slice.length){
         ag2.innerHTML='<div style="color:#64748b;text-align:center;padding:2rem;width:100%;">No associates found.</div>';
@@ -8464,10 +8464,10 @@ en:{
   assocVisitWeb:'🌐 Visit Website', assocVisitWebText:'Visit Website',
   assocPostJob:'📋 Post a Job',
   assocHiringOnly:'🟡 Hiring Only', assocHiringBadge:'🟡 Hiring',
-  assocCountLabel:'associates',
+  assocCountLabel:'associates', assocSearchPh:'🔍 Search associates...',
   hjTitle:'Post a Job Vacancy', hjHero:'🍽️ Hiring Culinary Talent?',
   hjReviewedBy:'Reviewed by FusionChef Madrid admin within 24h',
-  hj24h:'⚡ 24h Review', hjPrescreened:'🎯 Pre-screened CVs',
+  hj24h:'⚡ 24h Review', hjPrescreened:'🎯 Pre-screened CVs', hjSpainBadge:'🇪🇸 Spain',
   hjClassPassed:'📋 Class Passed', hjZeroCost:'💰 Zero Cost',
   hjCompanyLbl:'🏢 Company / Restaurant Name *',
   hjCompanyPh:'e.g. Restaurante Casa Madrid',
@@ -8834,10 +8834,10 @@ es:{
   assocVisitWeb:'🌐 Visitar Web', assocVisitWebText:'Visitar Web',
   assocPostJob:'📋 Publicar Trabajo',
   assocHiringOnly:'🟡 Solo Contratando', assocHiringBadge:'🟡 Contratando',
-  assocCountLabel:'asociados',
+  assocCountLabel:'asociados', assocSearchPh:'🔍 Buscar asociados...',
   hjTitle:'Publicar Vacante', hjHero:'🍽️ ¿Buscas Talento Culinario?',
   hjReviewedBy:'Revisado por el admin de FusionChef Madrid en 24h',
-  hj24h:'⚡ Revisión 24h', hjPrescreened:'🎯 CVs Pre-seleccionados',
+  hj24h:'⚡ Revisión 24h', hjPrescreened:'🎯 CVs Pre-seleccionados', hjSpainBadge:'🇪🇸 España',
   hjClassPassed:'📋 Clase Superada', hjZeroCost:'💰 Sin Coste',
   hjCompanyLbl:'🏢 Nombre del Restaurante / Empresa *',
   hjCompanyPh:'ej. Restaurante Casa Madrid',
@@ -9583,7 +9583,7 @@ var T_UI = {
     lRememberMe:'Se souvenir de moi', assocVisitWeb:'🌐 Visiter le site', assocVisitWebText:'Visiter le site',
     assocPostJob:'📋 Publier un emploi', assocHiringOnly:'🟡 En recrutement', assocHiringBadge:'🟡 Recrute', assocCountLabel:'associés',
     hjTitle:'Publier une offre', hjHero:'🍽️ Recruter des talents culinaires?', hjReviewedBy:'Examiné par l\'admin FusionChef Madrid sous 24h',
-    hj24h:'⚡ Révision 24h', hjPrescreened:'🎯 CVs présélectionnés', hjClassPassed:'📋 Classe réussie', hjZeroCost:'💰 Gratuit',
+    hj24h:'⚡ Révision 24h', hjPrescreened:'🎯 CVs présélectionnés', hjSpainBadge:'🇪🇸 Espagne', assocSearchPh:'🔍 Rechercher des associés...', hjClassPassed:'📋 Classe réussie', hjZeroCost:'💰 Gratuit',
     hjCompanyLbl:'🏢 Nom du restaurant / entreprise *', hjCompanyPh:'ex. Restaurant Casa Madrid', hjContactPh:'+34 600 000 000 ou info@restaurant.com', hjPositionLbl:'📋 Poste recherché *',
     hjSlotsLbl:'👥 Postes disponibles *', hjDeadlineLbl:'📅 Date limite', hjContactLbl:'📞 Contact (téléphone ou email) *', hjReqLbl:'📝 Exigences (optionnel)',
     btnBack:'&#x2190; Retour', btnPrev:'Précédent &#x2039;', btnNext:'Suivant &#x203A;',
@@ -9645,7 +9645,7 @@ var T_UI = {
     lRememberMe:'Angemeldet bleiben', assocVisitWeb:'🌐 Website besuchen', assocVisitWebText:'Website besuchen',
     assocPostJob:'📋 Job inserieren', assocHiringOnly:'🟡 Nur Einstellung', assocHiringBadge:'🟡 Stellt ein', assocCountLabel:'Mitarbeiter',
     hjTitle:'Stellenausschreibung', hjHero:'🍽️ Kulinarische Talente gesucht?', hjReviewedBy:'Vom FusionChef Madrid Admin innerhalb 24h geprüft',
-    hj24h:'⚡ 24h Prüfung', hjPrescreened:'🎯 Vorgeprüfte CVs', hjClassPassed:'📋 Kurs bestanden', hjZeroCost:'💰 Kostenlos',
+    hj24h:'⚡ 24h Prüfung', hjPrescreened:'🎯 Vorgeprüfte CVs', hjSpainBadge:'🇪🇸 Spanien', assocSearchPh:'🔍 Mitarbeiter suchen...', hjClassPassed:'📋 Kurs bestanden', hjZeroCost:'💰 Kostenlos',
     hjCompanyLbl:'🏢 Restaurant / Firmenname *', hjCompanyPh:'z.B. Restaurant Casa Madrid', hjContactPh:'+34 600 000 000 oder info@restaurant.com', hjPositionLbl:'📋 Benötigte Stelle *',
     hjSlotsLbl:'👥 Benötigte Plätze *', hjDeadlineLbl:'📅 Frist', hjContactLbl:'📞 Kontakt (Telefon oder Email) *', hjReqLbl:'📝 Anforderungen (optional)',
     btnBack:'&#x2190; Zurück', btnPrev:'&#x2039; Zurück', btnNext:'Weiter &#x203A;',
@@ -9707,7 +9707,7 @@ var T_UI = {
     lRememberMe:'Ricordami', assocVisitWeb:'🌐 Visita il sito', assocVisitWebText:'Visita il sito',
     assocPostJob:'📋 Pubblica lavoro', assocHiringOnly:'🟡 Solo in assunzione', assocHiringBadge:'🟡 Assume', assocCountLabel:'associati',
     hjTitle:'Pubblica una vacancy', hjHero:'🍽️ Cerchi talenti culinari?', hjReviewedBy:'Esaminato dall\'admin FusionChef Madrid entro 24h',
-    hj24h:'⚡ Revisione 24h', hjPrescreened:'🎯 CV pre-selezionati', hjClassPassed:'📋 Corso superato', hjZeroCost:'💰 Gratuito',
+    hj24h:'⚡ Revisione 24h', hjPrescreened:'🎯 CV pre-selezionati', hjSpainBadge:'🇪🇸 Spagna', assocSearchPh:'🔍 Cerca associati...', hjClassPassed:'📋 Corso superato', hjZeroCost:'💰 Gratuito',
     hjCompanyLbl:'🏢 Nome ristorante/azienda *', hjCompanyPh:'es. Restaurante Casa Madrid', hjContactPh:'+34 600 000 000 o info@ristorante.com', hjPositionLbl:'📋 Posizione richiesta *',
     hjSlotsLbl:'👥 Posti disponibili *', hjDeadlineLbl:'📅 Scadenza', hjContactLbl:'📞 Contatto (telefono o email) *', hjReqLbl:'📝 Requisiti (opzionale)',
     btnBack:'&#x2190; Indietro', btnPrev:'&#x2039; Precedente', btnNext:'Avanti &#x203A;',
@@ -9768,7 +9768,7 @@ var T_UI = {
     lRememberMe:'Lembrar-me', assocVisitWeb:'🌐 Visitar site', assocVisitWebText:'Visitar site',
     assocPostJob:'📋 Publicar vaga', assocHiringOnly:'🟡 Só contratando', assocHiringBadge:'🟡 Contratando', assocCountLabel:'associados',
     hjTitle:'Publicar vaga', hjHero:'🍽️ Procurando talentos culinários?', hjReviewedBy:'Analisado pelo admin FusionChef Madrid em 24h',
-    hj24h:'⚡ Análise em 24h', hjPrescreened:'🎯 CVs pré-selecionados', hjClassPassed:'📋 Aula concluída', hjZeroCost:'💰 Gratuito',
+    hj24h:'⚡ Análise em 24h', hjPrescreened:'🎯 CVs pré-selecionados', hjSpainBadge:'🇪🇸 Espanha', assocSearchPh:'🔍 Pesquisar associados...', hjClassPassed:'📋 Aula concluída', hjZeroCost:'💰 Gratuito',
     hjCompanyLbl:'🏢 Nome do restaurante/empresa *', hjCompanyPh:'ex. Restaurante Casa Madrid', hjContactPh:'+34 600 000 000 ou info@restaurante.com', hjPositionLbl:'📋 Cargo necessário *',
     hjSlotsLbl:'👥 Vagas disponíveis *', hjDeadlineLbl:'📅 Prazo', hjContactLbl:'📞 Contato (telefone ou email) *', hjReqLbl:'📝 Requisitos (opcional)',
     vacancyUrgent:'Urgente', vacancyFeatured:'Destaque', vacancyHiring:'CONTRATANDO', vacancySlots:'vagas', vacancyGeneral:'Geral', vacancyFeaturedBadge:'DESTAQUE', hjAddReq:'+ Adicionar requisito...',
@@ -9830,7 +9830,7 @@ var T_UI = {
     lRememberMe:'ログイン状態を保持', assocVisitWeb:'🌐 ウェブサイト訪問', assocVisitWebText:'ウェブサイト訪問',
     assocPostJob:'📋 求人掲載', assocHiringOnly:'🟡 募集中のみ', assocHiringBadge:'🟡 募集中', assocCountLabel:'スタッフ',
     hjTitle:'求人を掲載する', hjHero:'🍽️ 料理の人材をお探しですか？', hjReviewedBy:'FusionChef Madrid管理者が24h以内に確認',
-    hj24h:'⚡ 24h審査', hjPrescreened:'🎯 事前審査済みCV', hjClassPassed:'📋 クラス合格', hjZeroCost:'💰 無料',
+    hj24h:'⚡ 24h審査', hjPrescreened:'🎯 事前審査済みCV', hjSpainBadge:'🇪🇸 スペイン', assocSearchPh:'🔍 スタッフを検索...', hjClassPassed:'📋 クラス合格', hjZeroCost:'💰 無料',
     hjCompanyLbl:'🏢 レストラン/企業名 *', hjCompanyPh:'例: レストラン カサ マドリード', hjContactPh:'+34 600 000 000 または info@restaurant.com', hjPositionLbl:'📋 求める職種 *',
     hjSlotsLbl:'👥 必要なポスト数 *', hjDeadlineLbl:'📅 締切日', hjContactLbl:'📞 連絡先（電話またはメール）*', hjReqLbl:'📝 要件（任意）',
     btnBack:'&#x2190; 戻る', btnPrev:'&#x2039; 前へ', btnNext:'次へ &#x203A;',
@@ -9893,7 +9893,7 @@ var T_UI = {
     lRememberMe:'로그인 유지', assocVisitWeb:'🌐 웹사이트 방문', assocVisitWebText:'웹사이트 방문',
     assocPostJob:'📋 채용공고 올리기', assocHiringOnly:'🟡 채용 중만', assocHiringBadge:'🟡 채용 중', assocCountLabel:'팀원',
     hjTitle:'채용공고 올리기', hjHero:'🍽️ 요리 인재를 찾고 계신가요?', hjReviewedBy:'FusionChef Madrid 관리자가 24h 이내 검토',
-    hj24h:'⚡ 24h 검토', hjPrescreened:'🎯 사전 심사된 CV', hjClassPassed:'📋 수업 통과', hjZeroCost:'💰 무료',
+    hj24h:'⚡ 24h 검토', hjPrescreened:'🎯 사전 심사된 CV', hjSpainBadge:'🇪🇸 스페인', assocSearchPh:'🔍 스태프 검색...', hjClassPassed:'📋 수업 통과', hjZeroCost:'💰 무료',
     hjCompanyLbl:'🏢 레스토랑/회사명 *', hjCompanyPh:'예: 레스토랑 까사 마드리드', hjContactPh:'+34 600 000 000 또는 info@restaurant.com', hjPositionLbl:'📋 필요한 직종 *',
     hjSlotsLbl:'👥 필요 인원 *', hjDeadlineLbl:'📅 마감일', hjContactLbl:'📞 연락처 (전화 또는 이메일) *', hjReqLbl:'📝 요구사항 (선택)',
     btnBack:'&#x2190; 뒤로', btnPrev:'&#x2039; 이전', btnNext:'다음 &#x203A;',
@@ -9956,7 +9956,7 @@ var T_UI = {
     lRememberMe:'记住我', assocVisitWeb:'🌐 访问网站', assocVisitWebText:'访问网站',
     assocPostJob:'📋 发布职位', assocHiringOnly:'🟡 仅招聘中', assocHiringBadge:'🟡 招聘中', assocCountLabel:'合作伙伴',
     hjTitle:'发布招聘', hjHero:'🍽️ 寻找烹饪人才？', hjReviewedBy:'FusionChef Madrid管理员24h内审核',
-    hj24h:'⚡ 24h审核', hjPrescreened:'🎯 预筛选简历', hjClassPassed:'📋 课程通过', hjZeroCost:'💰 免费',
+    hj24h:'⚡ 24h审核', hjPrescreened:'🎯 预筛选简历', hjSpainBadge:'🇪🇸 西班牙', assocSearchPh:'🔍 搜索合作伙伴...', hjClassPassed:'📋 课程通过', hjZeroCost:'💰 免费',
     hjCompanyLbl:'🏢 餐厅/公司名称 *', hjCompanyPh:'例：Casa Madrid 餐厅', hjContactPh:'+34 600 000 000 或 info@restaurant.com', hjPositionLbl:'📋 所需职位 *',
     hjSlotsLbl:'👥 所需人数 *', hjDeadlineLbl:'📅 截止日期', hjContactLbl:'📞 联系方式（电话或邮件）*', hjReqLbl:'📝 要求（可选）',
     btnBack:'&#x2190; 返回', btnPrev:'&#x2039; 上一步', btnNext:'下一步 &#x203A;',
@@ -10018,7 +10018,7 @@ var T_UI = {
     lRememberMe:'मुझे याद रखें', assocVisitWeb:'🌐 वेबसाइट देखें', assocVisitWebText:'वेबसाइट देखें',
     assocPostJob:'📋 नौकरी पोस्ट करें', assocHiringOnly:'🟡 केवल भर्ती', assocHiringBadge:'🟡 भर्ती', assocCountLabel:'सहयोगी',
     hjTitle:'नौकरी रिक्ति पोस्ट करें', hjHero:'🍽️ पाककला प्रतिभा की तलाश है?', hjReviewedBy:'FusionChef Madrid एडमिन 24h में समीक्षा करेगा',
-    hj24h:'⚡ 24h समीक्षा', hjPrescreened:'🎯 पूर्व-जांचे CV', hjClassPassed:'📋 कक्षा पास', hjZeroCost:'💰 निःशुल्क',
+    hj24h:'⚡ 24h समीक्षा', hjPrescreened:'🎯 पूर्व-जांचे CV', hjSpainBadge:'🇪🇸 स्पेन', assocSearchPh:'🔍 सहयोगियों को खोजें...', hjClassPassed:'📋 कक्षा पास', hjZeroCost:'💰 निःशुल्क',
     hjCompanyLbl:'🏢 रेस्तरां/कंपनी का नाम *', hjCompanyPh:'उदा. Restaurante Casa Madrid', hjContactPh:'+34 600 000 000 या info@restaurant.com', hjPositionLbl:'📋 आवश्यक पद *',
     hjSlotsLbl:'👥 आवश्यक स्थान *', hjDeadlineLbl:'📅 अंतिम तिथि', hjContactLbl:'📞 संपर्क (फोन या ईमेल) *', hjReqLbl:'📝 आवश्यकताएं (वैकल्पिक)',
     btnBack:'&#x2190; वापस', btnPrev:'&#x2039; पिछला', btnNext:'अगला &#x203A;',
@@ -10080,7 +10080,7 @@ var T_UI = {
     lRememberMe:'मलाई सम्झनुस्', assocVisitWeb:'🌐 वेबसाइट हेर्नुस्', assocVisitWebText:'वेबसाइट हेर्नुस्',
     assocPostJob:'📋 जागिर पोस्ट गर्नुस्', assocHiringOnly:'🟡 भर्ती मात्र', assocHiringBadge:'🟡 भर्ती', assocCountLabel:'सहयोगीहरू',
     hjTitle:'जागिर रिक्ति पोस्ट गर्नुस्', hjHero:'🍽️ पाककला प्रतिभा खोज्दै हुनुहुन्छ?', hjReviewedBy:'FusionChef Madrid एडमिनले 24h भित्र समीक्षा गर्छ',
-    hj24h:'⚡ 24h समीक्षा', hjPrescreened:'🎯 पूर्व-जाँचिएका CV', hjClassPassed:'📋 कक्षा पास', hjZeroCost:'💰 निःशुल्क',
+    hj24h:'⚡ 24h समीक्षा', hjPrescreened:'🎯 पूर्व-जाँचिएका CV', hjSpainBadge:'🇪🇸 स्पेन', assocSearchPh:'🔍 सहयोगीहरू खोज्नुस्...', hjClassPassed:'📋 कक्षा पास', hjZeroCost:'💰 निःशुल्क',
     hjCompanyLbl:'🏢 रेस्टुरेन्ट/कम्पनीको नाम *', hjCompanyPh:'जस्तै Restaurante Casa Madrid', hjContactPh:'+34 600 000 000 वा info@restaurant.com', hjPositionLbl:'📋 आवश्यक पद *',
     hjSlotsLbl:'👥 आवश्यक स्थानहरू *', hjDeadlineLbl:'📅 अन्तिम मिति', hjContactLbl:'📞 सम्पर्क (फोन वा इमेल) *', hjReqLbl:'📝 आवश्यकताहरू (वैकल्पिक)',
     btnBack:'&#x2190; फिर्ता', btnPrev:'&#x2039; पछिल्लो', btnNext:'अर्को &#x203A;',
@@ -10142,7 +10142,7 @@ var T_UI = {
     lRememberMe:'تذكرني', assocVisitWeb:'🌐 زيارة الموقع', assocVisitWebText:'زيارة الموقع',
     assocPostJob:'📋 نشر وظيفة', assocHiringOnly:'🟡 التوظيف فقط', assocHiringBadge:'🟡 يوظف', assocCountLabel:'شركاء',
     hjTitle:'نشر وظيفة شاغرة', hjHero:'🍽️ تبحث عن مواهب طهوية؟', hjReviewedBy:'يراجعها مشرف FusionChef Madrid خلال 24 ساعة',
-    hj24h:'⚡ مراجعة خلال 24 ساعة', hjPrescreened:'🎯 سير ذاتية مفلترة', hjClassPassed:'📋 الفصل ناجح', hjZeroCost:'💰 مجاني',
+    hj24h:'⚡ مراجعة خلال 24 ساعة', hjPrescreened:'🎯 سير ذاتية مفلترة', hjSpainBadge:'🇪🇸 إسبانيا', assocSearchPh:'🔍 البحث عن شركاء...', hjClassPassed:'📋 الفصل ناجح', hjZeroCost:'💰 مجاني',
     hjCompanyLbl:'🏢 اسم المطعم/الشركة *', hjCompanyPh:'مثال: مطعم كاسا مدريد', hjContactPh:'+34 600 000 000 أو info@restaurant.com', hjPositionLbl:'📋 المنصب المطلوب *',
     hjSlotsLbl:'👥 عدد الشواغر *', hjDeadlineLbl:'📅 الموعد النهائي', hjContactLbl:'📞 التواصل (هاتف أو بريد) *', hjReqLbl:'📝 المتطلبات (اختياري)',
     btnBack:'&#x2190; رجوع', btnPrev:'&#x2039; السابق', btnNext:'التالي &#x203A;',
@@ -10204,7 +10204,7 @@ var T_UI = {
     lRememberMe:'Запомнить меня', assocVisitWeb:'🌐 Посетить сайт', assocVisitWebText:'Посетить сайт',
     assocPostJob:'📋 Разместить вакансию', assocHiringOnly:'🟡 Только с набором', assocHiringBadge:'🟡 Набор', assocCountLabel:'партнёров',
     hjTitle:'Разместить вакансию', hjHero:'🍽️ Ищете кулинарных специалистов?', hjReviewedBy:'Проверяется администратором FusionChef Madrid в течение 24ч',
-    hj24h:'⚡ Проверка за 24ч', hjPrescreened:'🎯 Проверенные резюме', hjClassPassed:'📋 Класс пройден', hjZeroCost:'💰 Бесплатно',
+    hj24h:'⚡ Проверка за 24ч', hjPrescreened:'🎯 Проверенные резюме', hjSpainBadge:'🇪🇸 Испания', assocSearchPh:'🔍 Поиск партнёров...', hjClassPassed:'📋 Класс пройден', hjZeroCost:'💰 Бесплатно',
     hjCompanyLbl:'🏢 Название ресторана/компании *', hjCompanyPh:'напр. Restaurante Casa Madrid', hjContactPh:'+34 600 000 000 или info@restaurant.com', hjPositionLbl:'📋 Требуемая должность *',
     hjSlotsLbl:'👥 Количество вакансий *', hjDeadlineLbl:'📅 Крайний срок', hjContactLbl:'📞 Контакт (телефон или email) *', hjReqLbl:'📝 Требования (необязательно)',
     btnBack:'&#x2190; Назад', btnPrev:'&#x2039; Предыдущий', btnNext:'Далее &#x203A;',
@@ -10266,7 +10266,7 @@ var T_UI = {
     lRememberMe:'Beni hatırla', assocVisitWeb:'🌐 Web sitesini ziyaret et', assocVisitWebText:'Web sitesini ziyaret et',
     assocPostJob:'📋 İş ilanı ver', assocHiringOnly:'🟡 Yalnızca işe alım', assocHiringBadge:'🟡 İşe alıyor', assocCountLabel:'ortak',
     hjTitle:'İş ilanı yayınla', hjHero:'🍽️ Mutfak yeteneği mi arıyorsunuz?', hjReviewedBy:'FusionChef Madrid yöneticisi 24 saat içinde inceler',
-    hj24h:'⚡ 24s İnceleme', hjPrescreened:'🎯 Ön elemeli CVler', hjClassPassed:'📋 Sınıf geçildi', hjZeroCost:'💰 Ücretsiz',
+    hj24h:'⚡ 24s İnceleme', hjPrescreened:'🎯 Ön elemeli CVler', hjSpainBadge:'🇪🇸 İspanya', assocSearchPh:'🔍 Ortak ara...', hjClassPassed:'📋 Sınıf geçildi', hjZeroCost:'💰 Ücretsiz',
     hjCompanyLbl:'🏢 Restoran/Şirket adı *', hjCompanyPh:'örn. Restaurante Casa Madrid', hjContactPh:'+34 600 000 000 veya info@restaurant.com', hjPositionLbl:'📋 Gerekli pozisyon *',
     hjSlotsLbl:'👥 Gerekli pozisyon sayısı *', hjDeadlineLbl:'📅 Son tarih', hjContactLbl:'📞 İletişim (telefon veya e-posta) *', hjReqLbl:'📝 Gereksinimler (isteğe bağlı)',
     btnBack:'&#x2190; Geri', btnPrev:'&#x2039; Önceki', btnNext:'Sonraki &#x203A;',
@@ -10329,7 +10329,7 @@ var T_UI = {
     lRememberMe:'Ingat saya', assocVisitWeb:'🌐 Kunjungi website', assocVisitWebText:'Kunjungi website',
     assocPostJob:'📋 Pasang lowongan', assocHiringOnly:'🟡 Hanya yang merekrut', assocHiringBadge:'🟡 Merekrut', assocCountLabel:'mitra',
     hjTitle:'Pasang lowongan kerja', hjHero:'🍽️ Mencari bakat kuliner?', hjReviewedBy:'Ditinjau admin FusionChef Madrid dalam 24 jam',
-    hj24h:'⚡ Tinjauan 24j', hjPrescreened:'🎯 CV tersaring', hjClassPassed:'📋 Kelas lulus', hjZeroCost:'💰 Gratis',
+    hj24h:'⚡ Tinjauan 24j', hjPrescreened:'🎯 CV tersaring', hjSpainBadge:'🇪🇸 Spanyol', assocSearchPh:'🔍 Cari mitra...', hjClassPassed:'📋 Kelas lulus', hjZeroCost:'💰 Gratis',
     hjCompanyLbl:'🏢 Nama restoran/perusahaan *', hjCompanyPh:'mis. Restaurante Casa Madrid', hjContactPh:'+34 600 000 000 atau info@restaurant.com', hjPositionLbl:'📋 Posisi yang dibutuhkan *',
     hjSlotsLbl:'👥 Jumlah slot *', hjDeadlineLbl:'📅 Batas waktu', hjContactLbl:'📞 Kontak (telepon atau email) *', hjReqLbl:'📝 Persyaratan (opsional)',
     btnBack:'&#x2190; Kembali', btnPrev:'&#x2039; Sebelumnya', btnNext:'Berikutnya &#x203A;',
@@ -10391,7 +10391,7 @@ var T_UI = {
     lRememberMe:'Ingat saya', assocVisitWeb:'🌐 Lawati laman web', assocVisitWebText:'Lawati laman web',
     assocPostJob:'📋 Iklan kerja', assocHiringOnly:'🟡 Yang mengambil pekerja sahaja', assocHiringBadge:'🟡 Mengambil pekerja', assocCountLabel:'rakan kongsi',
     hjTitle:'Iklan jawatan kosong', hjHero:'🍽️ Mencari bakat kulinari?', hjReviewedBy:'Disemak oleh admin FusionChef Madrid dalam 24j',
-    hj24h:'⚡ Semakan 24j', hjPrescreened:'🎯 CV tersaring', hjClassPassed:'📋 Kelas lulus', hjZeroCost:'💰 Percuma',
+    hj24h:'⚡ Semakan 24j', hjPrescreened:'🎯 CV tersaring', hjSpainBadge:'🇪🇸 Sepanyol', assocSearchPh:'🔍 Cari rakan kongsi...', hjClassPassed:'📋 Kelas lulus', hjZeroCost:'💰 Percuma',
     hjCompanyLbl:'🏢 Nama restoran/syarikat *', hjCompanyPh:'cth. Restaurante Casa Madrid', hjContactPh:'+34 600 000 000 atau info@restaurant.com', hjPositionLbl:'📋 Jawatan diperlukan *',
     hjSlotsLbl:'👥 Bilangan slot *', hjDeadlineLbl:'📅 Tarikh akhir', hjContactLbl:'📞 Hubungi (telefon atau e-mel) *', hjReqLbl:'📝 Keperluan (pilihan)',
     btnBack:'&#x2190; Kembali', btnPrev:'&#x2039; Sebelum', btnNext:'Seterusnya &#x203A;',
@@ -10703,7 +10703,7 @@ var T_UI = {
     hjTitle:'Opublikuj ofertę pracy', hjHero:'🍽️ Szukasz kulinarnych talentów?',
     hjHeroSub:'Opublikuj ofertę — dotrzyj do wstępnie sprawdzonych specjalistów kulinarnych w Hiszpanii. <strong style="color:#34d399;">100% bezpłatnie, zawsze.</strong>',
     hjReviewedBy:'Sprawdzane przez admina FusionChef Madrid w ciągu 24h',
-    hj24h:'⚡ Przegląd w 24h', hjPrescreened:'🎯 Wstępnie sprawdzone CV',
+    hj24h:'⚡ Przegląd w 24h', hjPrescreened:'🎯 Wstępnie sprawdzone CV', hjSpainBadge:'🇪🇸 Hiszpania', assocSearchPh:'🔍 Szukaj partnerów...',
     hjClassPassed:'📋 Klasa zaliczona', hjZeroCost:'💰 Bezpłatnie',
     hjCompanyLbl:'🏢 Nazwa restauracji/firmy *', hjPositionLbl:'📋 Wymagane stanowisko *',
     hjSlotsLbl:'👥 Liczba miejsc *', hjDeadlineLbl:'📅 Termin', hjContactLbl:'📞 Kontakt (telefon lub email) *',
@@ -10770,7 +10770,7 @@ var T_UI = {
     hjTitle:'Postează un loc de muncă', hjHero:'🍽️ Cauți talent culinar?',
     hjHeroSub:'Postați un anunț — ajungeți la profesioniști culinari pre-selectați din Spania. <strong style="color:#34d399;">100% gratuit, întotdeauna.</strong>',
     hjReviewedBy:'Revizuit de adminul FusionChef Madrid în 24h',
-    hj24h:'⚡ Revizie în 24h', hjPrescreened:'🎯 CV-uri pre-selectate',
+    hj24h:'⚡ Revizie în 24h', hjPrescreened:'🎯 CV-uri pre-selectate', hjSpainBadge:'🇪🇸 Spania', assocSearchPh:'🔍 Căutare parteneri...',
     hjClassPassed:'📋 Clasă promovată', hjZeroCost:'💰 Gratuit',
     hjCompanyLbl:'🏢 Numele restaurantului/companiei *', hjPositionLbl:'📋 Poziție necesară *',
     hjSlotsLbl:'👥 Locuri necesare *', hjDeadlineLbl:'📅 Termen limită', hjContactLbl:'📞 Contact (telefon sau email) *',
@@ -10841,7 +10841,7 @@ var T_UI = {
     vacancyApplyBtn:'Prijavi se',
     hjTitle:'Objavi slobodno radno mjesto', hjHero:'🍽️ Tražite kulinarni talent?',
     hjReviewedBy:'Pregledano od strane admina FusionChef Madrid u roku 24h',
-    hj24h:'⚡ Pregled u 24h', hjPrescreened:'🎯 Predodabrani CV-ovi',
+    hj24h:'⚡ Pregled u 24h', hjPrescreened:'🎯 Predodabrani CV-ovi', hjSpainBadge:'🇪🇸 Španjolska', assocSearchPh:'🔍 Pretraži partnere...',
     hjClassPassed:'📋 Razred položen', hjZeroCost:'💰 Besplatno',
     hjCompanyLbl:'🏢 Naziv restorana/tvrtke *', hjPositionLbl:'📋 Potrebna pozicija *',
     hjSlotsLbl:'👥 Broj mjesta *', hjDeadlineLbl:'📅 Rok', hjContactLbl:'📞 Kontakt (telefon ili email) *',
