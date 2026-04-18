@@ -20207,6 +20207,16 @@ window.setLang=function(lang){
       }
     }catch(e){}
   },150);
+  // Clear quiz translation cache and re-translate if quiz is active
+  setTimeout(function(){
+    try{
+      if(typeof _quizTranslationCache!=='undefined') _quizTranslationCache={};
+      var qScreen=document.getElementById('qScreen');
+      if(qScreen && typeof qState!=='undefined' && qState.activeQ && typeof initQuiz==='function' && typeof _currentUser!=='undefined' && _currentUser){
+        initQuiz(_currentUser);
+      }
+    }catch(e){}
+  },300);
 };
 
 
