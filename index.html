@@ -5527,7 +5527,7 @@ function _doHighlight(vacancies){
   var badgesHTML = Object.keys(typeof POSITION_ICONS!=='undefined'?POSITION_ICONS:{}).map(function(p){
     var label = posKeyMap[p] ? t(posKeyMap[p]) : p;
     if(activeTitles[p]){
-      return '<span class="hiring-badge" data-pos="'+p+'" style="'+hiringStyle+';cursor:default;display:inline-flex;flex-direction:column;align-items:center;gap:4px;padding:6px 12px 8px;" title="'+label+' — Hiring!">'        +'<span style="display:flex;align-items:center;gap:5px;">&#x1F7E1; '+label        +' <span style="font-size:0.63rem;background:#f59e0b;color:#000;border-radius:20px;padding:1px 6px;font-weight:900;">HIRING</span></span>'        +'<button data-pos="'+p+'" onclick="event.stopPropagation();showVacancyInterestModal(this.dataset.pos)" style="background:#f59e0b;color:#000;border:none;border-radius:20px;padding:2px 12px;font-size:0.65rem;font-weight:900;cursor:pointer;font-family:inherit;width:100%;">&#x1F4E8; Apply</button>'        +'</span>';
+      return '<span class="hiring-badge" data-pos="'+p+'" style="'+hiringStyle+';cursor:default;display:inline-flex;flex-direction:column;align-items:center;gap:4px;padding:6px 12px 8px;" title="'+label+' — Hiring!">'        +'<span style="display:flex;align-items:center;gap:5px;">&#x1F7E1; '+label        +' <span style="font-size:0.63rem;background:#f59e0b;color:#000;border-radius:20px;padding:1px 6px;font-weight:900;">'+t('vacancyHiring')+'</span></span>'        +'<button data-pos="'+p+'" onclick="event.stopPropagation();showVacancyInterestModal(this.dataset.pos)" style="background:#f59e0b;color:#000;border:none;border-radius:20px;padding:2px 12px;font-size:0.65rem;font-weight:900;cursor:pointer;font-family:inherit;width:100%;">&#x1F4E8; '+t('vacancyApplyBtn')+'</button>'        +'</span>';
     }
     return '<span class="pos-clickable" data-pos="'+p+'" onclick="showVacancyInterestModal(this.dataset.pos)" style="'+mutedStyle+';cursor:pointer;">'+label+'</span>';
   }).join('');
@@ -5807,6 +5807,7 @@ function initHero(){ initHeroStats(); applyReviewsSectionVisibility(); setTimeou
 
 // Map English position names to i18n keys
 var _POS_I18N_MAP={
+  'General':'vacancyGeneral',
   'Sushi Man':'posSushiMan','Sushi Woman':'posSushiWoman',
   'Sushi Chef (Male)':'posSushiChefM','Sushi Chef (Female)':'posSushiChefF',
   'Executive Chef':'posExecChef','Sous Chef':'posSousChef','Pastry Chef':'posPastryChef',
@@ -8437,6 +8438,10 @@ en:{
   currentOpenings:'Current Openings',
   vacancyApplyNow:'Apply Now',
   vacancyUrgent:'Urgent',
+  vacancyHiring:'HIRING',
+  vacancySlots:'slots',
+  vacancyGeneral:'General',
+  vacancyFeaturedBadge:'FEATURED',
   vacancyFeatured:'Featured',
   hjAddReq:'+ Add a requirement...',
   vacancySlotsLeft:'slots left',
@@ -8804,6 +8809,10 @@ es:{
   currentOpenings:'Vacantes Actuales',
   vacancyApplyNow:'Aplicar Ahora',
   vacancyUrgent:'Urgente',
+  vacancyHiring:'CONTRATANDO',
+  vacancySlots:'plazas',
+  vacancyGeneral:'General',
+  vacancyFeaturedBadge:'DESTACADO',
   vacancyFeatured:'Destacado',
   hjAddReq:'+ Añadir requisito...',
   vacancySlotsLeft:'plazas disponibles',
@@ -9580,7 +9589,7 @@ var T_UI = {
     btnBack:'&#x2190; Retour', btnPrev:'Précédent &#x2039;', btnNext:'Suivant &#x203A;',
     lCVLang:'🌐 Langue du CV:', cvLangNote:'✓ CV sera généré dans la langue sélectionnée',
     lPhoto1:'Photo 1', lPhoto2:'Photo 2', lPhoto3:'Photo 3', lLivePhoto:'Photo en direct', lPassportPhoto:'Photo passeport', lAdminApproved:'&#x1F511; Admin a approuvé la réinitialisation', lScoreSaved:'Score enregistré avec date',
-    vacancyUrgent:'Urgent', vacancyFeatured:'En vedette', hjAddReq:'+ Ajouter un critère...',
+    vacancyUrgent:'Urgent', vacancyFeatured:'En vedette', vacancyHiring:'EN RECRUTEMENT', vacancySlots:'postes', vacancyGeneral:'Général', vacancyFeaturedBadge:'EN VEDETTE', hjAddReq:'+ Ajouter un critère...',
     hjSubmit:'📤 Soumettre la demande — C\'est gratuit!', hjDisclaimer:'Sans compte · Examiné en 24h · Publié si approuvé',
     hjAlwaysFree:'⚡ TOUJOURS GRATUIT',
     hjHeroSub:'Publiez votre offre — atteignez des professionnels culinaires présélectionnés en Espagne. <strong style="color:#34d399;">100% gratuit, toujours.</strong>', lSelectPos:'-- Sélectionner un poste --', lSelectDef:'-- Sélectionner --', reqCustomer:'Expérience en contact client', lForgotSub:'Entrez votre email et PIN secret',
@@ -9642,7 +9651,7 @@ var T_UI = {
     btnBack:'&#x2190; Zurück', btnPrev:'&#x2039; Zurück', btnNext:'Weiter &#x203A;',
     lCVLang:'🌐 CV-Sprache:', cvLangNote:'✓ CV wird in der gewählten Sprache erstellt',
     lPhoto1:'Foto 1', lPhoto2:'Foto 2', lPhoto3:'Foto 3', lLivePhoto:'Live-Foto', lPassportPhoto:'Passfoto', lAdminApproved:'&#x1F511; Admin hat Passwort-Reset genehmigt', lScoreSaved:'Ergebnis mit Datum gespeichert',
-    vacancyUrgent:'Dringend', vacancyFeatured:'Empfohlen', hjAddReq:'+ Anforderung hinzufügen...',
+    vacancyUrgent:'Dringend', vacancyFeatured:'Empfohlen', vacancyHiring:'EINSTELLUNG', vacancySlots:'Stellen', vacancyGeneral:'Allgemein', vacancyFeaturedBadge:'EMPFOHLEN', hjAddReq:'+ Anforderung hinzufügen...',
     hjSubmit:'📤 Anfrage senden — Es ist kostenlos!', hjDisclaimer:'Kein Konto nötig · In 24h geprüft · Bei Genehmigung veröffentlicht',
     hjAlwaysFree:'⚡ IMMER KOSTENLOS',
     hjHeroSub:'Veröffentlichen Sie Ihre Stelle — erreichen Sie vorgeprüfte Küchenfachleute in Spanien. <strong style="color:#34d399;">100% kostenlos, immer.</strong>', lSelectPos:'-- Stelle auswählen --', lSelectDef:'-- Auswählen --', reqCustomer:'Erfahrung im Kundenkontakt', lForgotSub:'Geben Sie Ihre E-Mail und geheimen PIN ein',
@@ -9704,7 +9713,7 @@ var T_UI = {
     btnBack:'&#x2190; Indietro', btnPrev:'&#x2039; Precedente', btnNext:'Avanti &#x203A;',
     lCVLang:'🌐 Lingua del CV:', cvLangNote:'✓ CV sarà generato nella lingua selezionata',
     lPhoto1:'Foto 1', lPhoto2:'Foto 2', lPhoto3:'Foto 3', lLivePhoto:'Foto live', lPassportPhoto:'Foto tessera', lAdminApproved:'&#x1F511; Admin ha approvato il reset password', lScoreSaved:'Punteggio salvato con data e ora',
-    vacancyUrgent:'Urgente', vacancyFeatured:'In evidenza', hjAddReq:'+ Aggiungi requisito...',
+    vacancyUrgent:'Urgente', vacancyFeatured:'In evidenza', vacancyHiring:'ASSUMENDO', vacancySlots:'posti', vacancyGeneral:'Generale', vacancyFeaturedBadge:'IN EVIDENZA', hjAddReq:'+ Aggiungi requisito...',
     hjSubmit:'📤 Invia richiesta — È gratuito!', hjDisclaimer:'Nessun account necessario · Revisione in 24h · Pubblicato se approvato',
     hjAlwaysFree:'⚡ SEMPRE GRATUITO', hjHeroSub:'Pubblica la tua offerta — raggiungi professionisti culinari pre-selezionati in Spagna. <strong style="color:#34d399;">100% gratuito, sempre.</strong>', lSelectPos:'-- Seleziona posizione --', lSelectDef:'-- Seleziona --', reqCustomer:'Esperienza a contatto con clienti', lForgotSub:'Inserisci email e PIN segreto',
     lTempPin:'PIN temporaneo', lNewSecretPin:'Nuovo PIN segreto', lNewSecretPinHint:'(6 cifre — ricordalo!)',
@@ -9762,7 +9771,7 @@ var T_UI = {
     hj24h:'⚡ Análise em 24h', hjPrescreened:'🎯 CVs pré-selecionados', hjClassPassed:'📋 Aula concluída', hjZeroCost:'💰 Gratuito',
     hjCompanyLbl:'🏢 Nome do restaurante/empresa *', hjCompanyPh:'ex. Restaurante Casa Madrid', hjContactPh:'+34 600 000 000 ou info@restaurante.com', hjPositionLbl:'📋 Cargo necessário *',
     hjSlotsLbl:'👥 Vagas disponíveis *', hjDeadlineLbl:'📅 Prazo', hjContactLbl:'📞 Contato (telefone ou email) *', hjReqLbl:'📝 Requisitos (opcional)',
-    vacancyUrgent:'Urgente', vacancyFeatured:'Destaque', hjAddReq:'+ Adicionar requisito...',
+    vacancyUrgent:'Urgente', vacancyFeatured:'Destaque', vacancyHiring:'CONTRATANDO', vacancySlots:'vagas', vacancyGeneral:'Geral', vacancyFeaturedBadge:'DESTAQUE', hjAddReq:'+ Adicionar requisito...',
     hjSubmit:'📤 Enviar pedido — É grátis!', hjDisclaimer:'Sem conta necessária · Revisão em 24h · Publicado se aprovado',
     hjAlwaysFree:'⚡ SEMPRE GRATUITO', hjHeroSub:'Publique sua vaga — alcance profissionais culinários pré-selecionados na Espanha. <strong style="color:#34d399;">100% gratuito, sempre.</strong>', lSelectPos:'-- Selecionar cargo --', lSelectDef:'-- Selecionar --', reqCustomer:'Experiência com atendimento ao cliente',
     btnBack:'&#x2190; Voltar', btnPrev:'&#x2039; Anterior', btnNext:'Próximo &#x2192;',
@@ -9827,7 +9836,7 @@ var T_UI = {
     btnBack:'&#x2190; 戻る', btnPrev:'&#x2039; 前へ', btnNext:'次へ &#x203A;',
     lCVLang:'🌐 CV言語:', cvLangNote:'✓ 選択した言語でCVが作成されます',
     lPhoto1:'写真1', lPhoto2:'写真2', lPhoto3:'写真3', lLivePhoto:'ライブ写真', lPassportPhoto:'証明写真', lAdminApproved:'&#x1F511; 管理者がパスワードリセットを承認しました', lScoreSaved:'スコアが日時とともに保存されました', cvLangNote:'✓ 選択した言語でCVが作成されます',
-    vacancyUrgent:'急募', vacancyFeatured:'注目', hjAddReq:'+ 条件を追加...',
+    vacancyUrgent:'急募', vacancyFeatured:'注目', vacancyHiring:'採用中', vacancySlots:'枠', vacancyGeneral:'一般', vacancyFeaturedBadge:'注目', hjAddReq:'+ 条件を追加...',
     vacancyUrgent:'急募', vacancyFeatured:'注目', hjAddReq:'+ 条件を追加...',
     hjSubmit:'📤 求人を申請する — 無料！', hjDisclaimer:'アカウント不要 · 24時間以内に審査 · 承認後掲載',
     hjAlwaysFree:'⚡ 常に無料',
@@ -9890,7 +9899,7 @@ var T_UI = {
     btnBack:'&#x2190; 뒤로', btnPrev:'&#x2039; 이전', btnNext:'다음 &#x203A;',
     lCVLang:'🌐 CV 언어:', cvLangNote:'✓ 선택한 언어로 CV가 생성됩니다',
     lPhoto1:'사진 1', lPhoto2:'사진 2', lPhoto3:'사진 3', lLivePhoto:'라이브 사진', lPassportPhoto:'증명사진', lAdminApproved:'&#x1F511; 관리자가 비밀번호 재설정을 승인했습니다', lScoreSaved:'점수가 날짜와 시간과 함께 저장되었습니다', cvLangNote:'✓ 선택한 언어로 CV가 생성됩니다',
-    vacancyUrgent:'긴급', vacancyFeatured:'추천', hjAddReq:'+ 요건 추가...',
+    vacancyUrgent:'긴급', vacancyFeatured:'추천', vacancyHiring:'채용중', vacancySlots:'자리', vacancyGeneral:'일반', vacancyFeaturedBadge:'추천', hjAddReq:'+ 요건 추가...',
     vacancyUrgent:'긴급', vacancyFeatured:'추천', hjAddReq:'+ 요건 추가...',
     hjSubmit:'📤 채용 신청하기 — 무료!', hjDisclaimer:'계정 불필요 · 24시간 내 검토 · 승인 시 게시',
     hjAlwaysFree:'⚡ 항상 무료',
@@ -9953,7 +9962,7 @@ var T_UI = {
     btnBack:'&#x2190; 返回', btnPrev:'&#x2039; 上一步', btnNext:'下一步 &#x203A;',
     lCVLang:'🌐 CV语言:', cvLangNote:'✓ CV将以所选语言生成',
     lPhoto1:'照片1', lPhoto2:'照片2', lPhoto3:'照片3', lLivePhoto:'实时照片', lPassportPhoto:'证件照', lAdminApproved:'&#x1F511; 管理员已批准您的密码重置', lScoreSaved:'分数已连同日期时间保存', cvLangNote:'✓ CV将以所选语言生成',
-    vacancyUrgent:'紧急', vacancyFeatured:'推荐', hjAddReq:'+ 添加要求...',
+    vacancyUrgent:'紧急', vacancyFeatured:'推荐', vacancyHiring:'招聘中', vacancySlots:'名额', vacancyGeneral:'通用', vacancyFeaturedBadge:'推荐', hjAddReq:'+ 添加要求...',
     hjSubmit:'📤 提交申请 — 免费！', hjDisclaimer:'无需账号 · 24小时内审核 · 批准后发布',
     hjAlwaysFree:'⚡ 永久免费',
     hjHeroSub:'发布职位 — 在西班牙接触预筛选的烹饪专业人士。<strong style="color:#34d399;">永久100%免费。</strong>', lSelectPos:'-- 选择职位 --', lSelectDef:'-- 选择 --', reqCustomer:'客户服务经验', lForgotSub:'输入您的邮箱和秘密PIN',
@@ -10015,7 +10024,7 @@ var T_UI = {
     btnBack:'&#x2190; वापस', btnPrev:'&#x2039; पिछला', btnNext:'अगला &#x203A;',
     lCVLang:'🌐 CV भाषा:', cvLangNote:'✓ CV चुनी गई भाषा में बनाया जाएगा',
     lPhoto1:'फ़ोटो 1', lPhoto2:'फ़ोटो 2', lPhoto3:'फ़ोटो 3', lLivePhoto:'लाइव फोटो', lPassportPhoto:'पासपोर्ट साइज फोटो', lAdminApproved:'&#x1F511; एडमिन ने पासवर्ड रीसेट स्वीकृत किया', lScoreSaved:'स्कोर दिनांक और समय के साथ सहेजा गया', cvLangNote:'✓ CV चुनी गई भाषा में बनाया जाएगा',
-    vacancyUrgent:'अर्जेंट', vacancyFeatured:'फीचर्ड', hjAddReq:'+ आवश्यकता जोड़ें...',
+    vacancyUrgent:'अर्जेंट', vacancyFeatured:'फीचर्ड', vacancyHiring:'भर्ती', vacancySlots:'पद', vacancyGeneral:'सामान्य', vacancyFeaturedBadge:'फीचर्ड', hjAddReq:'+ आवश्यकता जोड़ें...',
     hjSubmit:'📤 जॉब अनुरोध भेजें — निःशुल्क!', hjDisclaimer:'कोई खाता नहीं चाहिए · 24 घंटे में समीक्षा · स्वीकृत होने पर पोस्ट',
     hjAlwaysFree:'⚡ हमेशा मुफ्त',
     hjHeroSub:'नौकरी पोस्ट करें — स्पेन में पूर्व-जांचे गए पाक पेशेवरों तक पहुंचें। <strong style="color:#34d399;">100% मुफ्त, हमेशा।</strong>', lSelectPos:'-- पद चुनें --', lSelectDef:'-- चुनें --', reqCustomer:'ग्राहक सेवा अनुभव', lForgotSub:'अपना ईमेल और गुप्त PIN दर्ज करें',
@@ -10077,7 +10086,7 @@ var T_UI = {
     btnBack:'&#x2190; फिर्ता', btnPrev:'&#x2039; पछिल्लो', btnNext:'अर्को &#x203A;',
     lCVLang:'🌐 CV भाषा:', cvLangNote:'✓ CV छानिएको भाषामा बनाइनेछ',
     lPhoto1:'फोटो १', lPhoto2:'फोटो २', lPhoto3:'फोटो ३', lLivePhoto:'लाइभ फोटो', lPassportPhoto:'पासपोर्ट साइज फोटो', lAdminApproved:'&#x1F511; एडमिनले पासवर्ड रिसेट स्वीकृत गर्नुभयो', lScoreSaved:'स्कोर मिति र समयसहित सेव भयो', cvLangNote:'✓ CV छानिएको भाषामा बनाइनेछ',
-    vacancyUrgent:'अर्जेन्ट', vacancyFeatured:'फिचर्ड', hjAddReq:'+ आवश्यकता थप्नुस्...',
+    vacancyUrgent:'अर्जेन्ट', vacancyFeatured:'फिचर्ड', vacancyHiring:'भर्ती', vacancySlots:'पद', vacancyGeneral:'सामान्य', vacancyFeaturedBadge:'फिचर्ड', hjAddReq:'+ आवश्यकता थप्नुस्...',
     hjSubmit:'📤 जागिर अनुरोध पेश गर्नुस् — निःशुल्क!', hjDisclaimer:'खाता चाहिँदैन · 24 घण्टामा समीक्षा · स्वीकृत भए पोस्ट',
     hjAlwaysFree:'⚡ सधैं निःशुल्क',
     hjHeroSub:'जागिर पोस्ट गर्नुस् — स्पेनमा पूर्व-जाँचिएका खाना पेशेवरहरूसम्म पुग्नुस्। <strong style="color:#34d399;">100% निःशुल्क, सधैं।</strong>', lSelectPos:'-- पद छान्नुस् --', lSelectDef:'-- छान्नुस् --', reqCustomer:'ग्राहक सेवा अनुभव', lForgotSub:'आफ्नो इमेल र गोप्य PIN लेख्नुस्',
@@ -10139,7 +10148,7 @@ var T_UI = {
     btnBack:'&#x2190; رجوع', btnPrev:'&#x2039; السابق', btnNext:'التالي &#x203A;',
     lCVLang:'🌐 لغة السيرة الذاتية:', cvLangNote:'✓ سيتم إنشاء السيرة الذاتية باللغة المختارة',
     lPhoto1:'صورة 1', lPhoto2:'صورة 2', lPhoto3:'صورة 3', lLivePhoto:'صورة مباشرة', lPassportPhoto:'صورة جواز السفر', lAdminApproved:'&#x1F511; وافق المشرف على إعادة تعيين كلمة المرور', lScoreSaved:'تم حفظ النتيجة مع التاريخ والوقت', cvLangNote:'✓ سيتم إنشاء السيرة الذاتية باللغة المختارة',
-    vacancyUrgent:'عاجل', vacancyFeatured:'مميز', hjAddReq:'+ أضف متطلبًا...',
+    vacancyUrgent:'عاجل', vacancyFeatured:'مميز', vacancyHiring:'نقوم بالتوظيف', vacancySlots:'وظائف', vacancyGeneral:'عام', vacancyFeaturedBadge:'مميز', hjAddReq:'+ أضف متطلبًا...',
     hjSubmit:'📤 إرسال الطلب — مجاناً!', hjDisclaimer:'بدون حساب · مراجعة خلال 24 ساعة · نشر عند الموافقة',
     hjAlwaysFree:'⚡ مجاني دائماً',
     hjHeroSub:'انشر وظيفتك — تواصل مع متخصصين طهويين تم فرزهم مسبقاً في إسبانيا. <strong style="color:#34d399;">مجاني 100% دائماً.</strong>', lSelectPos:'-- اختر المنصب --', lSelectDef:'-- اختر --', reqCustomer:'خبرة في التعامل مع العملاء', lForgotSub:'أدخل بريدك الإلكتروني ورمز PIN السري',
@@ -10201,7 +10210,7 @@ var T_UI = {
     btnBack:'&#x2190; Назад', btnPrev:'&#x2039; Предыдущий', btnNext:'Далее &#x203A;',
     lCVLang:'🌐 Язык резюме:', cvLangNote:'✓ Резюме будет создано на выбранном языке',
     lPhoto1:'Фото 1', lPhoto2:'Фото 2', lPhoto3:'Фото 3', lLivePhoto:'Живое фото', lPassportPhoto:'Фото на паспорт', lAdminApproved:'&#x1F511; Администратор одобрил сброс пароля', lScoreSaved:'Результат сохранен с датой и временем', cvLangNote:'✓ Резюме будет создано на выбранном языке',
-    vacancyUrgent:'Срочно', vacancyFeatured:'Рекомендуем', hjAddReq:'+ Добавить требование...',
+    vacancyUrgent:'Срочно', vacancyFeatured:'Рекомендуем', vacancyHiring:'НАБОР', vacancySlots:'мест', vacancyGeneral:'Общее', vacancyFeaturedBadge:'РЕКОМЕНДУЕМ', hjAddReq:'+ Добавить требование...',
     hjSubmit:'📤 Отправить запрос — Это бесплатно!', hjDisclaimer:'Без аккаунта · Проверка за 24ч · Публикация при одобрении',
     hjAlwaysFree:'⚡ ВСЕГДА БЕСПЛАТНО',
     hjHeroSub:'Разместите вакансию — охватите проверенных кулинарных специалистов в Испании. <strong style="color:#34d399;">100% бесплатно, всегда.</strong>', lSelectPos:'-- Выбрать должность --', lSelectDef:'-- Выбрать --', reqCustomer:'Опыт работы с клиентами', lForgotSub:'Введите email и секретный PIN',
@@ -10263,7 +10272,7 @@ var T_UI = {
     btnBack:'&#x2190; Geri', btnPrev:'&#x2039; Önceki', btnNext:'Sonraki &#x203A;',
     lCVLang:'🌐 CV Dili:', cvLangNote:'✓ CV seçilen dilde oluşturulacak',
     lPhoto1:'Fotoğraf 1', lPhoto2:'Fotoğraf 2', lPhoto3:'Fotoğraf 3', lLivePhoto:'Canlı fotoğraf', lPassportPhoto:'Pasaport fotoğrafı', lAdminApproved:'&#x1F511; Yönetici şifre sıfırlamayı onayladı', lScoreSaved:'Puan tarih ve saatle birlikte kaydedildi', cvLangNote:'✓ CV seçilen dilde oluşturulacak',
-    vacancyUrgent:'Acil', vacancyFeatured:'Öne Çıkan', hjAddReq:'+ Gereksinim ekle...',
+    vacancyUrgent:'Acil', vacancyFeatured:'Öne Çıkan', vacancyHiring:'İŞE ALIM', vacancySlots:'yer', vacancyGeneral:'Genel', vacancyFeaturedBadge:'ÖNE ÇIKAN', hjAddReq:'+ Gereksinim ekle...',
     vacancyUrgent:'Acil', vacancyFeatured:'Öne Çıkan', hjAddReq:'+ Gereksinim ekle...',
     hjSubmit:'📤 İş talebi gönder — Ücretsiz!', hjDisclaimer:'Hesap gerekmez · 24 saatte incelenir · Onaylanırsa yayınlanır',
     hjAlwaysFree:'⚡ HER ZAMAN ÜCRETSİZ',
@@ -10326,7 +10335,7 @@ var T_UI = {
     btnBack:'&#x2190; Kembali', btnPrev:'&#x2039; Sebelumnya', btnNext:'Berikutnya &#x203A;',
     lCVLang:'🌐 Bahasa CV:', cvLangNote:'✓ CV akan dibuat dalam bahasa yang dipilih',
     lPhoto1:'Foto 1', lPhoto2:'Foto 2', lPhoto3:'Foto 3', lLivePhoto:'Foto Langsung', lPassportPhoto:'Foto Paspor', lAdminApproved:'&#x1F511; Admin menyetujui reset kata sandi', lScoreSaved:'Skor disimpan dengan tanggal dan waktu',
-    vacancyUrgent:'Mendesak', vacancyFeatured:'Unggulan', hjAddReq:'+ Tambahkan persyaratan...',
+    vacancyUrgent:'Mendesak', vacancyFeatured:'Unggulan', vacancyHiring:'PEREKRUTAN', vacancySlots:'posisi', vacancyGeneral:'Umum', vacancyFeaturedBadge:'UNGGULAN', hjAddReq:'+ Tambahkan persyaratan...',
     hjSubmit:'📤 Kirim permintaan — Gratis!', hjDisclaimer:'Tanpa akun · Ditinjau dalam 24 jam · Diposting jika disetujui',
     hjAlwaysFree:'⚡ SELALU GRATIS',
     hjHeroSub:'Pasang lowongan — jangkau profesional kuliner tersaring di Spanyol. <strong style="color:#34d399;">100% gratis, selalu.</strong>', lSelectPos:'-- Pilih posisi --', lSelectDef:'-- Pilih --', reqCustomer:'Pengalaman layanan pelanggan', lForgotSub:'Masukkan email dan PIN rahasia Anda',
@@ -10388,7 +10397,7 @@ var T_UI = {
     btnBack:'&#x2190; Kembali', btnPrev:'&#x2039; Sebelum', btnNext:'Seterusnya &#x203A;',
     lCVLang:'🌐 Bahasa CV:', cvLangNote:'✓ CV akan dibina dalam bahasa yang dipilih',
     lPhoto1:'Foto 1', lPhoto2:'Foto 2', lPhoto3:'Foto 3', lLivePhoto:'Foto Langsung', lPassportPhoto:'Foto Pasport', lAdminApproved:'&#x1F511; Admin meluluskan tetapan semula kata laluan', lScoreSaved:'Markah disimpan dengan tarikh dan masa',
-    vacancyUrgent:'Segera', vacancyFeatured:'Pilihan', hjAddReq:'+ Tambah keperluan...',
+    vacancyUrgent:'Segera', vacancyFeatured:'Pilihan', vacancyHiring:'PENGAMBILAN', vacancySlots:'jawatan', vacancyGeneral:'Umum', vacancyFeaturedBadge:'PILIHAN', hjAddReq:'+ Tambah keperluan...',
     hjSubmit:'📤 Hantar permohonan — Percuma!', hjDisclaimer:'Tiada akaun diperlukan · Semakan dalam 24j · Disiarkan jika diluluskan',
     hjAlwaysFree:'⚡ SENTIASA PERCUMA',
     hjHeroSub:'Iklankan jawatan — capai profesional kulinari yang tersaring di Sepanyol. <strong style="color:#34d399;">100% percuma, selalu.</strong>', lSelectPos:'-- Pilih jawatan --', lSelectDef:'-- Pilih --', reqCustomer:'Pengalaman perkhidmatan pelanggan', lForgotSub:'Masukkan e-mel dan PIN rahsia anda',
@@ -10439,7 +10448,7 @@ var T_UI = {
     hjCompanyPh:'напр. Restaurante Casa Madrid', hjContactPh:'+34 600 000 000 або info@restaurant.com',
     hjSubmit:'📤 Відправити запит — Безкоштовно!', hjDisclaimer:'Без акаунту · Перевірка за 24год · Публікація при схваленні',
     hjAddReq:'+ Додати вимогу...',
-    vacancyUrgent:'Терміново', vacancyFeatured:'Рекомендовано', vacancyApplyBtn:'Подати заявку',
+    vacancyUrgent:'Терміново', vacancyFeatured:'Рекомендовано', vacancyHiring:'НАБІР', vacancySlots:'місць', vacancyGeneral:'Загальне', vacancyFeaturedBadge:'РЕКОМЕНДОВАНО', vacancyApplyBtn:'Подати заявку',
     lCVLang:'🌐 Мова CV:', cvLangNote:'✓ CV буде створено вибраною мовою',
     succTitle:'Заявку подано!', succGoPortal:'До порталу', succClose:'Закрити',
     errNameReq:'Повне ім\'я обов\'язкове', errEmailReq:'Необхідна дійсна електронна пошта',
@@ -10720,7 +10729,7 @@ var T_UI = {
     lDobShow:'Pokaż w CV:', lDobFull:'Pełna data', lDobAge:'Tylko wiek', lDobHide:'Ukryj',
     errNameReq:'Pełne imię jest wymagane', errEmailReq:'Prawidłowy email jest wymagany',
     errPhoneReq:'Numer telefonu jest wymagany', errDobReq:'Data urodzenia jest wymagana',
-    errMinAge:'Musisz mieć co najmniej 18 lat.', errDobFuture:'Data urodzenia nie może być w przyszłości.', stepPersonal:'Osobiste', stepPhoto:'Zdjęcie', stepProfile:'Profil', stepExp:'Doświadczenie', stepSkills:'Umiejętności', stepVerify:'Weryfikacja', lSelectPos:'-- Wybierz stanowisko --', lSelectDef:'-- Wybierz --', vacancyUrgent:'Pilne', vacancyFeatured:'Wyróżnione', hjAddReq:'+ Dodaj wymaganie...', hjCompanyPh:'np. Restaurante Casa Madrid', hjContactPh:'+34 600 000 000 lub info@restaurant.com',
+    errMinAge:'Musisz mieć co najmniej 18 lat.', errDobFuture:'Data urodzenia nie może być w przyszłości.', stepPersonal:'Osobiste', stepPhoto:'Zdjęcie', stepProfile:'Profil', stepExp:'Doświadczenie', stepSkills:'Umiejętności', stepVerify:'Weryfikacja', lSelectPos:'-- Wybierz stanowisko --', lSelectDef:'-- Wybierz --', vacancyUrgent:'Pilne', vacancyFeatured:'Wyróżnione', vacancyHiring:'REKRUTACJA', vacancySlots:'miejsc', vacancyGeneral:'Ogólne', vacancyFeaturedBadge:'WYRÓŻNIONE', hjAddReq:'+ Dodaj wymaganie...', hjCompanyPh:'np. Restaurante Casa Madrid', hjContactPh:'+34 600 000 000 lub info@restaurant.com',
     ogJapanese:'🍣 Kuchnia Japońska', ogKitchen:'👨‍🍳 Kuchnia', ogRestaurant:'🍽️ Restauracja i Bar',
     ogHotel:'🏨 Hotel i Pokoje', ogDelivery:'🚗 Kierowca i Dostawa', ogCleaning:'🧹 Sprzątanie i Konserwacja', ogGuest:'🛎️ Obsługa Gości',
     posSushiMan:'Sushi Man', posSushiWoman:'Sushi Woman', posSushiChefM:'Szef Sushi (M)', posSushiChefF:'Szef Sushi (K)',
@@ -10787,7 +10796,7 @@ var T_UI = {
     lDobShow:'Afișează în CV:', lDobFull:'Dată completă', lDobAge:'Doar vârstă', lDobHide:'Ascunde',
     errNameReq:'Numele complet este obligatoriu', errEmailReq:'Email valid este obligatoriu',
     errPhoneReq:'Numărul de telefon este obligatoriu', errDobReq:'Data nașterii este obligatorie',
-    errMinAge:'Trebuie să aveți cel puțin 18 ani.', errDobFuture:'Data nașterii nu poate fi în viitor.', stepPersonal:'Personal', stepPhoto:'Fotografie', stepProfile:'Profil', stepExp:'Experiență', stepSkills:'Abilități', stepVerify:'Verificare', lSelectPos:'-- Selectați poziția --', lSelectDef:'-- Selectați --', vacancyUrgent:'Urgent', vacancyFeatured:'Recomandat', hjAddReq:'+ Adaugă cerință...', hjCompanyPh:'ex. Restaurante Casa Madrid', hjContactPh:'+34 600 000 000 sau info@restaurant.com',
+    errMinAge:'Trebuie să aveți cel puțin 18 ani.', errDobFuture:'Data nașterii nu poate fi în viitor.', stepPersonal:'Personal', stepPhoto:'Fotografie', stepProfile:'Profil', stepExp:'Experiență', stepSkills:'Abilități', stepVerify:'Verificare', lSelectPos:'-- Selectați poziția --', lSelectDef:'-- Selectați --', vacancyUrgent:'Urgent', vacancyFeatured:'Recomandat', vacancyHiring:'ANGAJARE', vacancySlots:'locuri', vacancyGeneral:'General', vacancyFeaturedBadge:'RECOMANDAT', hjAddReq:'+ Adaugă cerință...', hjCompanyPh:'ex. Restaurante Casa Madrid', hjContactPh:'+34 600 000 000 sau info@restaurant.com',
     ogJapanese:'🍣 Bucătărie Japoneză', ogKitchen:'👨‍🍳 Bucătărie', ogRestaurant:'🍽️ Restaurant & Bar',
     ogHotel:'🏨 Hotel & Camere', ogDelivery:'🚗 Șofer & Livrare', ogCleaning:'🧹 Curățenie & Întreținere', ogGuest:'🛎️ Servicii Oaspeți',
     posSushiMan:'Sushi Man', posSushiWoman:'Sushi Woman', posSushiChefM:'Chef Sushi (Bărbat)', posSushiChefF:'Chef Sushi (Femeie)',
@@ -10860,7 +10869,7 @@ var T_UI = {
     lDobShow:'Prikaži u CV-u:', lDobFull:'Puni datum', lDobAge:'Samo dob', lDobHide:'Sakrij',
     errNameReq:'Puno ime je obavezno', errEmailReq:'Valjana e-pošta je obavezna',
     errPhoneReq:'Broj telefona je obavezan', errDobReq:'Datum rođenja je obavezan',
-    errMinAge:'Morate imati najmanje 18 godina.', errDobFuture:'Datum rođenja ne može biti u budućnosti.', stepPersonal:'Osobni', stepPhoto:'Fotografija', stepProfile:'Profil', stepExp:'Iskustvo', stepSkills:'Vještine', stepVerify:'Provjera', lSelectPos:'-- Odaberite poziciju --', lSelectDef:'-- Odaberite --', vacancyUrgent:'Hitno', vacancyFeatured:'Istaknuto', hjAddReq:'+ Dodaj zahtjev...', hjCompanyPh:'npr. Restaurante Casa Madrid', hjContactPh:'+34 600 000 000 ili info@restaurant.com',
+    errMinAge:'Morate imati najmanje 18 godina.', errDobFuture:'Datum rođenja ne može biti u budućnosti.', stepPersonal:'Osobni', stepPhoto:'Fotografija', stepProfile:'Profil', stepExp:'Iskustvo', stepSkills:'Vještine', stepVerify:'Provjera', lSelectPos:'-- Odaberite poziciju --', lSelectDef:'-- Odaberite --', vacancyUrgent:'Hitno', vacancyFeatured:'Istaknuto', vacancyHiring:'ZAPOŠLJAVANJE', vacancySlots:'mjesta', vacancyGeneral:'Opće', vacancyFeaturedBadge:'ISTAKNUTO', hjAddReq:'+ Dodaj zahtjev...', hjCompanyPh:'npr. Restaurante Casa Madrid', hjContactPh:'+34 600 000 000 ili info@restaurant.com',
     ogJapanese:'🍣 Japanska Kuhinja', ogKitchen:'👨‍🍳 Kuhinja', ogRestaurant:'🍽️ Restoran i Bar',
     ogHotel:'🏨 Hotel i Sobe', ogDelivery:'🚗 Vozač i Dostava', ogCleaning:'🧹 Čišćenje i Održavanje', ogGuest:'🛎️ Usluge Gostima',
     posSushiMan:'Sushi Man', posSushiWoman:'Sushi Woman', posSushiChefM:'Sushi Kuhar (M)', posSushiChefF:'Sushi Kuharica (Ž)',
@@ -12030,6 +12039,8 @@ window.setLang=function(lang){
   setTimeout(function(){initDobPicker(lang);},100);
   // Re-init deadline picker with new locale
   setTimeout(function(){ try{ _initHjDeadlinePicker(); }catch(e){} }, 200);
+  // Re-render vacancies with translated titles
+  setTimeout(function(){ try{ renderVacancies(); }catch(e){} try{ _highlightVacancyBadges(); }catch(e){} }, 250);
   // Re-render hjPosition dropdown with new language labels
   setTimeout(function(){
     try{
@@ -19673,10 +19684,11 @@ function renderVacancies(){
     return;
   }
   var html=active.map(function(v){
-    var u=v.urgent?'<span style="background:#ef4444;color:#fff;border-radius:20px;padding:1px 6px;font-size:0.6rem;font-weight:800;margin-left:3px;">URGENT</span>':'';
-    var f=v.featured?'<span style="background:#f59e0b;color:#000;border-radius:20px;padding:1px 6px;font-size:0.6rem;font-weight:800;margin-left:3px;">FEATURED</span>':'';
-    var s=v.slots>1?' <span style="color:#94a3b8;font-size:0.7rem;">('+v.slots+' slots)</span>':'';
-    return '<span style="background:linear-gradient(135deg,rgba(245,158,11,0.18),rgba(245,158,11,0.06));border:1.5px solid rgba(245,158,11,0.7);color:#fbbf24;font-size:0.82rem;padding:5px 13px;border-radius:999px;white-space:nowrap;font-weight:700;display:inline-flex;align-items:center;gap:3px;">🟡 '+v.title+s+u+f+'</span>';
+    var u=v.urgent?'<span style="background:#ef4444;color:#fff;border-radius:20px;padding:1px 6px;font-size:0.6rem;font-weight:800;margin-left:3px;">'+t('vacancyUrgent').toUpperCase()+'</span>':'';
+    var f=v.featured?'<span style="background:#f59e0b;color:#000;border-radius:20px;padding:1px 6px;font-size:0.6rem;font-weight:800;margin-left:3px;">'+t('vacancyFeaturedBadge')+'</span>':'';
+    var s=v.slots>1?' <span style="color:#94a3b8;font-size:0.7rem;">('+v.slots+' '+t('vacancySlots')+')</span>':'';
+    var vLabel=(typeof _posLabel==='function')?_posLabel(v.title):v.title;
+    return '<span style="background:linear-gradient(135deg,rgba(245,158,11,0.18),rgba(245,158,11,0.06));border:1.5px solid rgba(245,158,11,0.7);color:#fbbf24;font-size:0.82rem;padding:5px 13px;border-radius:999px;white-space:nowrap;font-weight:700;display:inline-flex;align-items:center;gap:3px;">🟡 '+vLabel+s+u+f+'</span>';
   }).join('');
   if(row){row.innerHTML=html;row.style.display='flex';}
   if(row2) row2.innerHTML=html;
@@ -19697,7 +19709,7 @@ function openVacancyManager(){
     el.innerHTML=vacs.map(function(v){
       var act=v.active!==false;
       return '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.7rem 1rem;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;opacity:'+(act?'1':'0.5')+';">'
-        +'<div style="flex:1;"><div style="font-weight:700;color:#fbbf24;font-size:0.88rem;">'+esc(v.title||'')+(v.urgent?' <span style="background:#ef4444;color:#fff;border-radius:20px;padding:1px 5px;font-size:0.6rem;">URGENT</span>':'')+'</div>'
+        +'<div style="flex:1;"><div style="font-weight:700;color:#fbbf24;font-size:0.88rem;">'+esc((typeof _posLabel==="function"?_posLabel(v.title||''):v.title)||'')+(v.urgent?' <span style="background:#ef4444;color:#fff;border-radius:20px;padding:1px 5px;font-size:0.6rem;">'+t('vacancyUrgent').toUpperCase()+'</span>':'')+'</div>'
         +'<div style="font-size:0.72rem;color:#64748b;">'+esc(v.company||'')+'  |  '+esc(String(v.slots||1))+' slot(s)'+(v.deadline?' | '+esc(v.deadline):'')+'</div></div>'
         +'<div style="display:flex;gap:5px;">'
         +'<button onclick="toggleVacancy('+v.id+')" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#94a3b8;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:0.72rem;font-family:inherit;">'+(act?'🚫 Hide':'👁 Show')+'</button>'
