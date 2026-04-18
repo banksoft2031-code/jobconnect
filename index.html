@@ -23986,7 +23986,17 @@ function startQuiz(){
   qState.idx=0;qState.correct=0;qState.wrong=0;qState.answered=false;
   updateQBadges();
   var pg=document.getElementById('qProg');if(pg)pg.style.width='0%';
-  renderQuestion();
+  var curLang=(typeof LANG!=='undefined')?LANG:'en';
+  if(curLang!=='en' && typeof translateQuizQuestions==='function' && qState.pos){
+    var origQ=getQuizForPos(qState.pos);
+    if(typeof _quizTranslationCache!=='undefined') delete _quizTranslationCache[curLang+'_'+(qState.pos||'default')];
+    translateQuizQuestions(origQ, curLang, function(translated){
+      qState.activeQ=translated;
+      renderQuestion();
+    });
+  } else {
+    renderQuestion();
+  }
 }
 
 function renderQuestion(){
