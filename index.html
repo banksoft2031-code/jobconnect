@@ -2480,8 +2480,8 @@ body { -webkit-overflow-scrolling: touch; overflow-y: auto !important; min-heigh
 
 /* DOB display option radio buttons — wrap on mobile */
 @media(max-width:480px){
-  #dobDisplayOpts { flex-direction: column !important; gap: 4px !important; }
-  #dobDisplayOpts label { width: fit-content !important; }
+  #dobDisplayOpts > div { gap: 5px !important; }
+  #dobDisplayOpts label { white-space: nowrap !important; flex-shrink: 0 !important; font-size: 0.72rem !important; padding: 4px 9px !important; }
 }
 
 /* CV builder 2-column layout — stack on mobile */
@@ -3837,17 +3837,19 @@ body { -webkit-overflow-scrolling: touch; }
             <input type="hidden" id="dob" oninput="updatePreview();chkDob()" onchange="chkDob()">
             <div id="dobMsg" style="font-size:0.7rem;margin-top:3px;"></div>
             <!-- DOB CV display option -->
-            <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;" id="dobDisplayOpts">
-              <span data-t="lDobShow" style="font-size:0.72rem;color:#94a3b8;font-weight:600;width:100%;margin-bottom:2px;">Show in CV:</span>
-              <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:0.75rem;color:#cbd5e1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 10px;">
-                <input type="radio" name="dobDisplay" value="full" checked onchange="updatePreview()" style="accent-color:#f59e0b;"> <span data-t="lDobFull">Full Date</span>
-              </label>
-              <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:0.75rem;color:#cbd5e1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 10px;">
-                <input type="radio" name="dobDisplay" value="age" onchange="updatePreview()" style="accent-color:#f59e0b;"> <span data-t="lDobAge">Age Only</span>
-              </label>
-              <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:0.75rem;color:#cbd5e1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 10px;">
-                <input type="radio" name="dobDisplay" value="hide" onchange="updatePreview()" style="accent-color:#f59e0b;"> <span data-t="lDobHide">Hide</span>
-              </label>
+            <div style="margin-top:8px;" id="dobDisplayOpts">
+              <span data-t="lDobShow" style="display:block;font-size:0.72rem;color:#94a3b8;font-weight:600;margin-bottom:6px;">Show in CV:</span>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <label style="display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-size:0.75rem;color:#cbd5e1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:5px 12px;white-space:nowrap;flex-shrink:0;">
+                  <input type="radio" name="dobDisplay" value="full" checked onchange="updatePreview()" style="accent-color:#f59e0b;flex-shrink:0;"> <span data-t="lDobFull">Full Date</span>
+                </label>
+                <label style="display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-size:0.75rem;color:#cbd5e1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:5px 12px;white-space:nowrap;flex-shrink:0;">
+                  <input type="radio" name="dobDisplay" value="age" onchange="updatePreview()" style="accent-color:#f59e0b;flex-shrink:0;"> <span data-t="lDobAge">Age Only</span>
+                </label>
+                <label style="display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-size:0.75rem;color:#cbd5e1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:5px 12px;white-space:nowrap;flex-shrink:0;">
+                  <input type="radio" name="dobDisplay" value="hide" onchange="updatePreview()" style="accent-color:#f59e0b;flex-shrink:0;"> <span data-t="lDobHide">Hide</span>
+                </label>
+              </div>
             </div>
           </div>
           <div class="input-group"><label data-t="lGender">Gender *</label><select id="gender" onchange="updatePreview()"><option data-i18n="optMale">Male</option><option data-i18n="optFemale">Female</option><option data-i18n="optOther">Other</option></select></div>
