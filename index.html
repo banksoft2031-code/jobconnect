@@ -468,7 +468,7 @@ body { background: var(--bg) !important; color: var(--text) !important; }
 .hero-feat, .hero-card { background: var(--surface) !important; border-color: var(--border) !important; }
 .assoc-card { background: var(--surface) !important; border-color: var(--border) !important; }
 .btn-gold { background: linear-gradient(135deg, var(--accent), var(--accent2)) !important; }
-.input-group input, .input-group textarea, .input-group select {
+.input-group input:not([type=radio]):not([type=checkbox]), .input-group textarea, .input-group select {
   background: var(--surface) !important;
   border-color: var(--border) !important;
   color: var(--text) !important;
@@ -947,16 +947,20 @@ input,select,textarea{
 }
 input:focus,select:focus,textarea:focus{border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,0.15);}
 /* Radio/checkbox inputs — reset global overrides */
-input[type=radio],input[type=checkbox]{
+input[type=radio],input[type=checkbox],
+.input-group input[type=radio],.input-group input[type=checkbox]{
   width:auto !important;
   min-width:0 !important;
+  max-width:none !important;
   padding:0 !important;
+  margin:0 !important;
   border:none !important;
   border-radius:0 !important;
   background:transparent !important;
   box-shadow:none !important;
   flex-shrink:0 !important;
   display:inline-block !important;
+  height:auto !important;
 }
 input::placeholder,textarea::placeholder{color:#6b7a99;font-style:italic;}
 /* SELECT dropdown — light background so options are readable in all browsers */
@@ -2511,7 +2515,7 @@ body { -webkit-overflow-scrolling: touch; overflow-y: auto !important; min-heigh
 /* Input groups — full width on mobile */
 @media(max-width:600px){
   .input-group,
-  .input-group input,
+  .input-group input:not([type=radio]):not([type=checkbox]),
   .input-group select,
   .input-group textarea {
     width: 100% !important;
