@@ -5133,7 +5133,11 @@ function onFirebaseLoginSuccess(){
     var appEl  = document.getElementById('dash-app-status');
     var photoEl= document.getElementById('dash-photo');
     if(nameEl) nameEl.textContent = u.name || 'Applicant';
-    if(posEl)  posEl.textContent  = (typeof _posLabel==='function'?_posLabel(u.position||''):(u.position||''));
+    if(posEl)  posEl.textContent  = u.position||'';
+    // Re-apply translated position after _posLabel is defined
+    setTimeout(function(){
+      if(posEl && typeof _posLabel==='function') posEl.textContent = _posLabel(u.position||'');
+    }, 100);
     if(welEl)  welEl.textContent  = t('dashWelcomeUser') + (u.name||'') + '!';
     if(photoEl){
       if(u.photo && u.photo.length > 10){
@@ -5146,7 +5150,9 @@ function onFirebaseLoginSuccess(){
     if(sb) sb.innerHTML = '<span style="background:'+sc+'22;color:'+sc+';border:1px solid '+sc+';padding:4px 12px;border-radius:20px;font-weight:800;font-size:0.78rem;">'+t(statusKey)+'</span>';
     if(appEl){ appEl.textContent = t(statusKey); appEl.style.color = sc; }
     var dps = document.getElementById('dash-pos-stat');
-    if(dps) dps.textContent = (typeof _posLabel==='function'?_posLabel(u.position||'—'):(u.position||'—'));
+    if(dps){ dps.textContent = u.position||'—';
+      setTimeout(function(){ if(typeof _posLabel==='function') dps.textContent=_posLabel(u.position||'—'); },100);
+    }
     var qr = u.quizResult || (typeof getSavedResult==='function' ? getSavedResult(u.email) : null);
     var scoreEl  = document.getElementById('dash-quiz-score');
     var resultEl = document.getElementById('dash-quiz-result');
@@ -20175,6 +20181,16 @@ window.setLang=function(lang){
   setTimeout(function(){ try{ renderVacancies(); }catch(e){} try{ _highlightVacancyBadges(); }catch(e){} }, 250);
   // Translate expYears dropdown
   try{ _translateExpYearsDropdown(); }catch(e){}
+  // Re-translate dashboard position (may be stored in another language)
+  try{
+    var _dpEl = document.getElementById('dash-position');
+    var _dpsEl = document.getElementById('dash-pos-stat');
+    if(typeof currentUser!=='undefined' && currentUser && typeof _posLabel==='function'){
+      var _pos = currentUser.position||'';
+      if(_dpEl) _dpEl.textContent = _posLabel(_pos);
+      if(_dpsEl) _dpsEl.textContent = _posLabel(_pos||'—');
+    }
+  }catch(e){}
   // Re-render hjPosition dropdown with new language labels
   setTimeout(function(){
     try{
@@ -23843,13 +23859,18 @@ function translateQuizQuestions(questions, lang, callback) {
     sw:'Swahili',af:'Afrikaans'};
   var langName = langNames[lang] || lang;
 
-  // Translate in 2 batches of 10 to stay within token limits
-  var half = Math.ceil(questions.length / 2);
-  var batch1 = questions.slice(0, half);
-  var batch2 = questions.slice(half);
+  // Show overlay loading message
+  var loadDiv = document.getElementById('quiz-translate-loading');
+  if(!loadDiv){
+    loadDiv = document.createElement('div');
+    loadDiv.id = 'quiz-translate-loading';
+    loadDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(15,23,42,0.97);border:1px solid rgba(245,158,11,0.4);border-radius:16px;padding:2rem 3rem;z-index:9999;text-align:center;color:#94a3b8;font-size:1rem;';
+    document.body.appendChild(loadDiv);
+  }
+  loadDiv.style.display = 'block';
+  loadDiv.innerHTML = '🌐 <strong style="color:#f59e0b">'+langName+'</strong>に翻訳中...<br><small style="font-size:0.72rem;opacity:0.6;margin-top:4px;display:block;">Translating quiz · please wait</small>';
 
-  var qs = document.getElementById('qScreen');
-  if(qs) qs.innerHTML = '<div style="text-align:center;padding:3rem;color:#94a3b8;font-size:1rem;">🌐 '+langName+'に翻訳中... <br><small style="font-size:0.75rem;opacity:0.6;">Translating quiz questions...</small></div>';
+  function doHideLoader(){ if(loadDiv) loadDiv.style.display='none'; }
 
   function translateBatch(batch, onDone) {
     var minimal = batch.map(function(q){ return {id:q.id, text:q.text, options:q.options}; });
@@ -23857,21 +23878,23 @@ function translateQuizQuestions(questions, lang, callback) {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
-        model:'claude-haiku-4-5-20251001',
+        model:'claude-haiku-4-5',
         max_tokens:3000,
-        messages:[{role:'user', content:'You are a translator. Translate these quiz questions to '+langName+'. Return ONLY a valid JSON array with the same structure. Do NOT change the id or correct fields. Only translate text and options string values. No markdown, no explanation. JSON: '+JSON.stringify(minimal)}]
+        messages:[{role:'user', content:'Translate to '+langName+'. Return ONLY a JSON array. Keep same structure. Do NOT change id or correct. Only translate text and options values. No markdown. JSON:'+JSON.stringify(minimal)}]
       })
     })
     .then(function(r){ return r.json(); })
     .then(function(data){
-      var txt = (data.content && data.content[0] && data.content[0].text) || '[]';
+      var txt = (data.content && data.content[0] && data.content[0].text) || '';
+      if(!txt){ onDone(new Error('empty'), batch); return; }
       txt = txt.replace(/^```[\w]*\r?\n?/,'').replace(/\r?\n?```$/,'').trim();
-      // Find first [ in response
       var start = txt.indexOf('[');
-      if(start > 0) txt = txt.slice(start);
+      if(start >= 0) txt = txt.slice(start);
+      var end = txt.lastIndexOf(']');
+      if(end >= 0) txt = txt.slice(0, end+1);
       var translated = JSON.parse(txt);
       var result = batch.map(function(orig){
-        var tr = translated.find(function(t){ return t.id === orig.id; });
+        var tr = translated.find(function(t){ return String(t.id)===String(orig.id); });
         if(!tr) return orig;
         return {id:orig.id, text:tr.text||orig.text, options:tr.options||orig.options, correct:orig.correct};
       });
@@ -23880,10 +23903,12 @@ function translateQuizQuestions(questions, lang, callback) {
     .catch(function(e){ onDone(e, batch); });
   }
 
-  translateBatch(batch1, function(err1, result1){
-    if(err1){ callback(questions); return; }
-    translateBatch(batch2, function(err2, result2){
-      var combined = result1.concat(err2 ? batch2 : result2);
+  var half = Math.ceil(questions.length / 2);
+  translateBatch(questions.slice(0, half), function(err1, result1){
+    if(err1){ doHideLoader(); callback(questions); return; }
+    translateBatch(questions.slice(half), function(err2, result2){
+      doHideLoader();
+      var combined = result1.concat(err2 ? questions.slice(half) : result2);
       _quizTranslationCache[cacheKey] = combined;
       callback(combined);
     });
