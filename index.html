@@ -8330,7 +8330,7 @@ en:{
   cvAvail:'Availability', cvPermit:'Work Permit', cvDriving:'Driving',
   cvEducation:'Education', cvExp:'Experience',
   ourAssociates:'Our Associates',
-  cvProfProfile:'PROFESSIONAL PROFILE',
+  cvProfTitle:'PROFESSIONAL TITLE', cvProfProfile:'PROFESSIONAL PROFILE',
   cvWorkExp:'WORK EXPERIENCE', cvKeySkills:'KEY SKILLS',
   cvPassedQuiz:'Interview Preparation Class: PASSED',
   cvCertifications:'CERTIFICATIONS',
@@ -8432,7 +8432,7 @@ en:{
   cvStr6:'Reliable, punctual and dedicated',
   cvStr7:'Passionate about food quality',
   // WORK PHOTO PLACEHOLDERS
-  cvWorkPhoto:'Photo',
+  cvWorkPhoto:'Photo', cvPosLabel:'Position',
   // FOOTER
   footerBrand:'Professional culinary hiring platform for FusionChef Madrid. Build your CV, pass the Interview Preparation Class, and get hired.',
   currentOpenings:'Current Openings',
@@ -8711,7 +8711,7 @@ es:{
   cvAvail:'Disponibilidad', cvPermit:'Permiso Trabajo', cvDriving:'Conducir',
   cvEducation:'Educación', cvExp:'Experiencia',
   ourAssociates:'Nuestros Asociados',
-  cvProfProfile:'PERFIL PROFESIONAL',
+  cvProfTitle:'TÍTULO PROFESIONAL', cvProfProfile:'PERFIL PROFESIONAL',
   cvWorkExp:'EXPERIENCIA LABORAL', cvKeySkills:'HABILIDADES CLAVE',
   cvPassedQuiz:'Quiz Entrevista: APROBADO',
   cvCertifications:'CERTIFICACIONES',
@@ -8803,7 +8803,7 @@ es:{
   cvStr6:'Fiable, puntual y dedicado',
   cvStr7:'Apasionado por la calidad alimentaria',
   // WORK PHOTO PLACEHOLDERS
-  cvWorkPhoto:'Foto',
+  cvWorkPhoto:'Foto', cvPosLabel:'Puesto',
   // FOOTER
   footerBrand:'Plataforma profesional de contratación culinaria para FusionChef Madrid. Crea tu CV, supera la Clase de Preparación y consigue trabajo.',
   currentOpenings:'Vacantes Actuales',
@@ -9494,25 +9494,25 @@ var T_FORM = {
     posCleaner:'Pembersih', posGardener:'Tukang Kebun/Pembersih Luar', posMaintenance:'Juruteknik Penyelenggaraan',
     posGuestRelations:'Pegawai Hubungan Tetamu', posEvents:'Penyelaras Acara',
     posSpa:'Terapis Spa', posSecurity:'Pengawal Keselamatan', posBabysitter:'Pengasuh Bayi', posDomestic:'Pembantu Rumah',
-    lDobShow:'Tunjukkan dalam CV:', lDobFull:'Tarikh Penuh', lDobAge:'Umur Sahaja', lDobHide:'Sembunyikan'
+    cvProfTitle:'JAWATAN PROFESIONAL', cvWorkPhoto:'Gambar', cvPosLabel:'Jawatan', lDobShow:'Tunjukkan dalam CV:', lDobFull:'Tarikh Penuh', lDobAge:'Umur Sahaja', lDobHide:'Sembunyikan'
   }
 };
 
 // Add DOB display keys to every T_FORM language
 var _dobKeys = {
-  fr:  { lDobShow:'Afficher dans le CV:', lDobFull:'Date complète', lDobAge:'Âge seulement', lDobHide:'Masquer' , str1:'Travaille bien sous pression', str2:'Grande attention aux détails', str3:'Rapide et efficace', str4:'Style de travail propre et organisé', str5:'Esprit d\'équipe positif', quizPassed:'Classe d\'Entretien: RÉUSSI' },
-  de:  { lDobShow:'Im CV anzeigen:', lDobFull:'Vollständiges Datum', lDobAge:'Nur Alter', lDobHide:'Ausblenden' , str1:'Arbeitet gut unter Druck', str2:'Starke Aufmerksamkeit für Details', str3:'Schnell und effizient', str4:'Sauberer und organisierter Arbeitsstil', str5:'Teamplayer mit positiver Einstellung', quizPassed:'Interview-Kurs: BESTANDEN' },
-  it:  { lDobShow:'Mostra nel CV:', lDobFull:'Data completa', lDobAge:'Solo età', lDobHide:'Nascondi' , str1:'Lavora bene sotto pressione', str2:'Grande attenzione ai dettagli', str3:'Veloce ed efficiente', str4:'Stile di lavoro pulito e organizzato', str5:'Giocatore di squadra positivo', quizPassed:'Corso Colloquio: SUPERATO' },
-  pt:  { lDobShow:'Mostrar no CV:', lDobFull:'Data completa', lDobAge:'Apenas idade', lDobHide:'Ocultar' , str1:'Trabalha bem sob pressão', str2:'Grande atenção aos detalhes', str3:'Rápido e eficiente', str4:'Estilo de trabalho limpo e organizado', str5:'Jogador de equipe positivo', quizPassed:'Aula de Entrevista: APROVADO' },
-  ja:  { lDobShow:'CVに表示:', lDobFull:'完全な日付', lDobAge:'年齢のみ', lDobHide:'非表示' , str1:'プレッシャーに強い', str2:'細部への強い注意力', str3:'迅速かつ効率的', str4:'清潔で整理されたスタイル', str5:'積極的なチームプレーヤー', quizPassed:'面接クラス: 合格' },
-  ko:  { lDobShow:'CV에 표시:', lDobFull:'전체 날짜', lDobAge:'나이만', lDobHide:'숨기기' , str1:'압박감 속에서도 잘 일함', str2:'세부사항에 강한 집중력', str3:'빠르고 효율적', str4:'깔끔하고 체계적인 업무 스타일', str5:'긍정적인 팀 플레이어', quizPassed:'면접 수업: 합격' },
-  zh:  { lDobShow:'在CV中显示:', lDobFull:'完整日期', lDobAge:'仅年龄', lDobHide:'隐藏' , str1:'承压能力强', str2:'注重细节', str3:'工作迅速高效', str4:'工作风格整洁有序', str5:'积极的团队合作者', quizPassed:'面试课程: 通过' },
-  hi:  { lDobShow:'CV में दिखाएं:', lDobFull:'पूरी तारीख', lDobAge:'केवल उम्र', lDobHide:'छुपाएं' , str1:'दबाव में अच्छा काम करता है', str2:'विवरण पर मजबूत ध्यान', str3:'तेज और कुशल', str4:'स्वच्छ और संगठित कार्य शैली', str5:'सकारात्मक टीम प्लेयर', quizPassed:'साक्षात्कार कक्षा: उत्तीर्ण' },
-  ne:  { lDobShow:'CV मा देखाउनुस्:', lDobFull:'पूरा मिति', lDobAge:'उमेर मात्र', lDobHide:'लुकाउनुस्' , str1:'दबाबमा राम्रो काम गर्छ', str2:'विवरणमा ध्यान दिन्छ', str3:'छिटो र प्रभावकारी', str4:'सफा र व्यवस्थित कार्य शैली', str5:'सकारात्मक टिम प्लेयर', quizPassed:'अन्तर्वार्ता कक्षा: उत्तीर्ण' },
-  ar:  { lDobShow:'عرض في السيرة:', lDobFull:'التاريخ كاملاً', lDobAge:'العمر فقط', lDobHide:'إخفاء' , str1:'يعمل جيداً تحت الضغط', str2:'انتباه قوي للتفاصيل', str3:'سريع وكفء', str4:'أسلوب عمل نظيف ومنظم', str5:'لاعب فريق إيجابي', quizPassed:'فصل المقابلة: ناجح' },
-  ru:  { lDobShow:'Показать в CV:', lDobFull:'Полная дата', lDobAge:'Только возраст', lDobHide:'Скрыть' , str1:'Хорошо работает под давлением', str2:'Сильное внимание к деталям', str3:'Быстрый и эффективный', str4:'Чистый и организованный стиль работы', str5:'Командный игрок с позитивным отношением', quizPassed:'Класс подготовки: ПРОЙДЕН' },
-  tr:  { lDobShow:'CV\'de göster:', lDobFull:'Tam Tarih', lDobAge:'Sadece Yaş', lDobHide:'Gizle' , str1:'Baskı altında iyi çalışır', str2:'Detaylara güçlü dikkat', str3:'Hızlı ve verimli', str4:'Temiz ve düzenli çalışma stili', str5:'Pozitif tutumlu takım oyuncusu', quizPassed:'Mülakat Sınıfı: GEÇTİ' },
-  id:  { lDobShow:'Tampilkan di CV:', lDobFull:'Tanggal Lengkap', lDobAge:'Usia Saja', lDobHide:'Sembunyikan' , str1:'Bekerja baik di bawah tekanan', str2:'Perhatian kuat terhadap detail', str3:'Cepat dan efisien', str4:'Gaya kerja bersih dan terorganisir', str5:'Pemain tim yang positif', quizPassed:'Kelas Wawancara: LULUS' },
+  fr:  { cvProfTitle:'TITRE PROFESSIONNEL', cvWorkPhoto:'Photo', cvPosLabel:'Poste', lDobShow:'Afficher dans le CV:', lDobFull:'Date complète', lDobAge:'Âge seulement', lDobHide:'Masquer' , str1:'Travaille bien sous pression', str2:'Grande attention aux détails', str3:'Rapide et efficace', str4:'Style de travail propre et organisé', str5:'Esprit d\'équipe positif', quizPassed:'Classe d\'Entretien: RÉUSSI' },
+  de:  { cvProfTitle:'BERUFSBEZEICHNUNG', cvWorkPhoto:'Foto', cvPosLabel:'Position', lDobShow:'Im CV anzeigen:', lDobFull:'Vollständiges Datum', lDobAge:'Nur Alter', lDobHide:'Ausblenden' , str1:'Arbeitet gut unter Druck', str2:'Starke Aufmerksamkeit für Details', str3:'Schnell und effizient', str4:'Sauberer und organisierter Arbeitsstil', str5:'Teamplayer mit positiver Einstellung', quizPassed:'Interview-Kurs: BESTANDEN' },
+  it:  { cvProfTitle:'TITOLO PROFESSIONALE', cvWorkPhoto:'Foto', cvPosLabel:'Posizione', lDobShow:'Mostra nel CV:', lDobFull:'Data completa', lDobAge:'Solo età', lDobHide:'Nascondi' , str1:'Lavora bene sotto pressione', str2:'Grande attenzione ai dettagli', str3:'Veloce ed efficiente', str4:'Stile di lavoro pulito e organizzato', str5:'Giocatore di squadra positivo', quizPassed:'Corso Colloquio: SUPERATO' },
+  pt:  { cvProfTitle:'TÍTULO PROFISSIONAL', cvWorkPhoto:'Foto', cvPosLabel:'Cargo', lDobShow:'Mostrar no CV:', lDobFull:'Data completa', lDobAge:'Apenas idade', lDobHide:'Ocultar' , str1:'Trabalha bem sob pressão', str2:'Grande atenção aos detalhes', str3:'Rápido e eficiente', str4:'Estilo de trabalho limpo e organizado', str5:'Jogador de equipe positivo', quizPassed:'Aula de Entrevista: APROVADO' },
+  ja:  { certTitle:'資格・認定', certAutoFill:'ポジション別自動入力', certAdd:'資格を追加', certFoodHygiene:'食品衛生証明書', certHACCP2:'食品安全HACCPレベル2', certHACCP3:'食品安全HACCPレベル3', certAllergen:'アレルゲン認識研修', certAllergenAware:'アレルゲン認識', certColdChain:'コールドチェーン管理証明書', certColdChainShort:'コールドチェーン管理', certKnifeSafety:'包丁安全・取り扱い', certKnifeTech:'包丁技術研修', certSushiPrep:'寿司準備研修', certSushiMaster:'寿司マスター認定', certOmakase:'おまかせサービス研修', certKitchenMgmt:'キッチン管理研修', certKitchenSup:'キッチン監督研修', certKitchenSafety:'キッチン安全研修', certAdvCulinary:'高度料理認定', certAdvCulinarySkills:'高度料理技術証明書', certHealthSafety:'職場の安全衛生', certTeamLeader:'チームリーダーシップ証明書', certMiseEnPlace:'ミザンプラス認定', certBasicCulinary:'基本料理技術証明書', certCustomerService:'接客サービス研修', certFireSafety:'防火意識', certWorkplaceSafety:'職場安全研修', certBarista:'バリスタスキル証明書', cvProfTitle:'職業タイトル', cvWorkPhoto:'写真', cvPosLabel:'職種', lDobShow:'CVに表示:', lDobFull:'完全な日付', lDobAge:'年齢のみ', lDobHide:'非表示' , str1:'プレッシャーに強い', str2:'細部への強い注意力', str3:'迅速かつ効率的', str4:'清潔で整理されたスタイル', str5:'積極的なチームプレーヤー', quizPassed:'面接クラス: 合格' },
+  ko:  { certTitle:'자격증 및 인증', certAutoFill:'직종별 자동입력', certAdd:'자격증 추가', certFoodHygiene:'식품위생 증명서', certHACCP2:'식품안전 HACCP 레벨 2', certHACCP3:'식품안전 HACCP 레벨 3', certAllergen:'알레르겐 인식 교육', certAllergenAware:'알레르겐 인식', certColdChain:'냉장체인 관리 증명서', certColdChainShort:'냉장체인 관리', certKnifeSafety:'칼 안전 및 취급', certKnifeTech:'칼 기술 교육', certSushiPrep:'스시 준비 교육', certSushiMaster:'스시 마스터 인증', certOmakase:'오마카세 서비스 교육', certKitchenMgmt:'주방 관리 교육', certKitchenSup:'주방 감독 교육', certKitchenSafety:'주방 안전 교육', certAdvCulinary:'고급 요리 인증', certHealthSafety:'직장 안전 보건', certTeamLeader:'팀 리더십 증명서', certBasicCulinary:'기본 요리 기술 증명서', certCustomerService:'고객 서비스 교육', certFireSafety:'화재 안전 인식', certWorkplaceSafety:'직장 안전 교육', certBarista:'바리스타 기술 증명서', cvProfTitle:'직업 타이틀', cvWorkPhoto:'사진', cvPosLabel:'직종', lDobShow:'CV에 표시:', lDobFull:'전체 날짜', lDobAge:'나이만', lDobHide:'숨기기' , str1:'압박감 속에서도 잘 일함', str2:'세부사항에 강한 집중력', str3:'빠르고 효율적', str4:'깔끔하고 체계적인 업무 스타일', str5:'긍정적인 팀 플레이어', quizPassed:'면접 수업: 합격' },
+  zh:  { certTitle:'资质认证', certAutoFill:'按职位自动填写', certAdd:'添加认证', certFoodHygiene:'食品卫生证书', certHACCP2:'食品安全HACCP 2级', certHACCP3:'食品安全HACCP 3级', certAllergen:'过敏原意识培训', certAllergenAware:'过敏原意识', certColdChain:'冷链管理证书', certColdChainShort:'冷链管理', certKnifeSafety:'刀具安全与使用', certKnifeTech:'刀具技术培训', certSushiPrep:'寿司制作培训', certSushiMaster:'寿司大师认证', certKitchenMgmt:'厨房管理培训', certKitchenSafety:'厨房安全培训', certAdvCulinary:'高级烹饪认证', certHealthSafety:'职业健康与安全', certTeamLeader:'团队领导力证书', certBasicCulinary:'基础烹饪技能证书', certCustomerService:'客户服务培训', certWorkplaceSafety:'工作场所安全培训', certBarista:'咖啡师技能证书', cvProfTitle:'职业头衔', cvWorkPhoto:'照片', cvPosLabel:'职位', lDobShow:'在CV中显示:', lDobFull:'完整日期', lDobAge:'仅年龄', lDobHide:'隐藏' , str1:'承压能力强', str2:'注重细节', str3:'工作迅速高效', str4:'工作风格整洁有序', str5:'积极的团队合作者', quizPassed:'面试课程: 通过' },
+  hi:  { certTitle:'प्रमाणपत्र और योग्यताएं', certAutoFill:'पद अनुसार स्वतः भरें', certAdd:'प्रमाणपत्र जोड़ें', certFoodHygiene:'खाद्य स्वच्छता प्रमाणपत्र', certHACCP2:'खाद्य सुरक्षा HACCP स्तर 2', certAllergen:'एलर्जेन जागरूकता प्रशिक्षण', certColdChain:'कोल्ड चेन प्रबंधन प्रमाणपत्र', certKnifeSafety:'चाकू सुरक्षा और संचालन', certSushiPrep:'सुशी तैयारी प्रशिक्षण', certKitchenMgmt:'रसोई प्रबंधन प्रशिक्षण', certKitchenSafety:'रसोई सुरक्षा प्रशिक्षण', certAdvCulinary:'उन्नत पाक कला प्रमाणन', certHealthSafety:'कार्यस्थल स्वास्थ्य और सुरक्षा', certTeamLeader:'टीम लीडरशिप प्रमाणपत्र', certBasicCulinary:'बुनियादी पाक कला प्रमाणपत्र', certCustomerService:'ग्राहक सेवा प्रशिक्षण', certWorkplaceSafety:'कार्यस्थल सुरक्षा प्रशिक्षण', cvProfTitle:'पेशेवर पदनाम', cvWorkPhoto:'फ़ोटो', cvPosLabel:'पद', lDobShow:'CV में दिखाएं:', lDobFull:'पूरी तारीख', lDobAge:'केवल उम्र', lDobHide:'छुपाएं' , str1:'दबाव में अच्छा काम करता है', str2:'विवरण पर मजबूत ध्यान', str3:'तेज और कुशल', str4:'स्वच्छ और संगठित कार्य शैली', str5:'सकारात्मक टीम प्लेयर', quizPassed:'साक्षात्कार कक्षा: उत्तीर्ण' },
+  ne:  { certTitle:'प्रमाणपत्र र योग्यता', certAutoFill:'पदअनुसार स्वत: भर्नुस्', certAdd:'प्रमाणपत्र थप्नुस्', certFoodHygiene:'खाद्य स्वच्छता प्रमाणपत्र', certHACCP2:'खाद्य सुरक्षा HACCP स्तर २', certHACCP3:'खाद्य सुरक्षा HACCP स्तर ३', certAllergen:'एलर्जेन जागरूकता तालिम', certAllergenAware:'एलर्जेन जागरूकता', certColdChain:'कोल्ड चेन व्यवस्थापन प्रमाणपत्र', certColdChainShort:'कोल्ड चेन व्यवस्थापन', certKnifeSafety:'चक्कु सुरक्षा र सञ्चालन', certKnifeTech:'चक्कु प्रविधि तालिम', certSushiPrep:'सुशी तयारी तालिम', certSushiMaster:'सुशी मास्टर प्रमाणीकरण', certKitchenMgmt:'भान्सा व्यवस्थापन तालिम', certKitchenSafety:'भान्सा सुरक्षा तालिम', certAdvCulinary:'उन्नत पाक कला प्रमाणीकरण', certHealthSafety:'कार्यस्थल स्वास्थ्य र सुरक्षा', certTeamLeader:'टिम नेतृत्व प्रमाणपत्र', certBasicCulinary:'आधारभूत पाक कला सीप प्रमाणपत्र', certCustomerService:'ग्राहक सेवा तालिम', certWorkplaceSafety:'कार्यस्थल सुरक्षा तालिम', certBarista:'बरिस्ता सीप प्रमाणपत्र', cvProfTitle:'पेशेवर पदनाम', cvWorkPhoto:'फोटो', cvPosLabel:'पद', lDobShow:'CV मा देखाउनुस्:', lDobFull:'पूरा मिति', lDobAge:'उमेर मात्र', lDobHide:'लुकाउनुस्' , str1:'दबाबमा राम्रो काम गर्छ', str2:'विवरणमा ध्यान दिन्छ', str3:'छिटो र प्रभावकारी', str4:'सफा र व्यवस्थित कार्य शैली', str5:'सकारात्मक टिम प्लेयर', quizPassed:'अन्तर्वार्ता कक्षा: उत्तीर्ण' },
+  ar:  { certTitle:'الشهادات والمؤهلات', certAutoFill:'ملء تلقائي حسب المنصب', certAdd:'إضافة شهادة', certFoodHygiene:'شهادة النظافة الغذائية', certHACCP2:'سلامة الأغذية HACCP المستوى 2', certAllergen:'تدريب الوعي بالمسببات', certColdChain:'شهادة إدارة السلسلة الباردة', certKnifeSafety:'سلامة وتعامل السكاكين', certSushiPrep:'تدريب تحضير السوشي', certKitchenMgmt:'تدريب إدارة المطبخ', certKitchenSafety:'تدريب سلامة المطبخ', certAdvCulinary:'شهادة الطهي المتقدم', certHealthSafety:'الصحة والسلامة المهنية', certTeamLeader:'شهادة قيادة الفريق', certBasicCulinary:'شهادة مهارات الطهي الأساسية', certCustomerService:'تدريب خدمة العملاء', certWorkplaceSafety:'تدريب سلامة مكان العمل', cvProfTitle:'المسمى الوظيفي', cvWorkPhoto:'صورة', cvPosLabel:'المنصب', lDobShow:'عرض في السيرة:', lDobFull:'التاريخ كاملاً', lDobAge:'العمر فقط', lDobHide:'إخفاء' , str1:'يعمل جيداً تحت الضغط', str2:'انتباه قوي للتفاصيل', str3:'سريع وكفء', str4:'أسلوب عمل نظيف ومنظم', str5:'لاعب فريق إيجابي', quizPassed:'فصل المقابلة: ناجح' },
+  ru:  { certTitle:'Сертификаты', certAutoFill:'Авто-заполнение по должности', certAdd:'Добавить сертификат', certFoodHygiene:'Сертификат пищевой гигиены', certHACCP2:'Безопасность питания HACCP Ур.2', certAllergen:'Обучение по аллергенам', certColdChain:'Управление холодовой цепью', certKnifeSafety:'Безопасность работы с ножами', certSushiPrep:'Обучение приготовлению суши', certKitchenMgmt:'Управление кухней', certKitchenSafety:'Безопасность на кухне', certAdvCulinary:'Продвинутая кулинария', certHealthSafety:'Охрана труда', certTeamLeader:'Лидерство команды', certBasicCulinary:'Базовая кулинария', certCustomerService:'Обслуживание клиентов', certWorkplaceSafety:'Безопасность на рабочем месте', certBarista:'Навыки бариста', cvProfTitle:'ПРОФЕССИОНАЛЬНОЕ ЗВАНИЕ', cvWorkPhoto:'Фото', cvPosLabel:'Должность', lDobShow:'Показать в CV:', lDobFull:'Полная дата', lDobAge:'Только возраст', lDobHide:'Скрыть' , str1:'Хорошо работает под давлением', str2:'Сильное внимание к деталям', str3:'Быстрый и эффективный', str4:'Чистый и организованный стиль работы', str5:'Командный игрок с позитивным отношением', quizPassed:'Класс подготовки: ПРОЙДЕН' },
+  tr:  { cvProfTitle:'PROFESYONEL UNVAN', cvWorkPhoto:'Fotoğraf', cvPosLabel:'Pozisyon', lDobShow:'CV\'de göster:', lDobFull:'Tam Tarih', lDobAge:'Sadece Yaş', lDobHide:'Gizle' , str1:'Baskı altında iyi çalışır', str2:'Detaylara güçlü dikkat', str3:'Hızlı ve verimli', str4:'Temiz ve düzenli çalışma stili', str5:'Pozitif tutumlu takım oyuncusu', quizPassed:'Mülakat Sınıfı: GEÇTİ' },
+  id:  { cvProfTitle:'JABATAN PROFESIONAL', cvWorkPhoto:'Foto', cvPosLabel:'Posisi', lDobShow:'Tampilkan di CV:', lDobFull:'Tanggal Lengkap', lDobAge:'Usia Saja', lDobHide:'Sembunyikan' , str1:'Bekerja baik di bawah tekanan', str2:'Perhatian kuat terhadap detail', str3:'Cepat dan efisien', str4:'Gaya kerja bersih dan terorganisir', str5:'Pemain tim yang positif', quizPassed:'Kelas Wawancara: LULUS' },
   ms:  { lDobShow:'Tunjukkan dalam CV:', lDobFull:'Tarikh Penuh', lDobAge:'Umur Sahaja', lDobHide:'Sembunyikan' , str1:'Bekerja baik di bawah tekanan', str2:'Perhatian kuat terhadap butiran', str3:'Cepat dan cekap', str4:'Gaya kerja bersih dan teratur', str5:'Pemain pasukan yang positif', quizPassed:'Kelas Temuduga: LULUS' },
   uk:  { lDobShow:'Показати в CV:', lDobFull:'Повна дата', lDobAge:'Лише вік', lDobHide:'Приховати' , str1:'Добре працює під тиском', str2:'Сильна увага до деталей', str3:'Швидкий та ефективний', str4:'Чистий та організований стиль роботи', str5:'Командний гравець', quizPassed:'Клас підготовки: ПРОЙДЕНО' },
   pl:  { lDobShow:'Pokaż w CV:', lDobFull:'Pełna data', lDobAge:'Tylko wiek', lDobHide:'Ukryj' , str1:'Dobrze pracuje pod presją', str2:'Silna dbałość o szczegóły', str3:'Szybki i wydajny', str4:'Czysty i zorganizowany styl pracy', str5:'Pozytywny gracz zespołowy', quizPassed:'Klasa rozmowy: ZALICZONO' },
@@ -11002,18 +11002,8 @@ function setLangFromNav(lang){
   if(d) d.value = lang;
   if(dm) dm.value = lang;
 
-  // Sync CV language override dropdown in form (if exists)
-  var cvOv = document.getElementById('cvLangOverride');
-  if(cvOv){
-    var found = false;
-    for(var i=0;i<cvOv.options.length;i++){
-      if(cvOv.options[i].value === lang){ cvOv.selectedIndex=i; found=true; break; }
-    }
-    // Save to localStorage for CV form
-    try{ localStorage.setItem('jc_cv_lang', lang); }catch(e){}
-    // Update phone country code + CV preview for new language
-    if(found && typeof applyCvLangOverride === 'function') applyCvLangOverride();
-  }
+  // NOTE: CV language is NOT auto-changed when site language changes.
+  // Users manually choose CV language separately. Phone code only.
 
   // Apply site-wide language
   setLang(lang);
@@ -11946,15 +11936,9 @@ window.addEventListener('load',function(){
   setTimeout(function(){ applyHiredVisibility(); }, 100);
   // Init flatpickr for DOB with current language
   setTimeout(function(){ initDobPicker(saved); }, 300);
-  // Sync phone country code to saved language
+  // Sync phone country code only (NOT CV language — user chooses that separately)
   setTimeout(function(){
     try{
-      var _cvOv = document.getElementById('cvLangOverride');
-      if(_cvOv){
-        for(var i=0;i<_cvOv.options.length;i++){
-          if(_cvOv.options[i].value===saved){ _cvOv.selectedIndex=i; break; }
-        }
-      }
       if(typeof applyCvLangOverride === 'function') applyCvLangOverride();
     }catch(e){}
   }, 400);
@@ -14495,9 +14479,72 @@ var CERT_SUGGESTIONS_ES = {
   "_default":           ["Certificado de Higiene Alimentaria","Formación en Seguridad Laboral","Certificado Básico de Atención al Cliente","Formación en Conciencia sobre Alérgenos"]
 };
 
+
+// Reverse map: English cert name → i18n key (for translation in CV)
+var _CERT_KEY_MAP = {
+  'Food Hygiene Certificate':'certFoodHygiene',
+  'Food Safety HACCP Level 2':'certHACCP2', 'Food Safety HACCP Level 3':'certHACCP3',
+  'Allergen Awareness Training':'certAllergen', 'Allergen Awareness':'certAllergenAware',
+  'Allergen and Intolerance Awareness':'certAllergenInt',
+  'Cold Chain Management Certificate':'certColdChain', 'Cold Chain Management':'certColdChainShort',
+  'Knife Safety and Handling':'certKnifeSafety', 'Knife Technique Training':'certKnifeTech',
+  'Sushi Preparation Training':'certSushiPrep', 'Sushi Master Certification':'certSushiMaster',
+  'Omakase Service Training':'certOmakase',
+  'Kitchen Management Training':'certKitchenMgmt', 'Kitchen Supervision Training':'certKitchenSup',
+  'Kitchen Safety Training':'certKitchenSafety',
+  'Advanced Culinary Certification':'certAdvCulinary', 'Advanced Culinary Skills Certificate':'certAdvCulinarySkills',
+  'Health and Safety at Work':'certHealthSafety',
+  'Financial Management in Hospitality':'certFinancialMgmt',
+  'Team Leadership Certificate':'certTeamLeader',
+  'Mise en Place Certification':'certMiseEnPlace', 'Basic Culinary Skills Certificate':'certBasicCulinary',
+  'Patisserie and Boulangerie Certification':'certPatisserie',
+  'Chocolate Artistry Training':'certChocolate',
+  'Food Handling Certificate':'certFoodHandling',
+  'Customer Service Training':'certCustomerService', 'Customer Service Certificate':'certCustomerService',
+  'Hospitality Service Training':'certHospService',
+  'Allergen Awareness Certificate':'certAllergenCert',
+  'Responsible Beverage Service':'certBevService', 'Responsible Beverage Service Certificate':'certBevServiceCert',
+  'Fire Safety Awareness':'certFireSafety', 'Fire Safety Certificate':'certFireSafety',
+  'Food Safety Awareness':'certFoodSafetyAware',
+  'Cocktail Mixology Certification':'certCocktail', 'Cash Handling Training':'certCashHandling',
+  'Hospitality Management Certificate':'certHospMgmt', 'Customer Service Excellence':'certCustomerExcel',
+  'Leadership and Team Management':'certLeadershipTeam',
+  'Workplace Safety Training':'certWorkplaceSafety',
+  'Basic Customer Service Certificate':'certBasicCustomer',
+  'Manual Handling Certificate':'certManualHandling', 'Manual Handling Training':'certManualHandling',
+  'First Aid Awareness':'certFirstAid', 'First Aid at Work':'certFirstAid', 'First Aid Certificate':'certFirstAid',
+  'Barista Skills Certificate':'certBarista', 'Specialty Coffee Association (SCA) Training':'certSCA',
+  'Vehicle Safety Training':'certVehicleSafety', 'Road Safety Certificate':'certRoadSafety',
+  'Defensive Riding Course':'certDefensiveRiding',
+  'CCTV Operations Certificate':'certCCTV', 'Conflict Management Training':'certConflictMgmt',
+  'Front Office Operations':'certFrontOffice', 'Revenue Management':'certRevenueMgmt',
+  'Property Management System':'certPMS', 'Guest Relations Certificate':'certGuestRel',
+  'Laundry Operations':'certLaundryOps', 'Housekeeping Standards':'certHousekeeping',
+  'Cleaning and Sanitation':'certCleaning',
+};
+
+// Translate a cert name using CV language
+function _translateCert(name, cvLang) {
+  var key = _CERT_KEY_MAP[name];
+  if(!key) return name;
+  // Check T_FORM for cvLang first, then T[en]
+  if(typeof T_FORM !== 'undefined' && T_FORM[cvLang] && T_FORM[cvLang][key]) return T_FORM[cvLang][key];
+  if(typeof T !== 'undefined' && T[cvLang] && T[cvLang][key]) return T[cvLang][key];
+  if(typeof T !== 'undefined' && T['en'] && T['en'][key]) return T['en'][key];
+  return name;
+}
+
 function getCertSuggestions(pos){
-  if(LANG === 'es') return CERT_SUGGESTIONS_ES[pos] || CERT_SUGGESTIONS_ES['_default'];
-  return CERT_SUGGESTIONS[pos] || CERT_SUGGESTIONS['_default'];
+  // Always get English suggestions, then translate to CV language
+  var cvLang = (typeof getCvLang === 'function') ? getCvLang() : (typeof LANG !== 'undefined' ? LANG : 'en');
+  var raw;
+  if(cvLang === 'es') raw = CERT_SUGGESTIONS_ES[pos] || CERT_SUGGESTIONS_ES['_default'];
+  else raw = CERT_SUGGESTIONS[pos] || CERT_SUGGESTIONS['_default'];
+  // Translate cert names to CV language
+  if(cvLang !== 'en' && cvLang !== 'es' && typeof _translateCert === 'function'){
+    raw = raw.map(function(c){ return _translateCert(c, cvLang); });
+  }
+  return raw;
 }
 
 
@@ -14529,7 +14576,7 @@ function getFormData(){
     certifications:getCertListValues()
   };
 }
-function workPhotosHtml(d){
+function workPhotosHtml(d, cvLangOverride){
   return [d.wp1,d.wp2,d.wp3].map(function(src,i){
     return (src&&src.length>10&&src!=='data:,')?
       '<img class="cv-wimg" src="'+src+'">':
@@ -14643,7 +14690,7 @@ function buildCV(d){
   var certHtml = '';
   if(certs.length){
     var certItems = certs.map(function(c){
-      return '<div class="cv-cert-item"><div class="cv-cert-dot"></div><span>'+esc(c)+'</span></div>';
+      var cTrans=(typeof _translateCert==='function')?_translateCert(c,(typeof getCvLang==='function'?getCvLang():'en')):c; return '<div class="cv-cert-item"><div class="cv-cert-dot"></div><span>'+esc(cTrans)+'</span></div>';
     }).join('');
     certHtml = section('🏅',lbl('certs'),'<div class="cv-cert-list">'+certItems+'</div>');
   }
@@ -14676,7 +14723,7 @@ function buildCV(d){
     /* Photo + position chip */
     +'<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;text-align:center;">'
     +photoHtml
-    +'<div class="cv-chip" style="margin:10px auto 0;display:block;text-align:center;">'+esc(getTranslatedPos(d.position||'Position'))+'</div>'
+    +'<div class="cv-chip" style="margin:10px auto 0;display:block;text-align:center;">'+esc(getTranslatedPos(d.position||(t('cvPosLabel')||'Position')))+'</div>'
     +qBadge
     +'</div>'
 
@@ -14696,7 +14743,7 @@ function buildCV(d){
     /* Name + title header */
     +'<div class="cv-header-block">'
     +'<div class="cv-name" id="cvNameEl" style="white-space:normal;word-break:break-word;overflow:hidden;max-width:100%;">'+esc(sv(d.name,'MARIA GARCIA LOPEZ'))+'</div>'
-    +'<div class="cv-subtitle">'+esc(getTranslatedPos(sv(d.position,'Professional Title')))+'</div>'
+    +'<div class="cv-subtitle">'+esc(getTranslatedPos(sv(d.position,t('cvProfTitle')||'Professional Title')))+'</div>'
     +'</div>'
 
     /* Sections wrapped for PDF flex height distribution */
