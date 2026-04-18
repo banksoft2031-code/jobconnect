@@ -2945,6 +2945,33 @@ body {
   #dobFpInput:focus{border-color:rgba(245,158,11,0.6);}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+<script>
+// Embedded flatpickr locales for languages not reliably available on CDN
+// or that need to be available immediately without CDN round-trip
+(function(){
+  if(typeof flatpickr === 'undefined') return;
+  var l = flatpickr.l10ns;
+
+  // Hindi (hi)
+  l.hi = { weekdays:{shorthand:['रवि','सोम','मंगल','बुध','गुरु','शुक्र','शनि'],longhand:['रविवार','सोमवार','मंगलवार','बुधवार','गुरुवार','शुक्रवार','शनिवार']}, months:{shorthand:['जन','फर','मार','अप्र','मई','जून','जुल','अग','सित','अक्त','नव','दिस'],longhand:['जनवरी','फरवरी','मार्च','अप्रैल','मई','जून','जुलाई','अगस्त','सितंबर','अक्तूबर','नवंबर','दिसंबर']}, firstDayOfWeek:1, rangeSeparator:' से ', weekAbbreviation:'सप्ताह', scrollTitle:'स्क्रॉल करें', toggleTitle:'टॉगल करें', amPM:['पूर्वाह्न','अपराह्न'], yearAriaLabel:'वर्ष', time_24hr:false };
+
+  // Nepali (ne) - flatpickr has no official ne locale, use Hindi-style
+  l.ne = { weekdays:{shorthand:['आइत','सोम','मंगल','बुध','बिही','शुक्र','शनि'],longhand:['आइतबार','सोमबार','मंगलबार','बुधबार','बिहिबार','शुक्रबार','शनिबार']}, months:{shorthand:['जन','फेब','मार','अप्र','मे','जुन','जुल','अग','सेप','अक्ट','नोव','डिस'],longhand:['जनवरी','फेब्रुअरी','मार्च','अप्रिल','मे','जुन','जुलाई','अगस्ट','सेप्टेम्बर','अक्टोबर','नोभेम्बर','डिसेम्बर']}, firstDayOfWeek:0, rangeSeparator:' देखि ', weekAbbreviation:'हप्ता', scrollTitle:'स्क्रॉल गर्नुस्', toggleTitle:'टगल गर्नुस्', amPM:['पूर्वाह्न','अपराह्न'], yearAriaLabel:'वर्ष', time_24hr:false };
+
+  // Swahili (sw) - no official flatpickr locale
+  l.sw = { weekdays:{shorthand:['Jpi','Jtt','Jnn','Jtn','Alh','Ijm','Jmo'],longhand:['Jumapili','Jumatatu','Jumanne','Jumatano','Alhamisi','Ijumaa','Jumamosi']}, months:{shorthand:['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ago','Sep','Okt','Nov','Des'],longhand:['Januari','Februari','Machi','Aprili','Mei','Juni','Julai','Agosti','Septemba','Oktoba','Novemba','Desemba']}, firstDayOfWeek:1, rangeSeparator:' hadi ', weekAbbreviation:'Wiki', scrollTitle:'Sogeza', toggleTitle:'Geuza', amPM:['AM','PM'], yearAriaLabel:'Mwaka', time_24hr:false };
+
+  // Afrikaans (af) - no official flatpickr locale
+  l.af = { weekdays:{shorthand:['Son','Maa','Din','Woe','Don','Vry','Sat'],longhand:['Sondag','Maandag','Dinsdag','Woensdag','Donderdag','Vrydag','Saterdag']}, months:{shorthand:['Jan','Feb','Mrt','Apr','Mei','Jun','Jul','Aug','Sep','Okt','Nov','Des'],longhand:['Januarie','Februarie','Maart','April','Mei','Junie','Julie','Augustus','September','Oktober','November','Desember']}, firstDayOfWeek:1, rangeSeparator:' tot ', weekAbbreviation:'Wk', scrollTitle:'Blaai', toggleTitle:'Wissel', amPM:['VM','NM'], yearAriaLabel:'Jaar', time_24hr:false };
+
+  // Update FP_LOCALE_MAP for newly added locales
+  if(typeof FP_LOCALE_MAP !== 'undefined'){
+    FP_LOCALE_MAP['ne'] = 'ne';
+    FP_LOCALE_MAP['sw'] = 'sw';
+    FP_LOCALE_MAP['af'] = 'af';
+  }
+})();
+</script>
 </head>
 <body>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -4074,7 +4101,7 @@ body { -webkit-overflow-scrolling: touch; }
 <div id="applicantView" class="view-pane">
   <button onclick="V('hero')" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#94a3b8;padding:6px 14px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.8rem;margin-bottom:0.8rem;"><span data-i18n="btnBack">&#x2190; Back</span></button>
   <div class="glass-card">
-    <h2>&#x1F3AF; My Portal</h2>
+    <h2 id="portalH2" data-i18n="portalH2">&#x1F3AF; My Portal</h2>
     <div id="loginPanel" style="display:flex;justify-content:center;padding:1rem 0;">
       <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(245,158,11,0.22);border-radius:20px;padding:2rem 1.8rem;width:100%;max-width:400px;position:relative;">
         <button onclick="V('hero')" style="position:absolute;top:12px;right:12px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);color:#f87171;border-radius:8px;padding:4px 12px;cursor:pointer;font-family:inherit;font-size:0.85rem;font-weight:700;">✕</button>
@@ -5799,7 +5826,8 @@ function _initHjDeadlinePicker(){
   // Destroy existing if any
   if(fpInput._flatpickr) fpInput._flatpickr.destroy();
   var lang=(typeof LANG!=='undefined'?LANG:'en');
-  var fpLang=(typeof FP_LOCALE_MAP!=='undefined'?FP_LOCALE_MAP[lang]:'default')||'default';
+  var fpLang=(typeof FP_LOCALE_MAP!=='undefined'?(FP_LOCALE_MAP[lang]||'default'):'default');
+  if(fpLang==='en') fpLang='default';
   var minDate=new Date();
   var defDate=new Date(); defDate.setDate(defDate.getDate()+30);
   function createDlPicker(locale){
@@ -10897,7 +10925,7 @@ function applyTranslations(){
     'lblForgotEmail':'lblForgotEmail','forgotSubmitBtn':'forgotSubmitBtn',
     'resetTitle':'resetTitle','lblNewPwd':'lblNewPwd',
     'lblConfirmNewPwd':'lblConfirmNewPwd','resetSubmitBtn':'resetSubmitBtn',
-    'portalLoginTitle':'portalLoginTitle','portalLoginSub':'portalLoginSub',
+    'portalH2':'portalH2', 'portalLoginTitle':'portalLoginTitle','portalLoginSub':'portalLoginSub',
     'lblPortalEmail':'lblPortalEmail','lblPortalPwd':'lblPortalPwd',
     'portalLoginBtn':'portalLoginBtn','forgotPwdPortalLink':'forgotPwdPortalLink',
     'portalForgotTitle':'forgotTitle','adminH2':'adminH2',
@@ -10984,13 +11012,16 @@ function setLang(lang){
   try{
     var posEl = document.getElementById('position');
     if(posEl && posEl.value){
-      var tmpl = getTmpl(posEl.value);
+      // Use language-aware template (supports Nepali, Japanese, Korean, etc.)
+      var cvLang2 = (typeof getCvLang==='function') ? getCvLang() : (typeof LANG!=='undefined'?LANG:'en');
+      var tmpl = (typeof getTmplForLang==='function') ? getTmplForLang(posEl.value, cvLang2) : getTmpl(posEl.value);
       // Only re-fill if content matches a known template (don't overwrite custom text)
       var curProfile = (document.getElementById('profile')||{value:''}).value.trim();
       var curExp     = (document.getElementById('workexp')||{value:''}).value.trim();
-      // Check if current text matches ANY template in either language to decide if safe to re-fill
+      // Check if current text matches ANY template in any language (including TMPLS_ML)
       var allTmpls = Object.values(TMPLS).concat(Object.values(TMPLS_ES)).concat([DEFLT, DEFLT_ES]);
-      var isAutoFilled = allTmpls.some(function(t2){ return t2.profile.substring(0,40) === curProfile.substring(0,40) || t2.exp.substring(0,40) === curExp.substring(0,40); });
+      if(typeof TMPLS_ML!=='undefined') Object.values(TMPLS_ML).forEach(function(g){ allTmpls=allTmpls.concat(Object.values(g)); });
+      var isAutoFilled = allTmpls.some(function(t2){ return t2.profile&&t2.profile.substring(0,40) === curProfile.substring(0,40) || t2.exp&&t2.exp.substring(0,40) === curExp.substring(0,40); });
       if(isAutoFilled){
         document.getElementById('profile').value = tmpl.profile;
         document.getElementById('workexp').value = tmpl.exp;
@@ -11905,10 +11936,10 @@ window.addEventListener('load',function(){
 // ── FLATPICKR DOB PICKER ──────────────────────────────────────
 // Maps app language codes to flatpickr locale codes
 var FP_LOCALE_MAP={
-  en:'en',es:'es',fr:'fr',de:'de',it:'it',pt:'pt',ja:'ja',ko:'ko',
-  zh:'zh',hi:'hi',ne:'default',ar:'ar',ru:'ru',tr:'tr',pl:'pl',
+  en:'default',es:'es',fr:'fr',de:'de',it:'it',pt:'pt',ja:'ja',ko:'ko',
+  zh:'zh',hi:'hi',ne:'ne',ar:'ar',ru:'ru',tr:'tr',pl:'pl',
   ro:'ro',hr:'hr',uk:'uk',id:'id',ms:'ms',sr:'sr',bg:'bg',
-  sq:'sq',lt:'lt',lv:'lv',et:'et',sw:'default',af:'default'
+  sq:'sq',lt:'lt',lv:'lv',et:'et',sw:'sw',af:'af'
 };
 var _fpInst=null;
 
