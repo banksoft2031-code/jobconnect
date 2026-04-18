@@ -5133,7 +5133,7 @@ function onFirebaseLoginSuccess(){
     var appEl  = document.getElementById('dash-app-status');
     var photoEl= document.getElementById('dash-photo');
     if(nameEl) nameEl.textContent = u.name || 'Applicant';
-    if(posEl)  posEl.textContent  = u.position || '';
+    if(posEl)  posEl.textContent  = (typeof _posLabel==='function'?_posLabel(u.position||''):(u.position||''));
     if(welEl)  welEl.textContent  = t('dashWelcomeUser') + (u.name||'') + '!';
     if(photoEl){
       if(u.photo && u.photo.length > 10){
@@ -5146,7 +5146,7 @@ function onFirebaseLoginSuccess(){
     if(sb) sb.innerHTML = '<span style="background:'+sc+'22;color:'+sc+';border:1px solid '+sc+';padding:4px 12px;border-radius:20px;font-weight:800;font-size:0.78rem;">'+t(statusKey)+'</span>';
     if(appEl){ appEl.textContent = t(statusKey); appEl.style.color = sc; }
     var dps = document.getElementById('dash-pos-stat');
-    if(dps) dps.textContent = u.position || '—';
+    if(dps) dps.textContent = (typeof _posLabel==='function'?_posLabel(u.position||'—'):(u.position||'—'));
     var qr = u.quizResult || (typeof getSavedResult==='function' ? getSavedResult(u.email) : null);
     var scoreEl  = document.getElementById('dash-quiz-score');
     var resultEl = document.getElementById('dash-quiz-result');
@@ -9061,6 +9061,8 @@ var T_FORM = {
     verCode:'Code de vérification',
 
     expYear:'An', expYears:'Ans',
+
+    dashWelcomeUser:'Bienvenue, ',
   },
   de:{
     applyH2:'📋 Meinen Lebenslauf erstellen', applySub:'Profil in 6 Schritten vervollständigen',
@@ -9136,6 +9138,8 @@ var T_FORM = {
     verCode:'Bestätigungscode',
 
     expYear:'Jahr', expYears:'Jahre',
+
+    dashWelcomeUser:'Willkommen zurück, ',
   },
   it:{
     applyH2:'📋 Crea il mio CV', applySub:'Completa il profilo in 6 passaggi',
@@ -9211,6 +9215,8 @@ var T_FORM = {
     verCode:'Codice di verifica',
 
     expYear:'Anno', expYears:'Anni',
+
+    dashWelcomeUser:'Bentornato, ',
   },
   pt:{
     applyH2:'📋 Criar meu CV', applySub:'Complete seu perfil em 6 etapas',
@@ -9286,6 +9292,8 @@ var T_FORM = {
     verCode:'Código de verificação',
 
     expYear:'Ano', expYears:'Anos',
+
+    dashWelcomeUser:'Bem-vindo de volta, ',
   },
   ja:{
     applyH2:'📋 履歴書を作成', applySub:'6ステップでプロフィールを完成させてください',
@@ -9361,6 +9369,8 @@ var T_FORM = {
     verCode:'確認コード',
 
     expYear:'年', expYears:'年',
+
+    dashWelcomeUser:'おかえりなさい、',
   },
   ko:{
     applyH2:'📋 이력서 만들기', applySub:'6단계로 프로필을 완성하세요',
@@ -9436,6 +9446,8 @@ var T_FORM = {
     verCode:'인증 코드',
 
     expYear:'년', expYears:'년',
+
+    dashWelcomeUser:'환영합니다, ',
   },
   zh:{
     applyH2:'📋 创建我的简历', applySub:'分6步完成您的个人资料',
@@ -9511,6 +9523,8 @@ var T_FORM = {
     verCode:'验证码',
 
     expYear:'年', expYears:'年',
+
+    dashWelcomeUser:'欢迎回来，',
   },
   hi:{
     applyH2:'📋 मेरा CV बनाएं', applySub:'6 आसान चरणों में अपना प्रोफाइल पूरा करें',
@@ -9586,6 +9600,8 @@ var T_FORM = {
     verCode:'सत्यापन कोड',
 
     expYear:'वर्ष', expYears:'वर्ष',
+
+    dashWelcomeUser:'वापस स्वागत है, ',
   },
   ne:{
     applyH2:'📋 मेरो CV बनाउनुस्', applySub:'६ सजिला चरणहरूमा आफ्नो प्रोफाइल पूरा गर्नुस्',
@@ -9661,6 +9677,8 @@ var T_FORM = {
     verCode:'प्रमाणीकरण कोड',
 
     expYear:'वर्ष', expYears:'वर्ष',
+
+    dashWelcomeUser:'स्वागत छ, ',
   },
   ar:{
     applyH2:'📋 إنشاء سيرتي الذاتية', applySub:'أكمل ملفك الشخصي في 6 خطوات',
@@ -9736,6 +9754,8 @@ var T_FORM = {
     verCode:'رمز التحقق',
 
     expYear:'سنة', expYears:'سنوات',
+
+    dashWelcomeUser:'مرحباً بعودتك، ',
   },
   ru:{
     applyH2:'📋 Создать моё резюме', applySub:'Заполните профиль за 6 шагов',
@@ -9811,6 +9831,8 @@ var T_FORM = {
     verCode:'Код подтверждения',
 
     expYear:'Год', expYears:'Лет',
+
+    dashWelcomeUser:'С возвращением, ',
   },
   tr:{
     applyH2:'📋 Özgeçmişimi oluştur', applySub:'Profilinizi 6 adımda tamamlayın',
@@ -9886,6 +9908,8 @@ var T_FORM = {
     verCode:'Doğrulama kodu',
 
     expYear:'Yıl', expYears:'Yıl',
+
+    dashWelcomeUser:'Hoş geldiniz, ',
   },
   id:{
     applyH2:'📋 Buat CV Saya', applySub:'Lengkapi profil Anda dalam 6 langkah',
@@ -9961,6 +9985,8 @@ var T_FORM = {
     verCode:'Kode verifikasi',
 
     expYear:'Tahun', expYears:'Tahun',
+
+    dashWelcomeUser:'Selamat datang kembali, ',
   },
   ms:{
     applyH2:'📋 Buat CV Saya', applySub:'Lengkapkan profil anda dalam 6 langkah',
@@ -10033,6 +10059,8 @@ var T_FORM = {
     verCode:'Kod pengesahan',
 
     expYear:'Tahun', expYears:'Tahun',
+
+    dashWelcomeUser:'Selamat kembali, ',
   }
 };
 
@@ -11166,6 +11194,8 @@ var T_UI = {
     hjHero:'🍽️ Hiring Culinary Talent?',
 
     expYear:'Рік', expYears:'Років',
+
+    dashWelcomeUser:'З поверненням, ',
   },
   sr:{ navHome:'Почетна', navApply:'Мој CV', navPortal:'Мој Портал', navAssociates:'Тим', navPositions:'Позиције', navPostJob:'Огласи посао',
     navSignOut:'Одјава', stepPersonal:'Лично', stepPhoto:'Фотографија', stepProfile:'Профил', stepExp:'Искуство', stepSkills:'Вештине', stepVerify:'Верификација', lSelectPos:'-- Изаберите позицију --', lSelectDef:'-- Изаберите --', vacancyUrgent:'Хитно', vacancyFeatured:'Истакнуто', hjAddReq:'+ Додај захтев...', hjCompanyPh:'нпр. Restaurante Casa Madrid', hjContactPh:'+34 600 000 000 или info@restaurant.com', posSushiMan:'Суши мајстор (муш.)', posSushiWoman:'Суши мајстор (жен.)', posSushiChefM:'Суши куваr (м)', posSushiChefF:'Суши кувар (ж)', posExecChef:'Главни кувар', posSousChef:'Су куваr', posPastryChef:'Посластичаr', posLineCook:'Кувар', posWaiter:'Конобар/Конобарица', posBartender:'Бармен', posBarista:'Бариста', posHost:'Домаћин/Домаћица', posFBSup:'Надзорник Х&Б', posKitchenAssist:'Помоћник у кухињи', posDishwasher:'Перач судова', posRestMgr:'Менаџер ресторана', posReceptionist:'Рецепционер', posFrontDesk:'Агент рецепције', posConcierge:'Консијерж', posHousekeeper:'Собарица', posRoomAttendant:'Пратилац соба', posLaundry:'Радник пераонице', posPorter:'Носач/Портир', posNightAuditor:'Ноћни ревизор', posDeliveryDriver:'Достављач (ауто)', posDeliveryMoto:'Достављач (мото)', posDeliveryBike:'Достављач (бицикл)', posDriverHeavy:'Возач (тешко возило)', posDriverLight:'Возач (лако возило)', posCleaner:'Чистач', posGardener:'Баштован', posMaintenance:'Техничар одржавања', posGuestRelations:'Службеник за госте', posEvents:'Координатор догађаја', posSpa:'Спа терапеут', posSecurity:'Чувар', posBabysitter:'Дадиља', posDomestic:'Кућни помоћник', ogJapanese:'🍣 Јапанска кухиња', ogKitchen:'👨‍🍳 Кухиња', ogRestaurant:'🍽️ Ресторан и бар', ogHotel:'🏨 Хотел и собе', ogDelivery:'🚗 Возач и достава', ogCleaning:'🧹 Чишћење и одржавање', ogGuest:'🛎️ Услуге гостима', navSub:'Класа за припрему за интервју', hjHeroSub:'Objavi radno mesto — dohvati predodabrane kulinare u Španiji. <strong style="color:#34d399;">100% besplatno.</strong>', lSelectPos:'-- Izaberi poziciju --', lSelectDef:'-- Izaberi --', reqCustomer:'Iskustvo u radu sa klijentima', btnBack:'&#x2190; Назад', btnNext:'Следеће &#x2192;', lTapHere:'Додирни овде', lSendReset:'&#x1F4E8; Пошаљи Захтев', applyH2:'📋 Направи мој CV', applySub:'Попуните профил у 6 корака',
@@ -11315,6 +11345,8 @@ var T_UI = {
     reqWeekends:'Weekends required',
 
     expYear:'Година', expYears:'Година',
+
+    dashWelcomeUser:'Добродошли назад, ',
   },
 
   bg:{ navHome:'Начало', navApply:'Моето CV', navPortal:'Моят портал', navAssociates:'Екип', navPositions:'Позиции', navPostJob:'Публикувай работа',
@@ -11465,6 +11497,8 @@ var T_UI = {
     reqWeekends:'Weekends required',
 
     expYear:'Година', expYears:'Години',
+
+    dashWelcomeUser:'Добре дошли, ',
   },
 
   sq:{ navHome:'Kryefaqja', navApply:'CV-ja ime', navPortal:'Portali im', navAssociates:'Ekipi', navPositions:'Pozicionet', navPostJob:'Posto punë',
@@ -11615,6 +11649,8 @@ var T_UI = {
     reqWeekends:'Weekends required',
 
     expYear:'Vit', expYears:'Vite',
+
+    dashWelcomeUser:'Mirë se u kthyet, ',
   },
 
   sw:{ navHome:'Nyumbani', navApply:'CV yangu', navPortal:'Portali yangu', navAssociates:'Timu', navPositions:'Nafasi', navPostJob:'Tuma kazi',
@@ -11783,6 +11819,8 @@ var T_UI = {
     reqWeekends:'Weekends required',
 
     expYear:'Mwaka', expYears:'Miaka',
+
+    dashWelcomeUser:'Karibu tena, ',
   },
 
   af:{ navHome:'Tuis', navApply:'My CV', navPortal:'My Portaal', navAssociates:'Span', navPositions:'Poste', navPostJob:'Plaas werk',
@@ -11951,6 +11989,8 @@ var T_UI = {
     reqWeekends:'Weekends required',
 
     expYear:'Jaar', expYears:'Jaar',
+
+    dashWelcomeUser:'Welkom terug, ',
   },
 
   lt:{ navHome:'Pradžia', navApply:'Mano CV', navPortal:'Mano Portalas', navAssociates:'Komanda', navPositions:'Pozicijos', navPostJob:'Skelbti darbą',
@@ -12101,6 +12141,8 @@ var T_UI = {
     reqWeekends:'Weekends required',
 
     expYear:'Metai', expYears:'Metų',
+
+    dashWelcomeUser:'Sveiki sugrįžę, ',
   },
 
   lv:{ navHome:'Sākums', navApply:'Mans CV', navPortal:'Mans Portāls', navAssociates:'Komanda', navPositions:'Pozīcijas', navPostJob:'Publicēt darbu', stepPersonal:'Personīgais', stepPhoto:'Foto', stepProfile:'Profils', stepExp:'Pieredze', stepSkills:'Prasmes', stepVerify:'Verifikācija', lSelectPos:'-- Izvēlieties amatu --', lSelectDef:'-- Izvēlieties --', vacancyUrgent:'Steidzami', vacancyFeatured:'Ieteicams', hjAddReq:'+ Pievienot prasību...', hjCompanyPh:'piem. Restaurante Casa Madrid', hjContactPh:'+34 600 000 000 vai info@restaurant.com', posSushiMan:'Suši meistars (v)', posSushiWoman:'Suši meistare (s)', posSushiChefM:'Suši šefpavārs (v)', posSushiChefF:'Suši šefpavāre (s)', posExecChef:'Galvenais šefpavārs', posSousChef:'Sous Chef', posPastryChef:'Konditors', posLineCook:'Pavārs', posWaiter:'Viesmīlis/Viesmīle', posBartender:'Bārmenis', posBarista:'Barista', posKitchenAssist:'Virtuves palīgs', posDishwasher:'Trauku mazgātājs', posRestMgr:'Restorāna vadītājs', posReceptionist:'Viesnīcas reģistrators', posFrontDesk:'Reģistratūras aģents', posConcierge:'Konsjeržs', posHousekeeper:'Istabene', posRoomAttendant:'Istabu apkopējs', posLaundry:'Veļas mazgātavas darbinieks', posPorter:'Nesējs/Portjē', posNightAuditor:'Nakts auditors', posDeliveryDriver:'Piegādes vadītājs (auto)', posDeliveryMoto:'Piegādes vadītājs (motorollers)', posDeliveryBike:'Kurjeris (velosipēds)', posDriverHeavy:'Vadītājs (smagā tehnika)', posDriverLight:'Vadītājs (vieglā tehnika)', posCleaner:'Tīrītājs', posGardener:'Dārznieks', posMaintenance:'Apkopes tehniķis', posGuestRelations:'Viesu attiecību darbinieks', posEvents:'Pasākumu koordinators', posSpa:'Spa terapeits', posSecurity:'Apsargs', posBabysitter:'Aukle', posDomestic:'Mājas palīgs', ogJapanese:'🍣 Japāņu virtuve', ogKitchen:'👨‍🍳 Virtuve', ogRestaurant:'🍽️ Restorāns un bārs', ogHotel:'🏨 Viesnīca un istabas', ogDelivery:'🚗 Vadītājs un piegāde', ogCleaning:'🧹 Tīrīšana un apkope', ogGuest:'🛎️ Viesu apkalpošana',
@@ -12254,6 +12296,8 @@ var T_UI = {
     posHost:'Host/Hostess',
 
     expYear:'Gads', expYears:'Gadi',
+
+    dashWelcomeUser:'Laipni lūgti atpakaļ, ',
   },
 
   et:{ navHome:'Avaleht', navApply:'Minu CV', navPortal:'Minu Portaal', navAssociates:'Meeskond', navPositions:'Positsioonid', navPostJob:'Lisa töökuulutus',
@@ -12404,6 +12448,8 @@ var T_UI = {
     reqWeekends:'Weekends required',
 
     expYear:'Aasta', expYears:'Aastat',
+
+    dashWelcomeUser:'Tere tulemast tagasi, ',
   },
 
   hy:{ 'navHome':'Գլխավոր', 'navApply':'Իմ CV', 'navPortal':'Իմ Պորտալ', 'navSignOut':'Ելք', 'portalLoginBtn':'🔑 Մուտք', 'lRememberMe':'Հիշել ինձ', 'succTitle':'Դիմումն ուղարկված է!', 'succClose':'Փակել', 'filterAll':'Բոլորը', 'vacancyApplyBtn':'Դիմել', 'hjSubmit':'📤 Ուղարկել — Անվճար!', 'openPositions':'Բաց Պաշտոններ', 'ourAssociates':'Մեր Գործընկերները', 'lDobShow':'Ցուցադրել CV-ում:', 'lDobFull':'Ամբողջ ամսաթիվ', 'lDobAge':'Միայն տարիք', 'lDobHide':'Թաքցնել' },
@@ -12583,6 +12629,8 @@ var T_UI = {
     whatApplicantsSay:'Co mówią wnioskodawcy',
 
     expYear:'Rok', expYears:'Lat',
+
+    dashWelcomeUser:'Witaj ponownie, ',
   },
 
   ro:{ navHome:'Acasă', navApply:'CV-ul meu', navPortal:'Portalul meu', navAssociates:'Echipă', navPositions:'Poziții', navPostJob:'Postează job',
@@ -12730,6 +12778,8 @@ var T_UI = {
     whatApplicantsSay:'Ce spun candidații',
 
     expYear:'An', expYears:'Ani',
+
+    dashWelcomeUser:'Bine ai revenit, ',
   },
   hr:{ navHome:'Početna', navApply:'Moj CV', navPortal:'Moj Portal', navAssociates:'Tim', navPositions:'Pozicije', navPostJob:'Objavi posao',
     navSignOut:'Odjava', navSub:'Razred za pripremu intervjua', applyH2:'📋 Izradi moj CV', applySub:'Ispunite profil u 6 koraka',
@@ -12882,6 +12932,8 @@ var T_UI = {
     whatApplicantsSay:'Što kažu kandidati',
 
     expYear:'Godina', expYears:'Godina',
+
+    dashWelcomeUser:'Dobrodošao natrag, ',
   },
 };
 // Merge T_UI into T object
@@ -16606,18 +16658,37 @@ function _translateDropdownValue(val, type, cvLang){
   // Maps: English stored value → translation key
   var maps = {
     permit: {
+      // English
       'Not Required':'optPermitNone', 'Authorized to Work':'optAuthorized',
-      'Work Permit Available':'optPermitAvail'
+      'Work Permit Available':'optPermitAvail',
+      // Spanish (stored from previous ES sessions)
+      'No Requerido':'optPermitNone', 'Autorizado para Trabajar':'optAuthorized',
+      'Permiso de Trabajo Disponible':'optPermitAvail',
+      // Japanese
+      '不要':'optPermitNone', '就労可能':'optAuthorized', '就労許可あり':'optPermitAvail'
     },
     driving: {
-      'Not Available':'optDrivingNo', 'Available':'optDrivingYes'
+      'Not Available':'optDrivingNo', 'Available':'optDrivingYes',
+      // Spanish
+      'No Disponible':'optDrivingNo', 'Disponible':'optDrivingYes',
+      // Japanese
+      'なし':'optDrivingNo', 'あり':'optDrivingYes'
     },
     avail: {
       'Full-time':'optFulltime', 'Part-time':'optParttime',
-      'Immediate Start':'optImmediate'
+      'Immediate Start':'optImmediate',
+      // Spanish
+      'Tiempo Completo':'optFulltime', 'Tiempo Parcial':'optParttime',
+      'Incorporación Inmediata':'optImmediate',
+      // Japanese
+      'フルタイム':'optFulltime', 'パートタイム':'optParttime', '即日入社可':'optImmediate'
     },
     gender: {
-      'Male':'optMale', 'Female':'optFemale', 'Other':'optOther'
+      'Male':'optMale', 'Female':'optFemale', 'Other':'optOther',
+      // Spanish
+      'Hombre':'optMale', 'Mujer':'optFemale', 'Otro':'optOther',
+      // Japanese
+      '男性':'optMale', '女性':'optFemale', 'その他':'optOther'
     }
   };
   var map = maps[type];
@@ -16769,7 +16840,15 @@ function buildCV(d){
     /* Group: Contact */
     +'<div class="cv-side-group">'    +'<div class="cv-side-title">'+lbl('contact')+'</div>'    +row('✉',lbl('email'), (_userRole==='admin'||_userRole==='staff') ? maskEmail(sv(d.email,'')) : sv(d.email,''))    +row('📱',lbl('phone'), (_userRole==='admin'||_userRole==='staff') ? maskPhone(sv(d.phone,'')) : sv(d.phone,''))    +row('📍',lbl('location'),sv(d.address,''))    +(dobCvVal ? row('🎂',lbl('dob'),dobCvVal) : '')    +row('🧑',lbl('gender'),_translateDropdownValue(sv(d.gender,''),'gender',cvLang))    +row('🌐',lbl('langs'),sv(d.langs,''))    +'</div>'
     /* Group: Details */
-    +'<div class="cv-side-group">'    +'<div class="cv-side-title">'+lbl('details')+'</div>'    +row('⏰',lbl('avail'),_translateDropdownValue(sv(d.avail,''),'avail',cvLang))    +row('📄',lbl('permit'),_translateDropdownValue(sv(d.permit,''),'permit',cvLang))    +row('🚗',lbl('driving'),_translateDropdownValue(sv(d.driving,''),'driving',cvLang))    +row('🎓',lbl('education'),sv(d.education,''))    +row('⌛',lbl('exp'),sv(d.expYears,''))    +'</div>'
+    +'<div class="cv-side-group">'    +'<div class="cv-side-title">'+lbl('details')+'</div>'    +row('⏰',lbl('avail'),_translateDropdownValue(sv(d.avail,''),'avail',cvLang))    +row('📄',lbl('permit'),_translateDropdownValue(sv(d.permit,''),'permit',cvLang))    +row('🚗',lbl('driving'),_translateDropdownValue(sv(d.driving,''),'driving',cvLang))    +row('🎓',lbl('education'),sv(d.education,''))    +row('⌛',lbl('exp'),(function(){
+    var ev=sv(d.expYears,'');
+    if(!ev) return ev;
+    var m=ev.match(/^(\d+)\s+/);
+    if(!m) return ev;
+    var n=parseInt(m[1]);
+    var sfx=n===1?(t('expYear')||'Year'):(t('expYears')||'Years');
+    return n+' '+sfx;
+  })())    +'</div>'
     /* Group: Portfolio */
     +'<div class="cv-side-group">'    +'<div class="cv-side-title">'+lbl('portfolio')+'</div>'    +'<div class="cv-works">'+workPhotosHtml(d)+'</div>'    +'</div>'
     /* Group: Strengths */
@@ -17694,7 +17773,7 @@ function translateQuizQuestions(questions, lang, callback) {
     body: JSON.stringify({
       model:'claude-haiku-4-5-20251001',
       max_tokens:4000,
-      messages:[{role:'user', content:'Translate these hospitality quiz questions to '+langName+'. Return ONLY valid JSON array, no other text. Same structure. Do NOT change the correct index. Only translate text and options values.'+JSON.stringify(minimal)}]
+      messages:[{role:'user', content:'Translate these hospitality quiz questions to '+langName+'. Return ONLY valid JSON array, no other text. Same structure. Do NOT change the correct index. Only translate text and options values. Here is the JSON: '+JSON.stringify(minimal)}]
     })
   })
   .then(function(r){ return r.json(); })
