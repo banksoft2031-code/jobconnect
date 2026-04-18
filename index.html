@@ -946,6 +946,18 @@ input,select,textarea{
   -webkit-appearance:auto;
 }
 input:focus,select:focus,textarea:focus{border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,0.15);}
+/* Radio/checkbox inputs — reset global overrides */
+input[type=radio],input[type=checkbox]{
+  width:auto !important;
+  min-width:0 !important;
+  padding:0 !important;
+  border:none !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  flex-shrink:0 !important;
+  display:inline-block !important;
+}
 input::placeholder,textarea::placeholder{color:#6b7a99;font-style:italic;}
 /* SELECT dropdown — light background so options are readable in all browsers */
 select{
