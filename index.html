@@ -23859,7 +23859,8 @@ var _quizTranslationCache = {}; // cache: "lang_pos" -> translated questions
 function translateQuizQuestions(questions, lang, callback) {
   if(lang === 'en') { callback(questions); return; }
   var cacheKey = lang + '_' + (qState.pos || 'default');
-  if(_quizTranslationCache[cacheKey]) { callback(_quizTranslationCache[cacheKey]); return; }
+  // Only use cache if it was translated (not English fallback)
+  if(_quizTranslationCache[cacheKey] && _quizTranslationCache[cacheKey]._translated) { callback(_quizTranslationCache[cacheKey]); return; }
 
   var langNames = {es:'Spanish',fr:'French',de:'German',it:'Italian',pt:'Portuguese',
     ja:'Japanese',ko:'Korean',zh:'Chinese (Simplified)',hi:'Hindi',ne:'Nepali',
@@ -23924,6 +23925,7 @@ function translateQuizQuestions(questions, lang, callback) {
     translateBatch(questions.slice(half), function(err2, result2){
       doHideLoader();
       var combined = result1.concat(err2 ? questions.slice(half) : result2);
+      combined._translated = true;
       _quizTranslationCache[cacheKey] = combined;
       callback(combined);
     });
