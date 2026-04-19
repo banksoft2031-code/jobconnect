@@ -23995,9 +23995,10 @@ function startQuiz(){
   var pg=document.getElementById('qProg');if(pg)pg.style.width='0%';
   var curLang=(typeof LANG!=='undefined')?LANG:'en';
   if(curLang!=='en' && typeof translateQuizQuestions==='function'){
-    var origQ=getQuizForPos(qState.pos);
+    // Always get fresh English questions from source, not localStorage cache
+    var freshQ = (typeof POS_QUIZ!=='undefined' && POS_QUIZ[qState.pos]) ? JSON.parse(JSON.stringify(POS_QUIZ[qState.pos])) : JSON.parse(JSON.stringify(DEFAULT_QUIZ));
     if(typeof _quizTranslationCache!=='undefined') delete _quizTranslationCache[curLang+'_'+(qState.pos||'default')];
-    translateQuizQuestions(origQ, curLang, function(translated){
+    translateQuizQuestions(freshQ, curLang, function(translated){
       qState.activeQ=translated;
       renderQuestion();
     });
