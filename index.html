@@ -23954,6 +23954,11 @@ function _initQuizUI(u, aq){
     qState.correct=saved.correct;qState.wrong=saved.wrong||0;
     updateQBadges();
     showResult(saved);
+    // Pre-translate questions in background for restart
+    var curLang=(typeof LANG!=='undefined')?LANG:'en';
+    if(curLang!=='en' && typeof translateQuizQuestions==='function'){
+      translateQuizQuestions(u._origQ||getQuizForPos(u.position), curLang, function(translated){ qState.activeQ=translated; });
+    }
     return;
   }
   qState.idx=0;qState.correct=0;qState.wrong=0;
@@ -24117,13 +24122,22 @@ function showResult(savedResult){
 }
 
 function restartQuiz(){
-  // Clear saved result so they can retake
   window._quizLoaded=false;
   qState.idx=0;qState.correct=0;qState.wrong=0;qState.answered=false;
   updateQBadges();
   var pg=document.getElementById('qProg');if(pg)pg.style.width='0%';
   var tb=document.getElementById('qb-total');if(tb)tb.textContent=qState.activeQ.length+' Qs';
-  renderQuestion();
+  var curLang=(typeof LANG!=='undefined')?LANG:'en';
+  if(curLang!=='en' && typeof translateQuizQuestions==='function'){
+    if(typeof _quizTranslationCache!=='undefined') delete _quizTranslationCache[curLang+'_'+(qState.pos||'default')];
+    var origQ=getQuizForPos(qState.pos);
+    translateQuizQuestions(origQ, curLang, function(translated){
+      qState.activeQ=translated;
+      renderQuestion();
+    });
+  } else {
+    renderQuestion();
+  }
 }
 
 // ============================================================
