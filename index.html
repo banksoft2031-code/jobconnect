@@ -23973,7 +23973,7 @@ function _initQuizUI(u, aq){
     +'<div class="qrule"><div class="qrule-dot"></div>'+t('quizPassMark').replace('{pass}',PASS).replace('{total}',total)+'</div>'
     +'<div class="qrule"><div class="qrule-dot"></div>'+t('quizScoreSavedTime')+'</div>'
     +'</div>'
-    +'<button class="start-btn" onclick="startQuiz()">'+t('startQuizBtn')+'</button>'
+    +'<div style="margin:8px 0;padding:6px 14px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:8px;font-size:0.78rem;color:#f59e0b;">🌐 Quiz questions are in English only</div>'+'<button class="start-btn" onclick="startQuiz()">'+t('startQuizBtn')+'</button>'
     +'</div>';
 }
 
@@ -23987,6 +23987,14 @@ function startQuiz(){
   qState.idx=0;qState.correct=0;qState.wrong=0;qState.answered=false;
   updateQBadges();
   var pg=document.getElementById('qProg');if(pg)pg.style.width='0%';
+  var curLang=(typeof LANG!='undefined')?LANG:'en';
+  if(curLang!='en'){
+    var msg=document.createElement('div');
+    msg.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1e293b;border:1px solid rgba(245,158,11,0.5);border-radius:12px;padding:10px 20px;z-index:9999;color:#f59e0b;font-size:0.85rem;text-align:center;';
+    msg.innerHTML='🌐 Quiz available in English only';
+    document.body.appendChild(msg);
+    setTimeout(function(){ msg.remove(); }, 3000);
+  }
   renderQuestion();
 }
 
