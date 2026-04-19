@@ -23936,13 +23936,7 @@ function initQuiz(u){
   qState.email=u.email; qState.name=u.name; qState.pos=u.position||'';
   var aq=getQuizForPos(u.position);
   // Translate quiz if site language is not English
-  if(typeof LANG !== 'undefined' && LANG !== 'en'){
-    translateQuizQuestions(aq, LANG, function(translated){
-      qState.activeQ = translated;
-      _initQuizUI(u, translated);
-    });
-    return;
-  }
+  // Translation disabled - quiz runs in English only
   qState.activeQ=aq;
   _initQuizUI(u, aq);
 }
@@ -23993,18 +23987,7 @@ function startQuiz(){
   qState.idx=0;qState.correct=0;qState.wrong=0;qState.answered=false;
   updateQBadges();
   var pg=document.getElementById('qProg');if(pg)pg.style.width='0%';
-  var curLang=(typeof LANG!=='undefined')?LANG:'en';
-  if(curLang!=='en' && typeof translateQuizQuestions==='function'){
-    // Always get fresh English questions from source, not localStorage cache
-    var freshQ = (typeof POS_QUIZ!=='undefined' && POS_QUIZ[qState.pos]) ? JSON.parse(JSON.stringify(POS_QUIZ[qState.pos])) : JSON.parse(JSON.stringify(DEFAULT_QUIZ));
-    if(typeof _quizTranslationCache!=='undefined') delete _quizTranslationCache[curLang+'_'+(qState.pos||'default')];
-    translateQuizQuestions(freshQ, curLang, function(translated){
-      qState.activeQ=translated;
-      renderQuestion();
-    });
-  } else {
-    renderQuestion();
-  }
+  renderQuestion();
 }
 
 function renderQuestion(){
