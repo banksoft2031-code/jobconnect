@@ -1190,7 +1190,7 @@ input[type=date]::-webkit-calendar-picker-indicator:hover{
 .wc.bad{color:#ef4444;}
 /* OTP */
 .otp-row{display:flex;gap:6px;justify-content:flex-start;margin:0;flex-wrap:nowrap;}
-.otp-inp{width:40px;height:44px;text-align:center;font-size:1.2rem;background:#0f172a;border-radius:8px;border:2px solid #f59e0b;color:#fbbf24;font-weight:700;caret-color:#fbbf24;}
+.otp-inp{width:46px;height:52px;text-align:center;font-size:1.1rem;background:#0f172a;border-radius:8px;border:2px solid #f59e0b;color:#fbbf24;font-weight:700;caret-color:#fbbf24;line-height:52px;padding:0;box-sizing:border-box;}
 /* CV — full A4-style, professional readable sizing */
 .vip-cv{
   display:flex;
@@ -2246,7 +2246,7 @@ footer > div { width:100%; box-sizing:border-box; }
 
 /* 480px */
 @media(max-width:480px){
-  .otp-inp{width:42px;height:50px;font-size:1.3rem;}
+  .otp-inp{width:44px;height:52px;font-size:1.1rem;}
   .start-btn{padding:14px 36px;font-size:1rem;}
   .score-big{font-size:2.5rem;}
   .quiz-wrap{border-radius:14px;}
@@ -2270,7 +2270,7 @@ footer > div { width:100%; box-sizing:border-box; }
   h1{font-size:clamp(1.3rem,8.5vw,1.75rem);}
   h2{font-size:1rem;}
   .btn{font-size:0.875rem;padding:0.7rem 1rem;}
-  .otp-inp{width:38px;height:46px;font-size:1.15rem;}
+  .otp-inp{width:40px;height:48px;font-size:1rem;}
   .step-num{width:30px;height:30px;font-size:0.875rem;}
   .result-stats{grid-template-columns:repeat(2,1fr);}
   .hero-cta-row{max-width:290px;}
@@ -2567,6 +2567,64 @@ body { -webkit-overflow-scrolling: touch; overflow-y: auto !important; min-heigh
   .modal-bg { align-items: flex-end !important; padding: 0 !important; }
 }
 
+/* Theme-aware flatpickr calendar */
+[data-theme="light"] .flatpickr-calendar,
+[data-theme="classic"] .flatpickr-calendar {
+  background: #fff !important;
+  border-color: rgba(245,158,11,0.5) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15) !important;
+}
+[data-theme="light"] .flatpickr-month,
+[data-theme="classic"] .flatpickr-month {
+  background: #f8fafc !important;
+}
+[data-theme="light"] .flatpickr-current-month,
+[data-theme="light"] .flatpickr-current-month input.cur-year,
+[data-theme="classic"] .flatpickr-current-month,
+[data-theme="classic"] .flatpickr-current-month input.cur-year {
+  color: #d97706 !important;
+}
+[data-theme="light"] .flatpickr-current-month .flatpickr-monthDropdown-months,
+[data-theme="classic"] .flatpickr-current-month .flatpickr-monthDropdown-months {
+  background: #f8fafc !important;
+  color: #d97706 !important;
+}
+[data-theme="light"] .flatpickr-day,
+[data-theme="classic"] .flatpickr-day {
+  color: #1e293b !important;
+}
+[data-theme="light"] .flatpickr-weekday,
+[data-theme="classic"] .flatpickr-weekday {
+  color: #64748b !important;
+}
+[data-theme="light"] .flatpickr-day.flatpickr-disabled,
+[data-theme="classic"] .flatpickr-day.flatpickr-disabled {
+  color: #cbd5e1 !important;
+}
+[data-theme="light"] #dobFpInput,
+[data-theme="classic"] #dobFpInput {
+  background: #fff !important;
+  border-color: rgba(0,0,0,0.15) !important;
+  color: #1e293b !important;
+}
+
+/* Theme-aware OTP inputs */
+[data-theme="light"] .otp-inp,
+[data-theme="classic"] .otp-inp {
+  background: #fff !important;
+  color: #d97706 !important;
+  border-color: #f59e0b !important;
+  caret-color: #d97706 !important;
+}
+
+/* Theme-aware select/dropdown */
+[data-theme="light"] select,
+[data-theme="classic"] select {
+  background: #fff !important;
+  color: #1e293b !important;
+  border-color: rgba(0,0,0,0.15) !important;
+}
+
 /* OTP section mobile portrait fix */
 @media(max-width:600px){
   #otpBox > div {
@@ -2587,9 +2645,11 @@ body { -webkit-overflow-scrolling: touch; overflow-y: auto !important; min-heigh
     width: 100% !important;
   }
   .otp-inp {
-    width: 44px !important;
-    height: 52px !important;
-    font-size: 1.4rem !important;
+    width: 46px !important;
+    height: 54px !important;
+    font-size: 1.1rem !important;
+    line-height: 54px !important;
+    padding: 0 !important;
   }
   #otpNavBtns {
     flex-direction: column !important;
