@@ -1190,7 +1190,7 @@ input[type=date]::-webkit-calendar-picker-indicator:hover{
 .wc.bad{color:#ef4444;}
 /* OTP */
 .otp-row{display:flex;gap:6px;justify-content:flex-start;margin:0;flex-wrap:nowrap;}
-.otp-inp{width:40px;height:44px;text-align:center;font-size:1.2rem;background:#ffffff;border-radius:8px;border:2px solid #f59e0b;color:#000;font-weight:700;}
+.otp-inp{width:40px;height:44px;text-align:center;font-size:1.2rem;background:#0f172a;border-radius:8px;border:2px solid #f59e0b;color:#fbbf24;font-weight:700;caret-color:#fbbf24;}
 /* CV — full A4-style, professional readable sizing */
 .vip-cv{
   display:flex;
@@ -2565,6 +2565,39 @@ body { -webkit-overflow-scrolling: touch; overflow-y: auto !important; min-heigh
     max-height: 90vh !important;
   }
   .modal-bg { align-items: flex-end !important; padding: 0 !important; }
+}
+
+/* OTP section mobile portrait fix */
+@media(max-width:600px){
+  #otpBox > div {
+    padding: 0.7rem !important;
+  }
+  #otpBox > div > div:last-child {
+    flex-direction: column !important;
+    gap: 0.6rem !important;
+  }
+  #otpDisplay {
+    font-size: 2rem !important;
+    letter-spacing: 8px !important;
+    text-align: center !important;
+    width: 100% !important;
+  }
+  .otp-row {
+    justify-content: center !important;
+    width: 100% !important;
+  }
+  .otp-inp {
+    width: 44px !important;
+    height: 52px !important;
+    font-size: 1.4rem !important;
+  }
+  #otpNavBtns {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+  #otpNavBtns button {
+    width: 100% !important;
+  }
 }
 
 /* Toast — full width on mobile */
