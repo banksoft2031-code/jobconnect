@@ -214,14 +214,19 @@ document.addEventListener('DOMContentLoaded', function(){
       if(typeof _currentUser!=='undefined' && _currentUser){
         if(typeof portalOrLogin==='function') portalOrLogin();
       } else {
-        if(typeof V==='function') V('applicant');
-        setTimeout(function(){
-          if(typeof showLG==='function') showLG();
-          var lp=document.getElementById('loginPanel');
-          if(lp) lp.style.display='flex';
-        }, 150);
+        // Show applicant view then login panel
+        document.querySelectorAll('.view-pane').forEach(function(el){el.classList.remove('active');});
+        var av = document.getElementById('applicantView');
+        if(av) av.classList.add('active');
+        var lp = document.getElementById('loginPanel');
+        if(lp) lp.style.display='flex';
+        var lf = document.getElementById('fbLoginForm');
+        if(lf) lf.style.display='block';
+        var ff = document.getElementById('fbForgotForm');
+        if(ff) ff.style.display='none';
+        if(typeof showLG==='function') showLG();
       }
-    }, 400);
+    }, 450);
   };
   var installSection = _buildInstallSection(_sl);
 
@@ -24193,6 +24198,7 @@ function renderQuestion(){
   qState.answered=false;
   qState.timeLeft=30;
   if(qState.tmr)clearInterval(qState.tmr);
+  try{ if(window._quizSounds) window._quizSounds.question(); }catch(e){}
   qs.innerHTML=
     '<div class="quiz-body">'
     +'<div class="qnum-lbl">'+t('quizQuestionOf').replace('{cur}',qState.idx+1).replace('{total}',total)+'</div>'
@@ -24218,6 +24224,7 @@ function renderQuestion(){
     var tf=document.getElementById('timerFill');
     if(td){td.textContent=qState.timeLeft+'s';if(qState.timeLeft<=5)td.style.color='#ef4444';else td.style.color='#f59e0b';}
     if(tf){tf.style.width=(qState.timeLeft/30*100)+'%';if(qState.timeLeft<=5)tf.style.background='#ef4444';else if(qState.timeLeft<=10)tf.style.background='#f59e0b';else tf.style.background='#10b981';}
+    try{ if(window._quizSounds){ if(qState.timeLeft<=5) window._quizSounds.warning(); else window._quizSounds.tick(); } }catch(e){}
     if(qState.timeLeft<=0){clearInterval(qState.tmr);if(!qState.answered)answerQ(-1);}
   },1000);
 }
@@ -24230,6 +24237,7 @@ function answerQ(chosen){
   var correct=q.correct;
   var isRight=(chosen===correct);
   if(isRight)qState.correct++;else qState.wrong++;
+  try{ if(window._quizSounds){ if(isRight) window._quizSounds.correct(); else window._quizSounds.wrong(); } }catch(e){}
   updateQBadges();
   // Highlight options using .opt class
   var opts=document.querySelectorAll('.opt');
@@ -29716,6 +29724,68 @@ function doAdminResetPwd(id, btn){
   if(document.readyState==='complete'){ _doPreload(); }
   else { window.addEventListener('load', function(){ setTimeout(_doPreload, 2000); }); }
 })();
+</script>
+
+<script>
+// ── KBC-style Quiz Sounds ──
+var _AC = null;
+function _getAC(){ if(!_AC){ try{ _AC = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } return _AC; }
+
+function _playTone(freq, dur, type, vol, delay){
+  var ac = _getAC(); if(!ac) return;
+  var o = ac.createOscillator();
+  var g = ac.createGain();
+  o.connect(g); g.connect(ac.destination);
+  o.type = type||'sine';
+  o.frequency.value = freq;
+  g.gain.setValueAtTime(0, ac.currentTime+(delay||0));
+  g.gain.linearRampToValueAtTime(vol||0.3, ac.currentTime+(delay||0)+0.01);
+  g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime+(delay||0)+dur);
+  o.start(ac.currentTime+(delay||0));
+  o.stop(ac.currentTime+(delay||0)+dur+0.05);
+}
+
+// Tick sound — plays every second during countdown
+function playSoundTick(){
+  _playTone(880, 0.06, 'square', 0.15);
+}
+
+// Correct answer — ascending triumphant
+function playSoundCorrect(){
+  var notes = [523,659,784,1047];
+  notes.forEach(function(f,i){ _playTone(f, 0.18, 'sine', 0.35, i*0.12); });
+  setTimeout(function(){
+    var fanfare = [784,784,784,659,784];
+    fanfare.forEach(function(f,i){ _playTone(f, 0.15, 'triangle', 0.4, i*0.1); });
+  }, 600);
+}
+
+// Wrong answer — descending dramatic
+function playSoundWrong(){
+  _playTone(400, 0.15, 'sawtooth', 0.3);
+  _playTone(300, 0.2, 'sawtooth', 0.3, 0.15);
+  _playTone(200, 0.4, 'sawtooth', 0.25, 0.35);
+}
+
+// Timer warning — fast beeps when time running out
+function playSoundWarning(){
+  _playTone(660, 0.08, 'square', 0.2);
+}
+
+// Question appear — soft chime
+function playSoundQuestion(){
+  _playTone(523, 0.1, 'sine', 0.2);
+  _playTone(659, 0.1, 'sine', 0.2, 0.12);
+  _playTone(784, 0.15, 'sine', 0.25, 0.24);
+}
+
+window._quizSounds = {
+  tick: playSoundTick,
+  correct: playSoundCorrect,
+  wrong: playSoundWrong,
+  warning: playSoundWarning,
+  question: playSoundQuestion
+};
 </script>
 </body>
 </html>
