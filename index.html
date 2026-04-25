@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function(){
     || window.matchMedia('(display-mode: fullscreen)').matches
     || window.matchMedia('(display-mode: standalone)').matches
     || window.navigator.standalone === true
-    || localStorage.getItem('jc_pwa_installed') === '1';
+    || false; // jc_pwa_installed check removed
 
   if(isInstalled){
     // Skip auto-fullscreen — only allowed from user gesture, not on load
@@ -300,10 +300,12 @@ document.addEventListener('DOMContentLoaded', function(){
   }
   overlay.addEventListener('click', function(e){
     if(e.target.id==='_installBtn'||e.target.closest&&e.target.closest('#_installBtn')) return;
+    if(e.target.id==='_enterBtn'||e.target.closest&&e.target.closest('#_enterBtn')) return;
     _unlockMedia(); goFullscreen(); hideMobileBars(); overlay.remove();
   });
   overlay.addEventListener('touchend', function(e){
     if(e.target.id==='_installBtn'||e.target.closest&&e.target.closest('#_installBtn')) return;
+    if(e.target.id==='_enterBtn'||e.target.closest&&e.target.closest('#_enterBtn')){ e.preventDefault(); window._doEnter(); return; }
     e.preventDefault(); _unlockMedia(); goFullscreen(); hideMobileBars(); overlay.remove();
   });
   document.body.appendChild(overlay);
@@ -2690,6 +2692,21 @@ body { -webkit-overflow-scrolling: touch; overflow-y: auto !important; min-heigh
   }
 }
 
+/* Login panel mobile fix */
+@media(max-width:600px){
+  #loginPanel > div {
+    padding: 1.2rem 1rem !important;
+  }
+  #loginPanel input {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    font-size: 0.85rem !important;
+  }
+  #loginPanel .form-grid {
+    width: 100% !important;
+  }
+}
+
 /* Language selector — always fully visible */
 #navLangSelect {
   min-width: 75px !important;
@@ -4259,7 +4276,7 @@ body { -webkit-overflow-scrolling: touch; }
   <div class="glass-card">
     <h2 id="portalH2" data-i18n="portalH2">&#x1F3AF; My Portal</h2>
     <div id="loginPanel" style="display:flex;justify-content:center;padding:1rem 0;">
-      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(245,158,11,0.22);border-radius:20px;padding:2rem 1.8rem;width:100%;max-width:400px;position:relative;">
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(245,158,11,0.22);border-radius:20px;padding:1.5rem 1.2rem;width:100%;max-width:400px;position:relative;box-sizing:border-box;">
         <button onclick="V('hero')" style="position:absolute;top:12px;right:12px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);color:#f87171;border-radius:8px;padding:4px 12px;cursor:pointer;font-family:inherit;font-size:0.85rem;font-weight:700;">✕</button>
         <p data-i18n="portalLoginSub" style="color:#64748b;font-size:0.85rem;margin-bottom:1.2rem;text-align:center;">Sign in to access your CV and Interview Preparation Class</p>
         <div id="fbLoginForm">
