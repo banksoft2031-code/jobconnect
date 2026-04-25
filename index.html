@@ -243,7 +243,17 @@ document.addEventListener('DOMContentLoaded', function(){
       try{ if(typeof applyLang==='function') applyLang(lang); }catch(e2){}
       try{ if(typeof setLang==='function') setLang(lang); }catch(e2){}
       ov.style.opacity='0'; ov.style.transition='opacity 0.4s';
-      setTimeout(function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); }, 400);
+      setTimeout(function(){
+        if(ov.parentNode) ov.parentNode.removeChild(ov);
+        // If already logged in go to portal, else show login
+        if(typeof _currentUser!=='undefined' && _currentUser){
+          if(typeof portalOrLogin==='function') portalOrLogin();
+        } else {
+          // Show login with option to make CV
+          if(typeof V==='function') V('applicant');
+          if(typeof showLG==='function') showLG();
+        }
+      }, 400);
     };
   };
   window._splashInstallSection = installSection;
@@ -2270,7 +2280,7 @@ footer > div { width:100%; box-sizing:border-box; }
   h1{font-size:clamp(1.3rem,8.5vw,1.75rem);}
   h2{font-size:1rem;}
   .btn{font-size:0.875rem;padding:0.7rem 1rem;}
-  .otp-inp{width:40px;height:48px;font-size:1rem;}
+  .otp-inp{width:42px;height:52px;font-size:1rem;line-height:52px;padding:0;}
   .step-num{width:30px;height:30px;font-size:0.875rem;}
   .result-stats{grid-template-columns:repeat(2,1fr);}
   .hero-cta-row{max-width:290px;}
@@ -4271,8 +4281,9 @@ body { -webkit-overflow-scrolling: touch; }
             <button class="btn btn-gold" id="portalLoginBtn" onclick="doFbLogin()" style="width:100%;justify-content:center;"><span data-i18n="portalLoginBtn">&#x1F511; Sign In</span></button>
             </div>
           </div>
-          <div style="text-align:center;margin-top:0.8rem;">
+          <div style="text-align:center;margin-top:0.8rem;display:flex;flex-direction:column;gap:6px;align-items:center;">
             <button onclick="showFG()" style="background:none;border:none;color:#64748b;font-size:0.78rem;cursor:pointer;font-family:inherit;text-decoration:underline;" data-i18n="forgotPwdPortalLink">Forgot password?</button>
+            <button onclick="V('apply');window.scrollTo({top:0,behavior:'smooth'});" style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:#fbbf24;font-size:0.78rem;cursor:pointer;font-family:inherit;border-radius:20px;padding:5px 16px;font-weight:700;">✨ <span data-i18n="noCVMakeFirst">New here? Create your CV to get started</span></button>
           </div>
         </div>
         <div id="fbForgotForm" style="display:none;">
@@ -5119,6 +5130,15 @@ function showLG(){
   var ff=document.getElementById('fbForgotForm'); if(ff) ff.style.display='none';
   var er=document.getElementById('fbLoginErr'); if(er) er.textContent='';
   var pw=document.getElementById('loginPwd'); if(pw) pw.value='';
+  // Update CV link text based on current language
+  try{
+    var cvBtn=document.querySelector('[data-i18n="noCVMakeFirst"]');
+    if(cvBtn){
+      var lang=typeof LANG!=='undefined'?LANG:'en';
+      var texts={en:'New here? Create your CV to get started',es:'¿Primera vez? Crea tu CV para comenzar',fr:'Nouveau? Créez votre CV pour commencer',de:'Neu hier? Erstellen Sie Ihren Lebenslauf',it:'Nuovo? Crea il tuo CV per iniziare',pt:'Novo? Crie seu CV para começar',ja:'初めて？CVを作成して始めましょう',ko:'처음이신가요? CV를 만들어 시작하세요',zh:'首次来访？创建简历开始吧',hi:'नए हैं? CV बनाएं और शुरू करें',ne:'नयाँ हुनुहुन्छ? CV बनाउनुस् र सुरु गर्नुस्'};
+      cvBtn.textContent=texts[lang]||texts['en'];
+    }
+  }catch(e){}
   // Auto-fill saved credentials
   try{
     var saved = JSON.parse(localStorage.getItem('jc_remember')||'null');
@@ -23837,8 +23857,18 @@ function dlCurrentCVDirect(){
         var s=document.createElement('script'); s.src=src; s.onload=cb; s.onerror=function(){ cb(true); }; document.head.appendChild(s);
       }
 
-      _loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', function(err1){
-        _loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', function(err2){
+      var _h2cUrls=['https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js','https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js'];
+      var _jspdfUrls=['https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js','https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js'];
+      function _loadWithFallback(urls, cb){
+        var i=0;
+        function _try(){
+          if(i>=urls.length){cb(true);return;}
+          _loadScript(urls[i++], function(err){ if(err) _try(); else cb(false); });
+        }
+        _try();
+      }
+      _loadWithFallback(_h2cUrls, function(err1){
+        _loadWithFallback(_jspdfUrls, function(err2){
           if(err1||err2){ toast('❌ Could not load PDF library'); return; }
 
           // Create a hidden off-screen container and render CV into it
@@ -29597,6 +29627,35 @@ function doAdminResetPwd(id, btn){
     if(_el){ _el.href = 'mai' + 'lto:' + _e; }
     if(_et){ _et.textContent = _e; }
   });
+</script>
+<script>
+// Pre-load PDF libraries so first CV download is instant
+(function(){
+  function _preloadWithFallback(urls){
+    function _try(i){
+      if(i>=urls.length) return;
+      if(document.querySelector('script[src="'+urls[i]+'"]')) return;
+      var s=document.createElement('script');
+      s.src=urls[i];
+      s.async=true;
+      s.onerror=function(){ _try(i+1); };
+      document.head.appendChild(s);
+    }
+    _try(0);
+  }
+  function _doPreload(){
+    _preloadWithFallback([
+      'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+      'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js'
+    ]);
+    _preloadWithFallback([
+      'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+      'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js'
+    ]);
+  }
+  if(document.readyState==='complete'){ _doPreload(); }
+  else { window.addEventListener('load', function(){ setTimeout(_doPreload, 2000); }); }
+})();
 </script>
 </body>
 </html>
