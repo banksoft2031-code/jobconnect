@@ -202,6 +202,27 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   }
 
+  // Global enter handler — works even after innerHTML rebuild
+  window._doEnter = function(){
+    var lang = (typeof LANG!=='undefined') ? LANG : _sl;
+    var ov = document.getElementById('_fsOverlay');
+    try{ if(typeof applyLang==='function') applyLang(lang); }catch(e){}
+    try{ if(typeof setLang==='function') setLang(lang); }catch(e){}
+    if(ov){ ov.style.opacity='0'; ov.style.transition='opacity 0.4s'; }
+    setTimeout(function(){
+      if(ov && ov.parentNode) ov.parentNode.removeChild(ov);
+      if(typeof _currentUser!=='undefined' && _currentUser){
+        if(typeof portalOrLogin==='function') portalOrLogin();
+      } else {
+        if(typeof V==='function') V('applicant');
+        setTimeout(function(){
+          if(typeof showLG==='function') showLG();
+          var lp=document.getElementById('loginPanel');
+          if(lp) lp.style.display='flex';
+        }, 150);
+      }
+    }, 400);
+  };
   var installSection = _buildInstallSection(_sl);
 
   function _buildSplashHtml(lang, installSec){
@@ -212,7 +233,7 @@ document.addEventListener('DOMContentLoaded', function(){
       + '<div style="color:#fbbf24;font-size:1.8rem;font-weight:900;margin-bottom:0.3rem;">FusionChef Madrid</div>'
       + '<div id="_splashSub" style="color:#94a3b8;font-size:1rem;margin-bottom:1.5rem;">'+S.sub+'</div>'
       + installSec
-      + '<div id="_enterBtn" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;border:none;border-radius:50px;padding:1.2rem 3rem;font-size:1.2rem;font-weight:900;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;margin-top:0.5rem;">'
+      + '<div id="_enterBtn" onclick="window._doEnter()" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;border:none;border-radius:50px;padding:1.2rem 3rem;font-size:1.2rem;font-weight:900;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;margin-top:0.5rem;">'
       + '<span style="font-size:1.4rem;">▶</span> <span id="_splashEnterTxt">'+S.enter+'</span>'
       + '</div>'
       + '</div>';
