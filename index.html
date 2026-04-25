@@ -231,9 +231,9 @@ document.addEventListener('DOMContentLoaded', function(){
       window.scrollTo(0,0);
       // Update CV link text
       try{
-        var cvBtn=document.querySelector('[data-i18n="noCVMakeFirst"]');
+        var cvBtn=document.getElementById('noCVBtn');
         if(cvBtn){
-          var texts={en:'New here? Create your CV to get started',es:'¿Primera vez? Crea tu CV para comenzar',fr:'Nouveau? Créez votre CV pour commencer',de:'Neu hier? Erstellen Sie Ihren Lebenslauf',it:'Nuovo? Crea il tuo CV per iniziare',pt:'Novo? Crie seu CV para começar',ja:'初めて？CVを作成して始めましょう',ko:'처음이신가요? CV를 만들어 시작하세요',zh:'首次来访？创建简历开始吧',hi:'नए हैं? CV बनाएं और शुरू करें',ne:'नयाँ हुनुहुन्छ? CV बनाउनुस् र सुरु गर्नुस्'};
+          var texts={en:'New here? Create your CV to get started',es:'Primera vez? Crea tu CV para comenzar',fr:'Nouveau ici? Creez votre CV',de:'Neu hier? Lebenslauf erstellen',it:'Nuovo qui? Crea il tuo CV',pt:'Novo aqui? Crie seu CV',ja:'初めて? CVを作成',ko:'처음이신가요? CV 만들기',zh:'第一次? 创建简历',hi:'नए हैं? CV बनाएं',ne:'नयाँ हुनुहुन्छ? CV बनाउनुस्'};
           cvBtn.textContent=texts[lang]||texts['en'];
         }
       }catch(e){}
@@ -4335,7 +4335,7 @@ body { -webkit-overflow-scrolling: touch; }
           </div>
           <div style="text-align:center;margin-top:0.8rem;display:flex;flex-direction:column;gap:6px;align-items:center;">
             <button onclick="showFG()" style="background:none;border:none;color:#64748b;font-size:0.78rem;cursor:pointer;font-family:inherit;text-decoration:underline;" data-i18n="forgotPwdPortalLink">Forgot password?</button>
-            <button onclick="V('apply');window.scrollTo({top:0,behavior:'smooth'});" style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:#fbbf24;font-size:0.78rem;cursor:pointer;font-family:inherit;border-radius:20px;padding:5px 16px;font-weight:700;">✨ <span data-i18n="noCVMakeFirst">New here? Create your CV to get started</span></button>
+            <button onclick="V('apply');window.scrollTo({top:0,behavior:'smooth'});" style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:#fbbf24;font-size:0.78rem;cursor:pointer;font-family:inherit;border-radius:20px;padding:5px 16px;font-weight:700;" id="noCVBtn">New here? Create your CV to get started</button>
           </div>
         </div>
         <div id="fbForgotForm" style="display:none;">
@@ -5184,10 +5184,10 @@ function showLG(){
   var pw=document.getElementById('loginPwd'); if(pw) pw.value='';
   // Update CV link text based on current language
   try{
-    var cvBtn=document.querySelector('[data-i18n="noCVMakeFirst"]');
+    var cvBtn=document.getElementById('noCVBtn');
     if(cvBtn){
       var lang=typeof LANG!=='undefined'?LANG:'en';
-      var texts={en:'New here? Create your CV to get started',es:'¿Primera vez? Crea tu CV para comenzar',fr:'Nouveau? Créez votre CV pour commencer',de:'Neu hier? Erstellen Sie Ihren Lebenslauf',it:'Nuovo? Crea il tuo CV per iniziare',pt:'Novo? Crie seu CV para começar',ja:'初めて？CVを作成して始めましょう',ko:'처음이신가요? CV를 만들어 시작하세요',zh:'首次来访？创建简历开始吧',hi:'नए हैं? CV बनाएं और शुरू करें',ne:'नयाँ हुनुहुन्छ? CV बनाउनुस् र सुरु गर्नुस्'};
+      var texts={en:'New here? Create your CV to get started',es:'Primera vez? Crea tu CV para comenzar',fr:'Nouveau ici? Creez votre CV pour commencer',de:'Neu hier? Lebenslauf erstellen',it:'Nuovo qui? Crea il tuo CV per iniziare',pt:'Novo aqui? Crie seu CV para comecar',ja:'初めて? CVを作成して始める',ko:'처음이신가요? CV를 만들어 시작하세요',zh:'第一次? 创建简历开始',hi:'नए हैं? CV बनाएं',ne:'नयाँ हुनुहुन्छ? CV बनाउनुस्',ar:'جديد هنا؟ انشئ سيرتك الذاتية'};
       cvBtn.textContent=texts[lang]||texts['en'];
     }
   }catch(e){}
