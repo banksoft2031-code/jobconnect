@@ -261,6 +261,27 @@ document.addEventListener('DOMContentLoaded', function(){
   };
   window._splashInstallSection = installSection;
   overlay.innerHTML = _buildSplashHtml(_sl, installSection);
+  // Set enter button handler AFTER innerHTML is set
+  var _eb2 = document.getElementById('_enterBtn');
+  if(_eb2) _eb2.onclick = function(e){
+    e.stopPropagation();
+    try{ if(typeof applyLang==='function') applyLang(_sl); }catch(e2){}
+    try{ if(typeof setLang==='function') setLang(_sl); }catch(e2){}
+    overlay.style.opacity='0'; overlay.style.transition='opacity 0.4s';
+    setTimeout(function(){
+      if(overlay.parentNode) overlay.parentNode.removeChild(overlay);
+      if(typeof _currentUser!=='undefined' && _currentUser){
+        if(typeof portalOrLogin==='function') portalOrLogin();
+      } else {
+        if(typeof V==='function') V('applicant');
+        setTimeout(function(){
+          if(typeof showLG==='function') showLG();
+          var lp=document.getElementById('loginPanel');
+          if(lp) lp.style.display='flex';
+        }, 150);
+      }
+    }, 400);
+  };
 
   // iOS bouncing arrow
   if(isIOS){
@@ -3180,7 +3201,7 @@ body {
     <!-- Mobile: language + hamburger -->
     <div class="nav-mobile-right" id="navMobileRight">
       <select id="navLangSelectM" onchange="setLangFromNav(this.value)"
-        style="background:#0f172a;border:1.5px solid rgba(245,158,11,0.5);color:#fbbf24;border-radius:8px;padding:3px 6px;font-size:0.72rem;font-weight:700;cursor:pointer;outline:none;max-width:80px;">
+        style="background:#0f172a;border:1.5px solid rgba(245,158,11,0.5);color:#fbbf24;border-radius:8px;padding:3px 6px;font-size:0.72rem;font-weight:700;cursor:pointer;outline:none;min-width:78px;max-width:100px;">
         <option value="en">🇬🇧 EN</option>
         <option value="es">🇪🇸 ES</option>
         <option value="fr">🇫🇷 FR</option>
