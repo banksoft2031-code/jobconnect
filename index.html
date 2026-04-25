@@ -245,13 +245,16 @@ document.addEventListener('DOMContentLoaded', function(){
       ov.style.opacity='0'; ov.style.transition='opacity 0.4s';
       setTimeout(function(){
         if(ov.parentNode) ov.parentNode.removeChild(ov);
-        // If already logged in go to portal, else show login
+        // If already logged in go to portal, else show login form directly
         if(typeof _currentUser!=='undefined' && _currentUser){
           if(typeof portalOrLogin==='function') portalOrLogin();
         } else {
-          // Show login with option to make CV
           if(typeof V==='function') V('applicant');
-          if(typeof showLG==='function') showLG();
+          setTimeout(function(){
+            if(typeof showLG==='function') showLG();
+            var lp=document.getElementById('loginPanel');
+            if(lp) lp.style.display='flex';
+          }, 150);
         }
       }, 400);
     };
@@ -2670,6 +2673,21 @@ body { -webkit-overflow-scrolling: touch; overflow-y: auto !important; min-heigh
   }
 }
 
+/* Language selector — always fully visible */
+#navLangSelect {
+  min-width: 75px !important;
+  max-width: 110px !important;
+  overflow: visible !important;
+}
+@media(max-width:430px){
+  #navLangSelect {
+    min-width: 70px !important;
+    max-width: 90px !important;
+    font-size: 0.72rem !important;
+    padding: 3px 4px !important;
+  }
+}
+
 /* Toast — full width on mobile */
 @media(max-width:480px){
   .toast { 
@@ -3116,7 +3134,7 @@ body {
     <div class="nav-actions" id="navDesktop">
       <div class="lang-group">
         <select id="navLangSelect" onchange="setLangFromNav(this.value)"
-          style="background:#0f172a;border:1.5px solid rgba(245,158,11,0.5);color:#fbbf24;border-radius:8px;padding:4px 8px;font-size:0.78rem;font-weight:700;cursor:pointer;outline:none;max-width:140px;">
+          style="background:#0f172a;border:1.5px solid rgba(245,158,11,0.5);color:#fbbf24;border-radius:8px;padding:4px 6px;font-size:0.78rem;font-weight:700;cursor:pointer;outline:none;min-width:80px;max-width:110px;">
           <option value="en">🇬🇧 EN</option>
           <option value="es">🇪🇸 ES</option>
           <option value="fr">🇫🇷 FR</option>
