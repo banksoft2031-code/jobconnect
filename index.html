@@ -208,25 +208,36 @@ document.addEventListener('DOMContentLoaded', function(){
     var ov = document.getElementById('_fsOverlay');
     try{ if(typeof applyLang==='function') applyLang(lang); }catch(e){}
     try{ if(typeof setLang==='function') setLang(lang); }catch(e){}
-    if(ov){ ov.style.opacity='0'; ov.style.transition='opacity 0.4s'; }
-    setTimeout(function(){
-      if(ov && ov.parentNode) ov.parentNode.removeChild(ov);
-      if(typeof _currentUser!=='undefined' && _currentUser){
-        if(typeof portalOrLogin==='function') portalOrLogin();
-      } else {
-        // Show applicant view then login panel
-        document.querySelectorAll('.view-pane').forEach(function(el){el.classList.remove('active');});
-        var av = document.getElementById('applicantView');
-        if(av) av.classList.add('active');
-        var lp = document.getElementById('loginPanel');
-        if(lp) lp.style.display='flex';
-        var lf = document.getElementById('fbLoginForm');
-        if(lf) lf.style.display='block';
-        var ff = document.getElementById('fbForgotForm');
-        if(ff) ff.style.display='none';
-        if(typeof showLG==='function') showLG();
-      }
-    }, 450);
+    // Remove overlay immediately
+    if(ov && ov.parentNode) ov.parentNode.removeChild(ov);
+    if(typeof _currentUser!=='undefined' && _currentUser){
+      if(typeof portalOrLogin==='function') portalOrLogin();
+    } else {
+      // Force show applicant view + login panel directly
+      document.querySelectorAll('.view-pane').forEach(function(el){
+        el.classList.remove('active');
+        el.style.display='';
+      });
+      var av = document.getElementById('applicantView');
+      if(av){ av.classList.add('active'); av.style.display=''; av.style.opacity='1'; }
+      var lp = document.getElementById('loginPanel');
+      if(lp){ lp.style.display='flex'; }
+      var lf = document.getElementById('fbLoginForm');
+      if(lf){ lf.style.display='block'; }
+      var ff = document.getElementById('fbForgotForm');
+      if(ff){ ff.style.display='none'; }
+      var er = document.getElementById('fbLoginErr');
+      if(er){ er.textContent=''; }
+      window.scrollTo(0,0);
+      // Update CV link text
+      try{
+        var cvBtn=document.querySelector('[data-i18n="noCVMakeFirst"]');
+        if(cvBtn){
+          var texts={en:'New here? Create your CV to get started',es:'¿Primera vez? Crea tu CV para comenzar',fr:'Nouveau? Créez votre CV pour commencer',de:'Neu hier? Erstellen Sie Ihren Lebenslauf',it:'Nuovo? Crea il tuo CV per iniziare',pt:'Novo? Crie seu CV para começar',ja:'初めて？CVを作成して始めましょう',ko:'처음이신가요? CV를 만들어 시작하세요',zh:'首次来访？创建简历开始吧',hi:'नए हैं? CV बनाएं और शुरू करें',ne:'नयाँ हुनुहुन्छ? CV बनाउनुस् र सुरु गर्नुस्'};
+          cvBtn.textContent=texts[lang]||texts['en'];
+        }
+      }catch(e){}
+    }
   };
   var installSection = _buildInstallSection(_sl);
 
@@ -29727,56 +29738,51 @@ function doAdminResetPwd(id, btn){
 </script>
 
 <script>
-// ── KBC-style Quiz Sounds ──
+// ── Relaxed Quiz Sounds ──
 var _AC = null;
 function _getAC(){ if(!_AC){ try{ _AC = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } return _AC; }
 
-function _playTone(freq, dur, type, vol, delay){
+function _playTone(freq, dur, vol, delay){
   var ac = _getAC(); if(!ac) return;
   var o = ac.createOscillator();
   var g = ac.createGain();
   o.connect(g); g.connect(ac.destination);
-  o.type = type||'sine';
+  o.type = 'sine';
   o.frequency.value = freq;
-  g.gain.setValueAtTime(0, ac.currentTime+(delay||0));
-  g.gain.linearRampToValueAtTime(vol||0.3, ac.currentTime+(delay||0)+0.01);
-  g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime+(delay||0)+dur);
-  o.start(ac.currentTime+(delay||0));
-  o.stop(ac.currentTime+(delay||0)+dur+0.05);
+  var t = ac.currentTime + (delay||0);
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(vol||0.18, t+0.02);
+  g.gain.exponentialRampToValueAtTime(0.001, t+dur);
+  o.start(t);
+  o.stop(t+dur+0.05);
 }
 
-// Tick sound — plays every second during countdown
+// Gentle tick — soft low click
 function playSoundTick(){
-  _playTone(880, 0.06, 'square', 0.15);
+  _playTone(440, 0.05, 0.08);
 }
 
-// Correct answer — ascending triumphant
+// Correct — warm gentle chime "ding ding ding" rising
 function playSoundCorrect(){
-  var notes = [523,659,784,1047];
-  notes.forEach(function(f,i){ _playTone(f, 0.18, 'sine', 0.35, i*0.12); });
-  setTimeout(function(){
-    var fanfare = [784,784,784,659,784];
-    fanfare.forEach(function(f,i){ _playTone(f, 0.15, 'triangle', 0.4, i*0.1); });
-  }, 600);
+  var notes = [523, 659, 784, 1047];
+  notes.forEach(function(f,i){ _playTone(f, 0.3, 0.2, i*0.15); });
 }
 
-// Wrong answer — descending dramatic
+// Wrong — soft low "bom bom" gentle
 function playSoundWrong(){
-  _playTone(400, 0.15, 'sawtooth', 0.3);
-  _playTone(300, 0.2, 'sawtooth', 0.3, 0.15);
-  _playTone(200, 0.4, 'sawtooth', 0.25, 0.35);
+  _playTone(294, 0.25, 0.15);
+  _playTone(247, 0.35, 0.12, 0.28);
 }
 
-// Timer warning — fast beeps when time running out
+// Warning last 5s — gentle soft pulse
 function playSoundWarning(){
-  _playTone(660, 0.08, 'square', 0.2);
+  _playTone(523, 0.07, 0.1);
 }
 
-// Question appear — soft chime
+// Question appear — light pleasant ding
 function playSoundQuestion(){
-  _playTone(523, 0.1, 'sine', 0.2);
-  _playTone(659, 0.1, 'sine', 0.2, 0.12);
-  _playTone(784, 0.15, 'sine', 0.25, 0.24);
+  _playTone(659, 0.12, 0.15);
+  _playTone(784, 0.18, 0.18, 0.15);
 }
 
 window._quizSounds = {
