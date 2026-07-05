@@ -7270,7 +7270,7 @@ function _initFirebase(){
       } else {
         _userRole='applicant';
         _fbDb.ref('users/'+user.uid).set({
-          uid:user.uid,email:user.email,
+          uid:user.uid,id:user.uid,email:user.email,
           name:user.displayName||user.email.split('@')[0],
           role:'applicant',status:'active',
           createdAt:firebase.database.ServerValue.TIMESTAMP,
@@ -7312,7 +7312,7 @@ function fbRegister(email, pwd, name, onSuccess, onError){
   _fbAuth.createUserWithEmailAndPassword(email, pwd).then(function(cred){
     var uid = cred.user.uid;
     return _fbDb.ref('users/'+uid).set({
-      uid:uid, email:email, name:name, role:'applicant', status:'active',
+      uid:uid, id:uid, email:email, name:name, role:'applicant', status:'active',
       createdAt: firebase.database.ServerValue.TIMESTAMP, lastLogin: firebase.database.ServerValue.TIMESTAMP
     });
   }).then(onSuccess).catch(function(e){
@@ -20942,7 +20942,9 @@ function _restorePhoto(a){
   return a;
 }
 function getAppById(id){ 
-  var a = allApps().find(function(a){return a.id==id;}); 
+  var all = allApps();
+  var a = all.find(function(a){return a.id==id;});
+  if(!a) a = all.find(function(a){return a.uid==id || String(a.id)===String(id) || String(a.uid)===String(id);});
   return _restorePhoto(a);
 }
 function toast(m){var d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);setTimeout(function(){d.remove();},3200);}
@@ -27827,7 +27829,7 @@ function _patchedRenderList(){
     // Load from users node directly - single source of truth
     _fbDb.ref('users').once('value',function(snap){
       if(snap.exists()){
-        var toA=function(v){return v?(Array.isArray(v)?v:Object.values(v)):[];};
+        var toA=function(v){return v?Object.keys(v).map(function(k){var o=v[k]; if(o&&!o.id) o.id=o.uid||k; return o;}):[];};
         var users=toA(snap.val()).filter(function(u){
           return u && u.email && u.role==='applicant';
         });
