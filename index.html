@@ -5347,14 +5347,27 @@ function onFirebaseLoginSuccess(){
       if(qrCheck && qrCheck.passed){
         var refNo = 'FC-' + (qrCheck.correct||0) + '-' + (u.id||'').toString().slice(-4).toUpperCase();
         u._refNo = refNo;
-        var vcKey = 'fcVacReq_'+(u.id||u.email.replace(/[^a-z0-9]/gi,'_'));
+        var vcKey = 'fcVacReq_'+(u.email||'').replace(/[^a-z0-9]/gi,'_');
         var vcReq = null;
         try{ vcReq = JSON.parse(localStorage.getItem(vcKey)||'null'); }catch(e){}
         var statusHtml = '';
-        if(vcReq){
-          var stColor = vcReq.status==='approved'?'#10b981':vcReq.status==='denied'?'#ef4444':'#f59e0b';
-          var stText = vcReq.status==='approved'?'&#x2705; Approved':(vcReq.status==='denied'?'&#x274C; Denied':'&#x23F3; Pending');
-          statusHtml = '<div style="font-size:0.7rem;color:'+stColor+';margin-top:6px;font-weight:700;">'+stText+' — '+esc(vcReq.position)+'</div>';
+        function _vcStatusHtml(req){
+          var stColor = req.status==='approved'?'#10b981':req.status==='denied'?'#ef4444':'#f59e0b';
+          var stText = req.status==='approved'?'&#x2705; Approved':(req.status==='denied'?'&#x274C; Denied':'&#x23F3; Pending');
+          return '<div class="vc-status-line" style="font-size:0.7rem;color:'+stColor+';margin-top:6px;font-weight:700;">'+stText+' — '+esc(req.position)+'</div>';
+        }
+        if(vcReq){ statusHtml = _vcStatusHtml(vcReq); }
+        // Always double-check against Firebase (source of truth) — localStorage on this
+        // device can be stale/out of date with what the admin has approved elsewhere.
+        if(typeof _fbDb!=='undefined' && _fbDb){
+          _fbDb.ref('data/vacancy_requests/'+vcKey).once('value').then(function(snap){
+            var liveReq = snap.val();
+            if(!liveReq) return;
+            try{ localStorage.setItem(vcKey, JSON.stringify(liveReq)); }catch(e){}
+            document.querySelectorAll('.vc-status-line').forEach(function(el){
+              el.outerHTML = _vcStatusHtml(liveReq);
+            });
+          }).catch(function(){});
         }
         // Side card (portal dashboard)
         if(vcCard){
@@ -5442,7 +5455,7 @@ function onFirebaseLoginSuccess(){
       }).join('');
       if(invNotes && inv.notes){
         invNotes.style.display='block';
-        invNotes.textContent = '&#x1F4DD; '+inv.notes;
+        invNotes.innerHTML = '&#x1F4DD; '+esc(inv.notes);
       }
     } else if(invCard){
       invCard.style.display='none';
@@ -28867,7 +28880,7 @@ function submitVacancyInterest(position){
     status:   'approved',
     requestedAt: new Date().toLocaleString('en-GB')
   };
-  var key = 'fcVacReq_'+(matched.id||matched.email.replace(/[^a-z0-9]/gi,'_'));
+  var key = 'fcVacReq_'+(matched.email||'').replace(/[^a-z0-9]/gi,'_');
   localStorage.setItem(key, JSON.stringify(req));
   if(typeof _fbDb!=='undefined'&&_fbDb){
     _fbDb.ref('data/vacancy_requests/'+key).set(req).catch(function(){});
