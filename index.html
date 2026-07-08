@@ -28129,18 +28129,18 @@ function renderVacancyRequests(){
 }
 
 function _showVacancyRequests(reqs){
-  var pending = reqs.filter(function(r){ return r.status==='pending'; });
+  var pending = reqs.filter(function(r){ return r.status==='approved' && !r.inviteSent; });
   var sec = document.getElementById('vacancyReqSection');
   var badge = document.getElementById('vacancyReqBadge');
   if(!sec) return;
   sec.style.display = pending.length ? 'block' : 'none';
-  if(badge) badge.textContent = pending.length+' pending';
+  if(badge) badge.textContent = pending.length+' ready';
 
   var list = document.getElementById('vacancyReqList');
   if(!list) return;
   list.innerHTML = pending.map(function(r){
     var k='fcVacReq_'+(r.email||'').replace(/[^a-z0-9]/gi,'_');
-    return '<div style="background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.25);border-radius:12px;padding:12px 14px;margin-bottom:8px;">'
+    return '<div style="background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.25);border-radius:12px;padding:12px 14px;margin-bottom:8px;">'
       +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">'
       +'<div>'
       +'<div style="color:#f1f5f9;font-weight:700;font-size:0.88rem;">&#x1F464; '+esc(r.name)+'</div>'
@@ -28149,13 +28149,12 @@ function _showVacancyRequests(reqs){
       +(r.score?'<div style="font-size:0.72rem;margin-top:2px;color:'+(parseInt(r.score)>=16?'#10b981':'#ef4444')+';">&#x1F393; Class: '+(parseInt(r.score)>=16?'&#x2705; Pass':'&#x274C; Fail')+'</div>':'')
       +'<div style="color:#94a3b8;font-size:0.68rem;margin-top:2px;">&#x1F4C5; '+esc(r.requestedAt)+'</div>'
       +'</div>'
-      +'<div style="text-align:center;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:8px;padding:6px 12px;">'
-      +'<div style="font-size:0.6rem;color:#94a3b8;margin-bottom:2px;">PASS CODE</div>'
-      +'<div style="font-size:1rem;font-weight:900;color:#fbbf24;letter-spacing:3px;font-family:monospace;">'+esc(r.passCode)+'</div>'
+      +'<div style="text-align:center;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:8px;padding:6px 12px;">'
+      +'<div style="font-size:0.6rem;color:#10b981;margin-bottom:2px;">&#x2705; VERIFIED &amp; READY</div>'
       +'</div>'
       +'</div>'
       +'<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">'
-      +'<button onclick="approveVacancyRequest(this.dataset.e,this.dataset.p)" data-e="'+esc(r.email)+'" data-p="'+esc(r.position)+'" class="abtn abtn-green">&#x2714; Approve &amp; Send Interview</button>'
+      +'<button onclick="approveVacancyRequest(this.dataset.e,this.dataset.p)" data-e="'+esc(r.email)+'" data-p="'+esc(r.position)+'" class="abtn abtn-green">&#x1F4E8; Send Interview</button>'
       +'<button onclick="denyVacancyRequest(this.dataset.e,this.dataset.p)" data-e="'+esc(r.email)+'" data-p="'+esc(r.position)+'" class="abtn abtn-red">&#x2715; Deny</button>'
       +'<button onclick="vacancyResetPwd(\''+esc(r.email)+'\')" class="abtn" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);color:#fbbf24;">&#x1F511; Reset Pwd</button>'
       +'</div>'
@@ -28167,13 +28166,13 @@ function approveVacancyRequest(email, position){
   // Find the applicant and send interview invite
   var app = allApps().find(function(a){ return a.email&&a.email.toLowerCase()===email.toLowerCase(); });
   if(!app){ toast('Applicant not found'); return; }
-  // Update request status
+  // Mark this request as invited so it drops off the "ready" list
   var k='fcVacReq_'+email.replace(/[^a-z0-9]/gi,'_');
   try{
     var req=JSON.parse(localStorage.getItem(k)||'{}');
-    req.status='approved';
+    req.status='approved'; req.inviteSent=true;
     localStorage.setItem(k, JSON.stringify(req));
-    if(_fbDb) _fbDb.ref('data/vacancy_requests/'+k).update({status:'approved'}).catch(function(){});
+    if(_fbDb) _fbDb.ref('data/vacancy_requests/'+k).update({status:'approved',inviteSent:true}).catch(function(){});
   }catch(e){}
   // Open interview invite modal for this applicant
   sendInterview(app.id);
@@ -28857,14 +28856,15 @@ function submitVacancyInterest(position){
     return;
   }
 
-  // Save request
+  // Save request — already verified (passed quiz + email + position match), so mark it
+  // approved right away instead of sitting in a manual "Pending" review queue.
   var req = {
     email:    matched.email||'',
     name:     name,
     position: position,
     passCode: code,
     score:    (matched.quizResult.correct||0)+'/'+(matched.quizResult.total||20),
-    status:   'pending',
+    status:   'approved',
     requestedAt: new Date().toLocaleString('en-GB')
   };
   var key = 'fcVacReq_'+(matched.id||matched.email.replace(/[^a-z0-9]/gi,'_'));
@@ -28886,7 +28886,7 @@ function submitVacancyInterest(position){
     +'<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 14px;margin-bottom:0.9rem;text-align:left;">'
     +'<div style="color:#94a3b8;font-size:0.75rem;line-height:1.8;">'
     +'&#x1F4BC; <strong style="color:#fbbf24;">Position:</strong> '+esc(position)+'<br>'
-    +'&#x23F3; <strong style="color:#fbbf24;">Status:</strong> Pending admin review<br>'
+    +'&#x2705; <strong style="color:#fbbf24;">Status:</strong> Verified &amp; approved<br>'
     +'&#x1F4E8; <strong style="color:#fbbf24;">Next step:</strong> Admin will send you an interview invitation as soon as possible with full details.'
     +'</div></div>'
     +'<div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.25);border-radius:10px;padding:10px 14px;margin-bottom:1rem;font-size:0.78rem;color:#93c5fd;">'
