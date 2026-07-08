@@ -5332,7 +5332,14 @@ function onFirebaseLoginSuccess(){
         // Update history label
         var histLbl = hist.querySelector('div:first-child');
         if(histLbl) histLbl.innerHTML = t('dashPrevAttempts2');
-        histList.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;font-size:0.82rem;"><span style="color:#94a3b8;">&#x1F4C5; '+qr.date+' '+(qr.time||'')+'</span><span style="font-weight:700;color:'+(qr.passed?'#10b981':'#ef4444')+';">'+qr.correct+'/'+qr.total+' — '+(qr.passed?t('histPass'):t('histFail'))+'</span></div>';
+        var attempts = Array.isArray(u.quizAttempts) && u.quizAttempts.length ? u.quizAttempts.slice() : [qr];
+        attempts.sort(function(a,b){ return (b.ts||0)-(a.ts||0); }); // newest first
+        histList.innerHTML = attempts.map(function(a,i){
+          return '<div style="display:flex;align-items:center;justify-content:space-between;font-size:0.82rem;padding:4px 0;'+(i>0?'border-top:1px solid rgba(255,255,255,0.06);':'')+'">'
+            +'<span style="color:#94a3b8;">&#x1F4C5; '+a.date+' '+(a.time||'')+' <span style="color:#64748b;">(Try '+(attempts.length-i)+')</span></span>'
+            +'<span style="font-weight:700;color:'+(a.passed?'#10b981':'#ef4444')+';">'+a.correct+'/'+a.total+' — '+(a.passed?t('histPass'):t('histFail'))+' <span style="color:#64748b;font-weight:400;">('+(a.wrong||(a.total-a.correct))+' wrong)</span></span>'
+            +'</div>';
+        }).join('');
       }
     } else {
       if(scoreEl) scoreEl.textContent = '—';
@@ -24400,10 +24407,16 @@ function showResult(savedResult){
   if(!savedResult){
     var result={done:true,correct:correct,wrong:wrong,total:total,passed:passed,date:dateStr,time:timeStr};
     var app=allApps().find(function(a){return a.email===qState.email;});
+    // Log this attempt into the full history — every try, pass or fail, always recorded
+    if(app){
+      if(!Array.isArray(app.quizAttempts)) app.quizAttempts=[];
+      app.quizAttempts.push({correct:correct,wrong:wrong,total:total,passed:passed,date:dateStr,time:timeStr,ts:now.getTime()});
+    }
     // Never let a retake overwrite a previously PASSED result with a worse one
     if(app && app.quizResult && app.quizResult.passed && !passed){
       result = app.quizResult;
       savedResult = result;
+      saveData(); // still persist the new attempt log entry even though the displayed best score is unchanged
     } else {
       try{
         var key='kbc_r_'+qState.email;
@@ -24669,6 +24682,22 @@ function viewApp(id){
       +qr.correct+'/'+qr.total+' — '+qr.date+' '+(qr.time||'')
       +'</div></div>';
   }
+  // Full attempt history (every try, pass or fail, with date/time and right/wrong count)
+  var attempts = Array.isArray(a.quizAttempts) && a.quizAttempts.length ? a.quizAttempts.slice() : (qr?[qr]:[]);
+  attempts.sort(function(x,y){ return (y.ts||0)-(x.ts||0); });
+  var histHtml = '';
+  if(attempts.length){
+    histHtml = '<div class="modal-item" style="grid-column:1/-1;margin-top:0.5rem;">'
+      +'<div class="modal-lbl">&#x1F4CA; Quiz Attempt History ('+attempts.length+' total)</div>'
+      +'<div style="margin-top:6px;max-height:200px;overflow-y:auto;">'
+      +attempts.map(function(x,i){
+        return '<div style="display:flex;justify-content:space-between;align-items:center;font-size:0.78rem;padding:5px 8px;background:rgba(255,255,255,0.03);border-radius:6px;margin-bottom:4px;">'
+          +'<span style="color:#94a3b8;">Try '+(attempts.length-i)+' — &#x1F4C5; '+esc(x.date)+' '+esc(x.time||'')+'</span>'
+          +'<span style="font-weight:700;color:'+(x.passed?'#10b981':'#ef4444')+';">'+x.correct+'/'+x.total+' &nbsp;<span style="color:#10b981;">&#x2713;'+x.correct+'</span> <span style="color:#ef4444;">&#x2715;'+(x.wrong||(x.total-x.correct))+'</span></span>'
+          +'</div>';
+      }).join('')
+      +'</div></div>';
+  }
   var fields=[
     ['email',t('cvEmail'),'email'],['phone',t('cvPhone'),'phone'],
     ['dob',t('cvDob'),null],['gender',t('cvGender'),null],
@@ -24691,7 +24720,7 @@ function viewApp(id){
       var val=a[f[0]]||'-';
       var disp = f[2] ? displayContact(val, f[2]) : esc(val);
       return'<div class="modal-item"><div class="modal-lbl">'+f[1]+'</div><div class="modal-val">'+disp+'</div></div>';
-    }).join('')+qHtml+'</div>'
+    }).join('')+qHtml+histHtml+'</div>'
     +(a.certifications&&a.certifications.length?'<div class="modal-item" style="margin-top:0.7rem;"><div class="modal-lbl">&#x1F3C5; '+t('cvCertifications')+'</div><div class="modal-val">'+a.certifications.filter(function(c){return c.trim();}).map(function(c){return'<div style="display:flex;align-items:center;gap:7px;margin-bottom:3px;"><div style="width:6px;height:6px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></div><span>'+esc(c)+'</span></div>';}).join('')+'</div></div>':'')
     +'<div style="display:flex;gap:0.5rem;margin-top:1rem;justify-content:flex-end;flex-wrap:wrap;">'
     +'<button onclick="dlPDF(getAppById('+a.id+'));this.closest(\'.modal-bg\').remove();" class="btn btn-gold btn-sm">&#x1F4C4; '+t('btnPDF')+'</button>'
