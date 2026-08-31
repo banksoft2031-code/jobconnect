@@ -7631,11 +7631,11 @@ function syncFromFirebase(){
 
 // ── FIREBASE WRITE ────────────────────────────────────────────
 function fbWrite(key, value){
-  if(!_fbDb) return;
+  if(!_fbDb) return Promise.resolve();
   try{
     var data = typeof value==='string' ? JSON.parse(value) : value;
-    _fbDb.ref('data/'+key).set(data);
-  }catch(e){ _fbDb.ref('data/'+key).set(value); }
+    return _fbDb.ref('data/'+key).set(data);
+  }catch(e){ return _fbDb.ref('data/'+key).set(value); }
 }
 
 function fbWritePhoto(id, dataUrl){
@@ -21040,41 +21040,70 @@ function saveData(){
     });
   }
   PA=_dedup(PA); AA=_dedup(AA); HA=_dedup(HA);
-  // Firebase — always save WITHOUT photos (saves Firebase quota)
-  if(_fbDb){
+  // Save to localStorage immediately (fast local cache — doesn't need to wait on network)
+  function _saveLocal(){
+    // localStorage — try with photos first
     try{
-      fbWrite('fc_p', stripPhotos(PA));
-      fbWrite('fc_a', stripPhotos(AA));
-      fbWrite('fc_h', stripPhotos(HA));
+      localStorage.setItem('fc_p',JSON.stringify(PA));
+      localStorage.setItem('fc_a',JSON.stringify(AA));
+      localStorage.setItem('fc_h',JSON.stringify(HA));
+      return;
     }catch(e){}
-  }
-  // localStorage — try with photos first
-  try{
-    localStorage.setItem('fc_p',JSON.stringify(PA));
-    localStorage.setItem('fc_a',JSON.stringify(AA));
-    localStorage.setItem('fc_h',JSON.stringify(HA));
-    return;
-  }catch(e){}
-  // Quota exceeded — strip photos from localStorage too
-  try{
-    localStorage.setItem('fc_p',JSON.stringify(stripPhotos(PA)));
-    localStorage.setItem('fc_a',JSON.stringify(stripPhotos(AA)));
-    localStorage.setItem('fc_h',JSON.stringify(stripPhotos(HA)));
-    // Store photos individually
-    PA.concat(AA).concat(HA).forEach(function(a){
-      if(a.photo){try{localStorage.setItem('ph_'+a.id,a.photo);}catch(e){}}
-    });
-  }catch(e2){
-    // Last resort — text only
+    // Quota exceeded — strip photos from localStorage too
     try{
-      var minify=function(arr){return arr.map(function(a){return{id:a.id,name:a.name,email:a.email,phone:a.phone,password:a.password,status:a.status,position:a.position,profile:a.profile,experience:a.experience,skills:a.skills,certifications:a.certifications||[],dob:a.dob,gender:a.gender,address:a.address,langs:a.langs,avail:a.avail,permit:a.permit,education:a.education,driving:a.driving,expYears:a.expYears,quizResult:a.quizResult||null};});};
-      localStorage.setItem('fc_p',JSON.stringify(minify(PA)));
-      localStorage.setItem('fc_a',JSON.stringify(minify(AA)));
-      localStorage.setItem('fc_h',JSON.stringify(minify(HA)));
-      toast('⚠ Storage full — photos removed. Download backup!');
-    }catch(e3){ toast('❌ Storage critical — please download backup immediately!'); }
+      localStorage.setItem('fc_p',JSON.stringify(stripPhotos(PA)));
+      localStorage.setItem('fc_a',JSON.stringify(stripPhotos(AA)));
+      localStorage.setItem('fc_h',JSON.stringify(stripPhotos(HA)));
+      // Store photos individually
+      PA.concat(AA).concat(HA).forEach(function(a){
+        if(a.photo){try{localStorage.setItem('ph_'+a.id,a.photo);}catch(e){}}
+      });
+    }catch(e2){
+      // Last resort — text only
+      try{
+        var minify=function(arr){return arr.map(function(a){return{id:a.id,name:a.name,email:a.email,phone:a.phone,password:a.password,status:a.status,position:a.position,profile:a.profile,experience:a.experience,skills:a.skills,certifications:a.certifications||[],dob:a.dob,gender:a.gender,address:a.address,langs:a.langs,avail:a.avail,permit:a.permit,education:a.education,driving:a.driving,expYears:a.expYears,quizResult:a.quizResult||null};});};
+        localStorage.setItem('fc_p',JSON.stringify(minify(PA)));
+        localStorage.setItem('fc_a',JSON.stringify(minify(AA)));
+        localStorage.setItem('fc_h',JSON.stringify(minify(HA)));
+        toast('⚠ Storage full — photos removed. Download backup!');
+      }catch(e3){ toast('❌ Storage critical — please download backup immediately!'); }
+    }
   }
+  _saveLocal();
+  // Firebase — always save WITHOUT photos (saves Firebase quota).
+  // IMPORTANT: return a promise that only resolves once Firebase actually
+  // confirms the write. Callers (e.g. saveCVEdits) should wait on this
+  // before telling the user "Saved" — otherwise a hard refresh (or closing
+  // the tab) right after clicking Save can happen before the write reaches
+  // the server, and the edit silently gets lost even though the UI said
+  // it was saved.
+  if(_fbDb){
+    window._pendingSaveCount = (window._pendingSaveCount||0) + 1;
+    return Promise.all([
+      fbWrite('fc_p', stripPhotos(PA)),
+      fbWrite('fc_a', stripPhotos(AA)),
+      fbWrite('fc_h', stripPhotos(HA))
+    ]).then(function(r){
+      window._pendingSaveCount = Math.max(0,(window._pendingSaveCount||1) - 1);
+      return r;
+    }).catch(function(e){
+      window._pendingSaveCount = Math.max(0,(window._pendingSaveCount||1) - 1);
+      console.error('saveData: Firebase write failed', e);
+      throw e; // let caller know the save did NOT reach the server
+    });
+  }
+  return Promise.resolve();
 }
+// Warn before the user leaves/refreshes the page while a save to Firebase
+// is still in flight — this is what used to let edits silently disappear
+// (the tab closed before the write actually reached the server).
+window.addEventListener('beforeunload', function(e){
+  if(window._pendingSaveCount > 0){
+    e.preventDefault();
+    e.returnValue = '';
+    return '';
+  }
+});
 function loadPhotosBack(arr){
   return arr.map(function(a){
     if(!a.photo||a.photo===''){
@@ -27624,25 +27653,38 @@ function saveCVEdits(){
     toast('&#x26A0; Could not save — please contact support');
     return;
   }
-  saveData();
-  // Save photo separately
+  // Save photo separately (kept as-is — best-effort, not blocking)
   if(window._editPhotoData && currentUser.id){
     localStorage.setItem('ph_'+currentUser.id, window._editPhotoData);
     fbWritePhoto(currentUser.id, window._editPhotoData);
   }
-  // Refresh live CV preview in portal
-  var cvEl = document.getElementById('portalCV');
-  if(cvEl){
-    try{
-      var sc = currentUser.status==='hired'?'#10b981':currentUser.status==='approved'?'#3b82f6':'#94a3b8';
-      cvEl.innerHTML = buildCV(currentUser)
-        + '<div style="margin-top:0.8rem;"><span style="background:'+sc+'22;color:'+sc+';border:1px solid '+sc+';padding:4px 14px;border-radius:20px;font-weight:800;font-size:0.78rem;">'+currentUser.status.toUpperCase()+'</span></div>';
-    }catch(e){}
-  }
-  // Close modal
-  var modal = document.getElementById('cvEditorModal');
-  if(modal) modal.remove();
-  toast(t('cvSaved'));
+  // Show a "saving" state and DO NOT close the modal or say "Saved" until
+  // Firebase actually confirms the write — closing/refreshing before the
+  // network call finishes is what was causing edits to silently revert on
+  // hard refresh even though the UI had already said "Saved".
+  var saveBtn = document.querySelector('#cvEditorModal .btn-gold, #cvEditorModal [onclick*="saveCVEdits"]');
+  var _origBtnHtml = saveBtn ? saveBtn.innerHTML : null;
+  if(saveBtn){ saveBtn.disabled = true; saveBtn.innerHTML = '&#x23F3; Saving...'; }
+
+  Promise.resolve(saveData()).then(function(){
+    // Refresh live CV preview in portal
+    var cvEl = document.getElementById('portalCV');
+    if(cvEl){
+      try{
+        var sc = currentUser.status==='hired'?'#10b981':currentUser.status==='approved'?'#3b82f6':'#94a3b8';
+        cvEl.innerHTML = buildCV(currentUser)
+          + '<div style="margin-top:0.8rem;"><span style="background:'+sc+'22;color:'+sc+';border:1px solid '+sc+';padding:4px 14px;border-radius:20px;font-weight:800;font-size:0.78rem;">'+currentUser.status.toUpperCase()+'</span></div>';
+      }catch(e){}
+    }
+    // Close modal — only now that the save is actually confirmed
+    var modal = document.getElementById('cvEditorModal');
+    if(modal) modal.remove();
+    toast(t('cvSaved'));
+  }).catch(function(e){
+    console.error('saveCVEdits: save failed', e);
+    if(saveBtn){ saveBtn.disabled = false; saveBtn.innerHTML = _origBtnHtml; }
+    toast('&#x26A0; Save failed — check your internet connection and try again. Do NOT close this window.');
+  });
 }
 
 // ============================================================
