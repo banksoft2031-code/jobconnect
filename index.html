@@ -5496,22 +5496,22 @@ function onFirebaseLoginSuccess(){
     return;
   }
 
-  // First try users node directly (faster, works even if data/fc_p not synced)
-  _fbDb.ref('users').orderByChild('email').equalTo(uEmail).once('value').then(function(uSnap){
-    if(uSnap.exists()){
-      var users = Object.values(uSnap.val()||{});
-      var u = users.find(function(x){return x&&x.email&&x.email.toLowerCase()===uEmail;});
-      if(u){ loadDashboard(u); return; }
+  // Load the REAL applicant record first (data/fc_p,a,h — has the correct id, CV data,
+  // quiz history etc.) — the bare 'users' node record is only a lightweight fallback.
+  _fbDb.ref('data').get().then(function(snap){
+    if(snap.exists()){
+      var d=snap.val(), toA=function(v){return v?(Array.isArray(v)?v:Object.values(v)):[]; };
+      PA=toA(d.fc_p); AA=toA(d.fc_a); HA=toA(d.fc_h);
     }
-    // Fallback: load from data node
-    _fbDb.ref('data').get().then(function(snap){
-      if(snap.exists()){
-        var d=snap.val(), toA=function(v){return v?(Array.isArray(v)?v:Object.values(v)):[]; };
-        PA=toA(d.fc_p); AA=toA(d.fc_a); HA=toA(d.fc_h);
+    var uFromData = allApps().find(function(a){ return a.email && a.email.toLowerCase()===uEmail; });
+    if(uFromData){ loadDashboard(uFromData); return; }
+    // No full applicant record yet — fall back to the lightweight users node
+    _fbDb.ref('users').orderByChild('email').equalTo(uEmail).once('value').then(function(uSnap){
+      if(uSnap.exists()){
+        var users = Object.values(uSnap.val()||{});
+        var u = users.find(function(x){return x&&x.email&&x.email.toLowerCase()===uEmail;});
+        if(u){ loadDashboard(u); return; }
       }
-      var u2 = allApps().find(function(a){ return a.email && a.email.toLowerCase()===uEmail; });
-      if(u2){ loadDashboard(u2); return; }
-      // No application found
       var nameEl2 = document.getElementById('dash-name');
       if(nameEl2) nameEl2.textContent = _currentUser.email;
       var welEl2 = document.getElementById('dash-welcome');
@@ -5523,14 +5523,13 @@ function onFirebaseLoginSuccess(){
       showDashSection();
     });
   }).catch(function(){
-    // users node failed - try data node
-    _fbDb.ref('data').get().then(function(snap){
-      if(snap.exists()){
-        var d=snap.val(), toA=function(v){return v?(Array.isArray(v)?v:Object.values(v)):[]; };
-        PA=toA(d.fc_p); AA=toA(d.fc_a); HA=toA(d.fc_h);
+    // data node failed — try users node
+    _fbDb.ref('users').orderByChild('email').equalTo(uEmail).once('value').then(function(uSnap){
+      if(uSnap.exists()){
+        var users = Object.values(uSnap.val()||{});
+        var u3 = users.find(function(x){return x&&x.email&&x.email.toLowerCase()===uEmail;});
+        if(u3){ loadDashboard(u3); return; }
       }
-      var u3 = allApps().find(function(a){ return a.email && a.email.toLowerCase()===uEmail; });
-      if(u3){ loadDashboard(u3); return; }
       var nameEl5 = document.getElementById('dash-name');
       if(nameEl5) nameEl5.textContent = _currentUser.email;
       showDashSection();
@@ -26339,11 +26338,19 @@ function printApplicantsList(){
     var matchSearch = !s||(a.name||'').toLowerCase().includes(s)||(a.email||'').toLowerCase().includes(s)||(a.position||'').toLowerCase().includes(s);
     return matchStatus && matchSearch;
   });
+  // Sort by highest quiz score first (applicants who never took the quiz go last)
+  f.sort(function(a,b){
+    var ac=(a.quizResult&&a.quizResult.correct)||-1;
+    var bc=(b.quizResult&&b.quizResult.correct)||-1;
+    return bc-ac;
+  });
 
   var isSA = (_userRole === 'super_admin');
   var rows = f.map(function(a,i){
     var qr = a.quizResult || {};
-    var quizInfo = qr.correct ? qr.correct+'/'+qr.total+(qr.passed?' ✓':' ✗') : '—';
+    var attemptCount = Array.isArray(a.quizAttempts) ? a.quizAttempts.length : (qr.correct!=null?1:0);
+    var quizInfo = qr.correct!=null ? qr.correct+'/'+qr.total+(qr.passed?' ✓':' ✗') : '—';
+    var attemptsInfo = attemptCount ? attemptCount+'x' : '—';
     // Mask email & phone for admin/staff — full only for super_admin
     var displayEmail = isSA ? esc(a.email||'') : esc(maskEmail(a.email||''));
     var displayPhone = isSA ? esc(a.phone||'—') : esc(maskPhone(a.phone||''));
@@ -26354,6 +26361,7 @@ function printApplicantsList(){
       +'<td style="padding:6px;font-size:11px;">'+esc(a.position||'')+'</td>'
       +'<td style="padding:6px;font-size:11px;text-transform:capitalize;">'+esc(a.status||'')+'</td>'
       +'<td style="padding:6px;font-size:11px;">'+quizInfo+'</td>'
+      +'<td style="padding:6px;font-size:11px;text-align:center;">'+attemptsInfo+'</td>'
       +'<td style="padding:6px;font-size:11px;color:#64748b;">'+displayPhone+'</td>'
       +'<td style="padding:6px;font-size:11px;color:#64748b;">'+esc(a.address||'—')+'</td>'
       +'</tr>';
@@ -26363,8 +26371,8 @@ function printApplicantsList(){
     +'<style>body{font-family:Arial,sans-serif;padding:20px;}h2{color:#b45309;}table{width:100%;border-collapse:collapse;font-size:11px;}th{background:#f59e0b;color:#000;padding:7px;text-align:left;}td{padding:5px 7px;border-bottom:1px solid #eee;}tr:nth-child(even){background:#fafafa;}.footer{margin-top:15px;color:#999;font-size:10px;text-align:right;}</style>'
     +'</head><body>'
     +'<h2>&#x1F4CB; Applicants Report — FusionChef Madrid</h2>'
-    +'<p style="color:#666;font-size:12px;">Filter: <strong>'+(st==='all'?'All':st)+'</strong> &nbsp;|&nbsp; Total: <strong>'+f.length+'</strong> &nbsp;|&nbsp; Printed by: <strong>'+(_currentUser?_currentUser.email:'admin')+'</strong> &nbsp;|&nbsp; '+new Date().toLocaleString()+'</p>'    +(isSA?'':'<p style="color:#b45309;font-size:11px;background:#fff8f0;border-left:3px solid #f59e0b;padding:4px 8px;">⚠️ Contact details (email, phone) are masked. Super Admin access required for full details.</p>')
-    +'<table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Position</th><th>Status</th><th>Quiz</th><th>Phone</th><th>Location</th></tr></thead><tbody>'+rows+'</tbody></table>'
+    +'<p style="color:#666;font-size:12px;">Filter: <strong>'+(st==='all'?'All':st)+'</strong> &nbsp;|&nbsp; Total: <strong>'+f.length+'</strong> &nbsp;|&nbsp; Sorted by: <strong>Highest quiz score</strong> &nbsp;|&nbsp; Printed by: <strong>'+(_currentUser?_currentUser.email:'admin')+'</strong> &nbsp;|&nbsp; '+new Date().toLocaleString()+'</p>'    +(isSA?'':'<p style="color:#b45309;font-size:11px;background:#fff8f0;border-left:3px solid #f59e0b;padding:4px 8px;">⚠️ Contact details (email, phone) are masked. Super Admin access required for full details.</p>')
+    +'<table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Position</th><th>Status</th><th>Quiz</th><th>Attempts</th><th>Phone</th><th>Location</th></tr></thead><tbody>'+rows+'</tbody></table>'
     +'<div class="footer">FusionChef Madrid Job Connect — Confidential'+(isSA?'':' | Contact details masked for privacy')+'</div>'
     +'</body></html>';
 
@@ -27578,14 +27586,26 @@ function saveCVEdits(){
     window._editWorkPhotos = {};
   }
 
-  // Save back to PA/AA/HA arrays
+  // Save back to PA/AA/HA arrays — match by id OR email (currentUser may have come from
+  // the Firebase 'users' node, whose id differs from the real applicant record's id)
+  var _cuEmail = (currentUser.email||'').trim().toLowerCase();
+  var _matched = false;
   [PA, AA, HA].forEach(function(arr){
     arr.forEach(function(a, i){
-      if(a.id === currentUser.id){
+      var idMatch = a.id === currentUser.id;
+      var emailMatch = a.email && a.email.trim().toLowerCase()===_cuEmail;
+      if(idMatch || emailMatch){
+        currentUser.id = a.id; // keep the REAL applicant-record id going forward
         Object.assign(arr[i], currentUser);
+        _matched = true;
       }
     });
   });
+  if(!_matched){
+    console.error('saveCVEdits: no matching applicant record found for', currentUser.email);
+    toast('&#x26A0; Could not save — please contact support');
+    return;
+  }
   saveData();
   // Save photo separately
   if(window._editPhotoData && currentUser.id){
