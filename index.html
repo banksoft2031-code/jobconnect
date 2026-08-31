@@ -7598,12 +7598,30 @@ function syncFromFirebase(){
       // Auto-clear stale users cache before writing fresh data
       try{ localStorage.removeItem('fc_users_cache'); }catch(e){}
       localStorage.setItem('fc_users_cache',JSON.stringify(snap.val()));
-      // Fill PA/AA/HA from users node
+      // Fill PA/AA/HA from users node — but NEVER overwrite an existing full
+      // CV record (from data/fc_p, fc_a, fc_h) with the lightweight users-node
+      // profile. The users node only has {uid,email,name,role,status,...} and
+      // is missing all CV fields (profile, experience, skills, education,
+      // dob, address, photo, etc). Overwriting here was the bug that made
+      // saved CV edits disappear after logout+login (a 'users/<uid>' write —
+      // e.g. the lastLogin timestamp set on every login — used to trigger
+      // this listener and blow away the rich in-memory applicant data).
+      // We only ADD applicants that don't already exist anywhere in PA/AA/HA
+      // (matched by email), so brand-new users still show up, but nobody's
+      // real CV data ever gets clobbered by this listener again.
       var applicants = ul.filter(function(u){ return u && u.email && u.role==='applicant'; });
       if(applicants.length){
-        PA = applicants.filter(function(u){ return u.status!=='approved'&&u.status!=='hired'; });
-        AA = applicants.filter(function(u){ return u.status==='approved'; });
-        HA = applicants.filter(function(u){ return u.status==='hired'; });
+        var _existingEmails = {};
+        [PA,AA,HA].forEach(function(arr){
+          (arr||[]).forEach(function(a){ if(a&&a.email) _existingEmails[a.email.toLowerCase()]=true; });
+        });
+        applicants.forEach(function(u){
+          var em = (u.email||'').toLowerCase();
+          if(_existingEmails[em]) return; // already have the full record — keep it as-is
+          if(u.status==='approved') AA.push(u);
+          else if(u.status==='hired') HA.push(u);
+          else PA.push(u);
+        });
       }
       try{ var _av=document.getElementById('adminView'); if(_av&&_av.classList.contains('active')&&typeof renderList==='function') renderList(); }catch(e){}
     }catch(e){}
