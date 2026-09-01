@@ -24512,6 +24512,16 @@ function showResult(savedResult){
       if(app){app.quizResult=result;saveData();}
       savedResult=result;
     }
+    // currentUser can be a different (stale) object than `app` if a Firebase
+    // sync replaced PA/AA/HA with fresh objects since login — without this,
+    // the attempt saves correctly (admin sees it) but the applicant's own
+    // "Previous Attempts" panel keeps showing blank/old because it renders
+    // from currentUser, which never got the update.
+    if(typeof currentUser!=='undefined' && currentUser && currentUser.email===qState.email){
+      currentUser.quizAttempts = app ? app.quizAttempts : currentUser.quizAttempts;
+      currentUser.quizResult = app ? app.quizResult : currentUser.quizResult;
+      try{ if(typeof loadDashboard==='function') loadDashboard(currentUser); }catch(e){}
+    }
   }
 
   var pg=document.getElementById('qProg');if(pg)pg.style.width='100%';
