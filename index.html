@@ -25213,6 +25213,19 @@ function closeQForm(){var m=document.getElementById('qFormModal');if(m)m.remove(
 
 function openQuizManager(defaultPos){
   var pos=defaultPos||'General';
+  // Sync latest questions from Firebase before opening
+  try{
+    _fbDb.ref('data/fc_posquiz').once('value').then(function(snap){
+      if(snap.val()){
+        var pq=snap.val();
+        localStorage.setItem('fc_posquiz',JSON.stringify(pq));
+        Object.keys(pq).forEach(function(k){ if(pq[k]&&pq[k].length) POS_QUIZ[k]=pq[k]; });
+      }
+      _openQuizManagerUI(pos);
+    }).catch(function(){ _openQuizManagerUI(pos); });
+  }catch(e){ _openQuizManagerUI(pos); }
+}
+function _openQuizManagerUI(pos){
   var positions=['General','Sushi Man','Sushi Woman','Sushi Chef (Male)','Sushi Chef (Female)',
     'Executive Chef','Sous Chef','Pastry Chef','Line Cook','Kitchen Assistant','Dishwasher',
     'Waiter/Waitress','Bartender','Barista','Host/Hostess','Restaurant Manager','F&B Supervisor',
@@ -25250,7 +25263,8 @@ function openQuizManager(defaultPos){
     +'<h3 style="color:#fbbf24;font-size:1.1rem;margin:0;">&#x1F4CB; '+t('quizMgrTitle')+'</h3>'
     +'<button class="btn btn-red btn-sm" onclick="closeQuizMgr()">&#x2715; '+t('succClose')+'</button>'
     +'</div>'
-    +'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:0.9rem;flex-shrink:0;max-height:110px;overflow-y:auto;padding-bottom:4px;">'
+    +'<div style="position:relative;margin-bottom:0.9rem;flex-shrink:0;">'
+    +'<div id="qmTabScroll" style="display:flex;flex-wrap:wrap;gap:4px;max-height:110px;overflow-y:auto;padding-bottom:4px;">'
     +positions.map(function(p){
       var label = posKeyMap3[p] ? t(posKeyMap3[p]) : p;
       return '<button data-p="'+p+'" onclick="switchQuizPos(this.dataset.p)" id="qptab-'+p.replace(/[^a-z0-9]/gi,'_')+'" style="padding:4px 10px;border-radius:20px;font-size:0.68rem;font-weight:700;cursor:pointer;border:1px solid;font-family:inherit;transition:all 0.15s;white-space:nowrap;'
@@ -25258,7 +25272,12 @@ function openQuizManager(defaultPos){
         +'">'+label+'</button>';
     }).join('')
     +'</div>'
-    +'<div id="qmListWrap" style="overflow-y:auto;flex:1;padding-right:4px;"></div>'
+    +'<div style="display:flex;justify-content:center;gap:8px;margin-top:4px;">'
+    +'<button onclick="document.getElementById(\"qmTabScroll\").scrollTop-=60" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);color:#fbbf24;border-radius:20px;padding:2px 16px;cursor:pointer;font-size:0.85rem;">&#x25B2;</button>'
+    +'<button onclick="document.getElementById(\"qmTabScroll\").scrollTop+=60" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);color:#fbbf24;border-radius:20px;padding:2px 16px;cursor:pointer;font-size:0.85rem;">&#x25BC;</button>'
+    +'</div>'
+    +'</div>'
+    +'<div id="qmListWrap" style="overflow-y:auto;flex:1;padding-right:4px;min-height:200px;"></div>'
     +'<div style="display:flex;gap:8px;margin-top:0.8rem;flex-shrink:0;flex-wrap:wrap;">'
     +'<button class="btn btn-gold btn-sm" onclick="addQuestion()">&#x2795; '+t('addQuestion')+'</button>'
     +'<button class="btn btn-red btn-sm" onclick="resetQuizPos()">&#x21BA; '+t('resetDefault')+'</button>'
