@@ -24417,7 +24417,7 @@ function updateQBadges(){
 
 
 function startQuiz(){
-  qState.idx=0;qState.correct=0;qState.wrong=0;qState.answered=false;
+  qState.idx=0;qState.correct=0;qState.wrong=0;qState.answered=false;qState.answers=[];
   updateQBadges();
   var pg=document.getElementById('qProg');if(pg)pg.style.width='0%';
   var curLang=(typeof LANG!='undefined')?LANG:'en';
@@ -24482,6 +24482,8 @@ function answerQ(chosen){
   var correct=q.correct;
   var isRight=(chosen===correct);
   if(isRight)qState.correct++;else qState.wrong++;
+  if(!Array.isArray(qState.answers)) qState.answers=[];
+  qState.answers.push({qid:q.id,q:q.text,chosen:chosen,correct:correct,right:isRight});
   try{ if(window._quizSounds){ if(isRight) window._quizSounds.correct(); else window._quizSounds.wrong(); } }catch(e){}
   updateQBadges();
   // Highlight options using .opt class
@@ -24521,12 +24523,12 @@ function showResult(savedResult){
   var timeStr=now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
 
   if(!savedResult){
-    var result={done:true,correct:correct,wrong:wrong,total:total,passed:passed,date:dateStr,time:timeStr};
+    var result={done:true,correct:correct,wrong:wrong,total:total,passed:passed,date:dateStr,time:timeStr,answers:qState.answers||[]};
     var app=allApps().find(function(a){return a.email===qState.email;});
     // Log this attempt into the full history — every try, pass or fail, always recorded
     if(app){
       if(!Array.isArray(app.quizAttempts)) app.quizAttempts=[];
-      app.quizAttempts.push({correct:correct,wrong:wrong,total:total,passed:passed,date:dateStr,time:timeStr,ts:now.getTime()});
+      app.quizAttempts.push({correct:correct,wrong:wrong,total:total,passed:passed,date:dateStr,time:timeStr,ts:now.getTime(),answers:qState.answers||[]});
     }
     // Never let a retake overwrite a previously PASSED result with a worse one
     if(app && app.quizResult && app.quizResult.passed && !passed){
@@ -24824,6 +24826,26 @@ function viewApp(id){
       }).join('')
       +'</div></div>';
   }
+  // Answer detail section — admin only, hidden from applicant
+  var ansHtml = '';
+  var lastAttempt = attempts.length ? attempts[0] : null;
+  if(lastAttempt && Array.isArray(lastAttempt.answers) && lastAttempt.answers.length){
+    var ABCD=['A','B','C','D'];
+    ansHtml = '<div class="modal-item" style="grid-column:1/-1;margin-top:0.8rem;">'
+      +'<div class="modal-lbl" style="display:flex;align-items:center;gap:8px;">&#x1F511; Answer Sheet <span style="font-size:0.7rem;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#f87171;border-radius:20px;padding:2px 8px;">Teacher View Only</span></div>'
+      +'<div style="margin-top:8px;max-height:280px;overflow-y:auto;font-size:0.75rem;">'
+      +lastAttempt.answers.map(function(ans,i){
+        var chosenLetter = ans.chosen>=0 ? ABCD[ans.chosen] : '—';
+        var correctLetter = ABCD[ans.correct];
+        var icon = ans.right ? '✅' : '❌';
+        return '<div style="padding:5px 8px;margin-bottom:3px;border-radius:6px;background:'+(ans.right?'rgba(16,185,129,0.07)':'rgba(239,68,68,0.07)')+';border-left:3px solid '+(ans.right?'#10b981':'#ef4444')+';display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">'
+          +'<span style="color:#94a3b8;flex:1;line-height:1.4;">'+icon+' Q'+(i+1)+'. '+esc(ans.q)+'</span>'
+          +'<span style="white-space:nowrap;font-weight:700;color:'+(ans.right?'#10b981':'#ef4444')+';">'+chosenLetter+' / <span style="color:#64748b;">'+correctLetter+'</span></span>'
+          +'</div>';
+      }).join('')
+      +'</div></div>';
+  }
+
   var fields=[
     ['email',t('cvEmail'),'email'],['phone',t('cvPhone'),'phone'],
     ['dob',t('cvDob'),null],['gender',t('cvGender'),null],
@@ -24846,7 +24868,7 @@ function viewApp(id){
       var val=a[f[0]]||'-';
       var disp = f[2] ? displayContact(val, f[2]) : esc(val);
       return'<div class="modal-item"><div class="modal-lbl">'+f[1]+'</div><div class="modal-val">'+disp+'</div></div>';
-    }).join('')+qHtml+histHtml+'</div>'
+    }).join('')+qHtml+histHtml+ansHtml+'</div>'
     +(a.certifications&&a.certifications.length?'<div class="modal-item" style="margin-top:0.7rem;"><div class="modal-lbl">&#x1F3C5; '+t('cvCertifications')+'</div><div class="modal-val">'+a.certifications.filter(function(c){return c.trim();}).map(function(c){return'<div style="display:flex;align-items:center;gap:7px;margin-bottom:3px;"><div style="width:6px;height:6px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></div><span>'+esc(c)+'</span></div>';}).join('')+'</div></div>':'')
     +'<div style="display:flex;gap:0.5rem;margin-top:1rem;justify-content:flex-end;flex-wrap:wrap;">'
     +'<button onclick="dlPDF(getAppById('+a.id+'));this.closest(\'.modal-bg\').remove();" class="btn btn-gold btn-sm">&#x1F4C4; '+t('btnPDF')+'</button>'
