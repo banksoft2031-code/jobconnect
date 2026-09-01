@@ -9482,6 +9482,14 @@ function getQuizForPos(pos){
   var map={'Sushi Man':'Sushi Man','Sushi Woman':'Sushi Woman',
     'Sushi Chef (Male)':'Sushi Chef (Male)','Sushi Chef (Female)':'Sushi Chef (Female)'};
   var key=map[pos]||pos;
+  // Check localStorage first (admin may have customized questions via Quiz Manager)
+  try{
+    var _savedPQ=localStorage.getItem('fc_posquiz');
+    if(_savedPQ){
+      var _pq=JSON.parse(_savedPQ);
+      if(_pq[key]&&_pq[key].length) return JSON.parse(JSON.stringify(_pq[key]));
+    }
+  }catch(e){}
   if(POS_QUIZ[key]) return JSON.parse(JSON.stringify(POS_QUIZ[key]));
   return JSON.parse(JSON.stringify(DEFAULT_QUIZ));
 }
