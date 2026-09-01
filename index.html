@@ -5501,7 +5501,7 @@ function onFirebaseLoginSuccess(){
   _fbDb.ref('data').get().then(function(snap){
     if(snap.exists()){
       var d=snap.val(), toA=function(v){return v?(Array.isArray(v)?v:Object.values(v)):[]; };
-      PA=toA(d.fc_p); AA=toA(d.fc_a); HA=toA(d.fc_h);
+      PA=_restorePhotosOnSync(toA(d.fc_p)); AA=_restorePhotosOnSync(toA(d.fc_a)); HA=_restorePhotosOnSync(toA(d.fc_h));
     }
     var uFromData = allApps().find(function(a){ return a.email && a.email.toLowerCase()===uEmail; });
     if(uFromData){ loadDashboard(uFromData); return; }
@@ -7358,6 +7358,38 @@ function globalSignOut(){
 }
 
 // ── LIVE SYNC — Firebase → localStorage ──────────────────────
+// Firebase never stores photo/wp1/wp2/wp3 in fc_p/fc_a/fc_h (stripped to
+// save space — see stripPhotos()). Every time this data comes back from
+// Firebase it therefore has photo:'' for everyone. Without this guard, the
+// realtime listener below would blindly adopt that blank value and wipe out
+// whatever photo the user had (even seconds after they just saved it),
+// because it replaces PA/AA/HA wholesale on every sync tick. This restores
+// each person's photo from whatever we already know (current in-memory
+// record, or the per-id localStorage cache that data/photos mirrors) before
+// the new array is adopted.
+function _restorePhotosOnSync(newArr){
+  var _oldByKey = {};
+  [PA, AA, HA].forEach(function(arr){
+    (arr||[]).forEach(function(a){
+      if(!a) return;
+      var k = (a.id!=null?String(a.id):'') || (a.email||'').toLowerCase();
+      if(k) _oldByKey[k] = a;
+    });
+  });
+  newArr.forEach(function(a){
+    if(!a) return;
+    var k = (a.id!=null?String(a.id):'') || (a.email||'').toLowerCase();
+    var old = _oldByKey[k];
+    if(!a.photo){
+      if(old && old.photo) a.photo = old.photo;
+      else { try{ var lp = localStorage.getItem('ph_'+a.id); if(lp) a.photo = lp; }catch(e){} }
+    }
+    if(!a.wp1){ if(old && old.wp1) a.wp1 = old.wp1; else { try{ var l1=localStorage.getItem('ph_'+a.id+'_w1'); if(l1) a.wp1=l1; }catch(e){} } }
+    if(!a.wp2){ if(old && old.wp2) a.wp2 = old.wp2; else { try{ var l2=localStorage.getItem('ph_'+a.id+'_w2'); if(l2) a.wp2=l2; }catch(e){} } }
+    if(!a.wp3){ if(old && old.wp3) a.wp3 = old.wp3; else { try{ var l3=localStorage.getItem('ph_'+a.id+'_w3'); if(l3) a.wp3=l3; }catch(e){} } }
+  });
+  return newArr;
+}
 function syncFromFirebase(){
   if(!_fbDb) return;
   // Cleanup existing listeners to prevent duplicates
@@ -7382,6 +7414,9 @@ function syncFromFirebase(){
       // Deduplicate
       var _seen={};
       _arr = _arr.filter(function(a){if(!a)return false;var k=(a.email||'')+(a.id||'');if(_seen[k])return false;_seen[k]=true;return true;});
+      // Restore photo/work-photo fields BEFORE adopting this array — Firebase
+      // always sends these blank (see comment on _restorePhotosOnSync above).
+      _arr = _restorePhotosOnSync(_arr);
       // Auto-clear stale cache and replace with fresh Firebase data
       try{ localStorage.removeItem(key); }catch(e){}
       localStorage.setItem(key, JSON.stringify(_arr));
@@ -7638,9 +7673,14 @@ function fbWrite(key, value){
   }catch(e){ return _fbDb.ref('data/'+key).set(value); }
 }
 
-function fbWritePhoto(id, dataUrl){
-  if(!_fbDb||!dataUrl||dataUrl.length>200000) return;
-  _fbDb.ref('data/photos/'+id).set(dataUrl);
+function fbWritePhoto(id, dataUrl, suffix){
+  if(!_fbDb||!dataUrl) return Promise.resolve();
+  var path = 'data/photos/'+id+(suffix||'');
+  if(dataUrl.length>3000000){
+    console.warn('fbWritePhoto: image too large to sync ('+dataUrl.length+' chars), skipping', path);
+    return Promise.resolve();
+  }
+  return _fbDb.ref(path).set(dataUrl);
 }
 
 function fbWriteQuizResult(emailKey, result){
@@ -27368,6 +27408,7 @@ function printAuditLog(){
 function openCVEditor(){
   if(!currentUser){ toast(t('notLoggedIn')||'Not logged in'); return; }
   var u = currentUser;
+  try{ _restorePhoto(u); }catch(e){}
   var m = document.createElement('div');
   m.className='modal-bg'; m.id='cvEditorModal';
   m.style.zIndex='9500';
@@ -27653,11 +27694,18 @@ function saveCVEdits(){
     toast('&#x26A0; Could not save — please contact support');
     return;
   }
-  // Save photo separately (kept as-is — best-effort, not blocking)
+  // Save photos separately by id (main + work photos), and wait for all of
+  // them along with saveData() before confirming success — previously work
+  // photos were never written to Firebase at all, so they only ever lived
+  // on the one device/browser that uploaded them.
+  var _photoPromises = [];
   if(window._editPhotoData && currentUser.id){
     localStorage.setItem('ph_'+currentUser.id, window._editPhotoData);
-    fbWritePhoto(currentUser.id, window._editPhotoData);
+    _photoPromises.push(fbWritePhoto(currentUser.id, window._editPhotoData));
   }
+  if(currentUser.wp1 && currentUser.id){ localStorage.setItem('ph_'+currentUser.id+'_w1', currentUser.wp1); _photoPromises.push(fbWritePhoto(currentUser.id, currentUser.wp1, '_w1')); }
+  if(currentUser.wp2 && currentUser.id){ localStorage.setItem('ph_'+currentUser.id+'_w2', currentUser.wp2); _photoPromises.push(fbWritePhoto(currentUser.id, currentUser.wp2, '_w2')); }
+  if(currentUser.wp3 && currentUser.id){ localStorage.setItem('ph_'+currentUser.id+'_w3', currentUser.wp3); _photoPromises.push(fbWritePhoto(currentUser.id, currentUser.wp3, '_w3')); }
   // Show a "saving" state and DO NOT close the modal or say "Saved" until
   // Firebase actually confirms the write — closing/refreshing before the
   // network call finishes is what was causing edits to silently revert on
@@ -27666,7 +27714,7 @@ function saveCVEdits(){
   var _origBtnHtml = saveBtn ? saveBtn.innerHTML : null;
   if(saveBtn){ saveBtn.disabled = true; saveBtn.innerHTML = '&#x23F3; Saving...'; }
 
-  Promise.resolve(saveData()).then(function(){
+  Promise.all([saveData()].concat(_photoPromises)).then(function(){
     // Refresh live CV preview in portal
     var cvEl = document.getElementById('portalCV');
     if(cvEl){
@@ -28076,36 +28124,45 @@ function _patchedRenderList(){
     return;
   }
   if(!all.length && _fbDb){
-    // Load from users node directly - single source of truth
-    _fbDb.ref('users').once('value',function(snap){
-      if(snap.exists()){
-        var toA=function(v){return v?Object.keys(v).map(function(k){var o=v[k]; if(o&&!o.id) o.id=o.uid||k; return o;}):[];};
-        var users=toA(snap.val()).filter(function(u){
-          return u && u.email && u.role==='applicant';
-        });
-        PA=users.filter(function(u){return u.status!=='approved'&&u.status!=='hired';});
-        AA=users.filter(function(u){return u.status==='approved';});
-        HA=users.filter(function(u){return u.status==='hired';});
+    // Load from the full 'data' node FIRST — it has quizAttempts, CV fields,
+    // education, skills, etc. The bare 'users' node does NOT, so using it
+    // first (as this used to) made Quiz Attempts and other CV data show up
+    // blank in the admin list, and any admin action taken while this sparse
+    // data was loaded would save it back to Firebase, wiping the real data
+    // for everyone. 'users' node is now only a last-resort fallback.
+    var toA2=function(v){return v?(Array.isArray(v)?v:Object.values(v)):[];};
+    _fbDb.ref('data').get().then(function(ds){
+      if(ds.exists()){
+        var d=ds.val();
+        PA=_restorePhotosOnSync(toA2(d.fc_p)); AA=_restorePhotosOnSync(toA2(d.fc_a)); HA=_restorePhotosOnSync(toA2(d.fc_h));
         if(PA.length||AA.length||HA.length){
           _patchedRenderList();
           return;
         }
       }
-      // Fallback: try data node
-      _fbDb.ref('data').get().then(function(ds){
-        if(ds.exists()){
-          var d=ds.val();
-          var toA2=function(v){return v?(Array.isArray(v)?v:Object.values(v)):[];};
-          PA=toA2(d.fc_p)||[]; AA=toA2(d.fc_a)||[]; HA=toA2(d.fc_h)||[];
+      // Fallback: sparse 'users' node (only if 'data' truly has nothing yet)
+      _fbDb.ref('users').once('value',function(snap){
+        if(snap.exists()){
+          var toA=function(v){return v?Object.keys(v).map(function(k){var o=v[k]; if(o&&!o.id) o.id=o.uid||k; return o;}):[];};
+          var users=toA(snap.val()).filter(function(u){
+            return u && u.email && u.role==='applicant';
+          });
+          PA=users.filter(function(u){return u.status!=='approved'&&u.status!=='hired';});
+          AA=users.filter(function(u){return u.status==='approved';});
+          HA=users.filter(function(u){return u.status==='hired';});
         }
         _patchedRenderList();
-      }).catch(function(e){ _patchedRenderList(); });
+      }).catch(function(){ _patchedRenderList(); });
     }).catch(function(e){
-      _fbDb.ref('data').get().then(function(ds){
-        if(ds.exists()){
-          var d=ds.val();
-          var toA2=function(v){return v?(Array.isArray(v)?v:Object.values(v)):[];};
-          PA=toA2(d.fc_p)||[]; AA=toA2(d.fc_a)||[]; HA=toA2(d.fc_h)||[];
+      _fbDb.ref('users').once('value',function(snap){
+        if(snap.exists()){
+          var toA=function(v){return v?Object.keys(v).map(function(k){var o=v[k]; if(o&&!o.id) o.id=o.uid||k; return o;}):[];};
+          var users=toA(snap.val()).filter(function(u){
+            return u && u.email && u.role==='applicant';
+          });
+          PA=users.filter(function(u){return u.status!=='approved'&&u.status!=='hired';});
+          AA=users.filter(function(u){return u.status==='approved';});
+          HA=users.filter(function(u){return u.status==='hired';});
         }
         _patchedRenderList();
       }).catch(function(){});
