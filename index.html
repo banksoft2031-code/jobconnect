@@ -7183,6 +7183,19 @@ function _initFirebase(){
   });
   // Start real-time sync immediately after Firebase is ready
   try{ syncFromFirebase(); }catch(e){}
+
+  // Load fc_posquiz from Firebase so all users get admin-customized questions
+  _fbDb.ref('data/fc_posquiz').once('value').then(function(snap){
+    if(snap.val()){
+      try{
+        var pq = snap.val();
+        localStorage.setItem('fc_posquiz', JSON.stringify(pq));
+        // Also update POS_QUIZ in memory
+        Object.keys(pq).forEach(function(k){ if(pq[k]&&pq[k].length) POS_QUIZ[k]=pq[k]; });
+      }catch(e){}
+    }
+  }).catch(function(){});
+
   // Firebase ready — load vacancies and ratings
   _fbDb.ref('data/vacancies').once('value').then(function(snap){
     if(snap.val()){
@@ -9477,21 +9490,29 @@ var POS_QUIZ={
 
 };
 
-function getQuizForPos(pos){
+function _shufflePick(arr, n){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
+  return a.slice(0,Math.min(n,a.length));
+}
+function getQuizForPos(pos, adminMode){
   // Map friendly names to quiz bank keys
   var map={'Sushi Man':'Sushi Man','Sushi Woman':'Sushi Woman',
     'Sushi Chef (Male)':'Sushi Chef (Male)','Sushi Chef (Female)':'Sushi Chef (Female)'};
   var key=map[pos]||pos;
+  var all=null;
   // Check localStorage first (admin may have customized questions via Quiz Manager)
   try{
     var _savedPQ=localStorage.getItem('fc_posquiz');
     if(_savedPQ){
       var _pq=JSON.parse(_savedPQ);
-      if(_pq[key]&&_pq[key].length) return JSON.parse(JSON.stringify(_pq[key]));
+      if(_pq[key]&&_pq[key].length) all=JSON.parse(JSON.stringify(_pq[key]));
     }
   }catch(e){}
-  if(POS_QUIZ[key]) return JSON.parse(JSON.stringify(POS_QUIZ[key]));
-  return JSON.parse(JSON.stringify(DEFAULT_QUIZ));
+  if(!all) all = POS_QUIZ[key] ? JSON.parse(JSON.stringify(POS_QUIZ[key])) : JSON.parse(JSON.stringify(DEFAULT_QUIZ));
+  // Admin sees all questions; applicant gets 20 random
+  if(adminMode) return all;
+  return all.length>20 ? _shufflePick(all,20) : all;
 }
 
 var QB=JSON.parse(localStorage.getItem('fc_quiz')||'null');
