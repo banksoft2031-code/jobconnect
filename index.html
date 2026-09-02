@@ -5639,6 +5639,40 @@ function showPortalSection(){
   }
 }
 
+function autoFitCvVals(container){
+  if(!container) return;
+  try{
+    var els = container.querySelectorAll('.cv-val');
+    for(var i=0;i<els.length;i++){
+      var el = els[i];
+      el.style.setProperty('white-space','nowrap','important');
+      el.style.setProperty('overflow','hidden','important');
+      el.style.setProperty('display','block','important');
+      el.style.fontSize = '';
+      var startSize = parseFloat(getComputedStyle(el).fontSize) || 16;
+      var minSize = 8;
+      var size = startSize;
+      var guard = 0;
+      while(el.scrollWidth > el.clientWidth && size > minSize && guard < 40){
+        size -= 0.5;
+        el.style.fontSize = size + 'px';
+        guard++;
+      }
+    }
+  }catch(e){}
+}
+if(!window._cvAutoFitResizeBound){
+  window._cvAutoFitResizeBound = true;
+  var _cvAutoFitTimer;
+  window.addEventListener('resize', function(){
+    clearTimeout(_cvAutoFitTimer);
+    _cvAutoFitTimer = setTimeout(function(){
+      var cvEl = document.getElementById('portalCV');
+      if(cvEl) autoFitCvVals(cvEl);
+    }, 150);
+  });
+}
+
 function refreshPortalCV(){
   if(!currentUser) return;
   var cvEl = document.getElementById('portalCV');
@@ -5650,6 +5684,7 @@ function refreshPortalCV(){
       + '<div style="margin-top:0.8rem;"><span style="background:'+sc+'22;color:'+sc
       +';border:1px solid '+sc+';padding:4px 14px;border-radius:20px;font-weight:800;font-size:0.78rem;">'
       + t(statusKey)+'</span></div>';
+    requestAnimationFrame(function(){ autoFitCvVals(cvEl); });
   }catch(e){ cvEl.innerHTML='<div style="color:#fbbf24;padding:1rem;">CV loading...</div>'; }
 }
 // legacy aliases
@@ -24257,7 +24292,7 @@ function setPortalCvLang(lang){
   // Also refresh the portal CV preview
   try{
     var cvEl = document.getElementById('portalCV');
-    if(cvEl && currentUser) cvEl.innerHTML = buildCV(currentUser);
+    if(cvEl && currentUser){ cvEl.innerHTML = buildCV(currentUser); requestAnimationFrame(function(){ autoFitCvVals(cvEl); }); }
   }catch(e){}
 }
 
@@ -27956,6 +27991,7 @@ function saveCVEdits(){
         var sc = currentUser.status==='hired'?'#10b981':currentUser.status==='approved'?'#3b82f6':'#94a3b8';
         cvEl.innerHTML = buildCV(currentUser)
           + '<div style="margin-top:0.8rem;"><span style="background:'+sc+'22;color:'+sc+';border:1px solid '+sc+';padding:4px 14px;border-radius:20px;font-weight:800;font-size:0.78rem;">'+currentUser.status.toUpperCase()+'</span></div>';
+        requestAnimationFrame(function(){ autoFitCvVals(cvEl); });
       }catch(e){}
     }
     // Close modal — only now that the save is actually confirmed
@@ -28040,6 +28076,7 @@ function setCVDesign(name){
         var sc = currentUser.status==='hired'?'#10b981':currentUser.status==='approved'?'#3b82f6':'#94a3b8';
         cvEl.innerHTML = buildCV(currentUser)
           +'<div style="margin-top:0.8rem;"><span style="background:'+sc+'22;color:'+sc+';border:1px solid '+sc+';padding:4px 14px;border-radius:20px;font-weight:800;font-size:0.78rem;">'+currentUser.status.toUpperCase()+'</span></div>';
+        requestAnimationFrame(function(){ autoFitCvVals(cvEl); });
       }catch(e){}
     }
   }
