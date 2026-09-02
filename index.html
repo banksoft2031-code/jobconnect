@@ -7761,6 +7761,7 @@ function fbLogQuizAttempt(emailKey, attempt){
 // Attempts column always reflects the true count even if the PA/AA/HA array
 // copy was ever clobbered by a concurrent save.
 window._fbAttemptsLogCount = {};
+window._fbAttemptsLogFull = {};
 function _fbBindAttemptsLogListener(){
   if(!_fbDb || window._fbAttemptsLogBound) return;
   window._fbAttemptsLogBound = true;
@@ -7768,11 +7769,15 @@ function _fbBindAttemptsLogListener(){
     _fbDb.ref('data/quiz_attempts_log').on('value', function(snap){
       var val = snap.val() || {};
       var counts = {};
+      var full = {};
       Object.keys(val).forEach(function(k){
         var entries = val[k] || {};
-        counts[k] = Object.keys(entries).length;
+        var list = Object.values(entries);
+        counts[k] = list.length;
+        full[k] = list;
       });
       window._fbAttemptsLogCount = counts;
+      window._fbAttemptsLogFull = full;
     });
   }catch(e){ console.error('_fbBindAttemptsLogListener failed', e); }
 }
@@ -7785,6 +7790,26 @@ function trueAttemptsCount(a){
   var emailKey = (a && a.email || '').toLowerCase().trim().replace(/[.#$\[\]]/g,'_');
   var logCount = (window._fbAttemptsLogCount && window._fbAttemptsLogCount[emailKey]) || 0;
   return Math.max(localCount, logCount);
+}
+// Full attempt history for an applicant — merges the locally stored
+// quizAttempts array with the collision-proof Firebase log, de-duplicated by
+// timestamp, so every screen that shows attempt history (not just the
+// count) reflects every try, even ones the local array copy ever lost to a
+// concurrent-save race.
+function getFullAttempts(a){
+  var local = Array.isArray(a && a.quizAttempts) ? a.quizAttempts.slice() : [];
+  var emailKey = (a && a.email || '').toLowerCase().trim().replace(/[.#$\[\]]/g,'_');
+  var logEntries = (window._fbAttemptsLogFull && window._fbAttemptsLogFull[emailKey]) || [];
+  var seenTs = {};
+  local.forEach(function(x){ if(x && x.ts) seenTs[x.ts] = true; });
+  logEntries.forEach(function(x){
+    if(!x || !x.ts || seenTs[x.ts]) return;
+    seenTs[x.ts] = true;
+    local.push(x); // log entries don't include the answer sheet, only summary stats
+  });
+  if(!local.length && a && a.quizResult) local = [a.quizResult];
+  local.sort(function(x,y){ return (y.ts||0)-(x.ts||0); });
+  return local;
 }
 
 
@@ -21432,11 +21457,43 @@ function saveData(){
   // it was saved.
   if(_fbDb){
     window._pendingSaveCount = (window._pendingSaveCount||0) + 1;
+    // Before overwriting the server's arrays wholesale, pull the LATEST server
+    // copy and fold in any record this tab doesn't already know about — e.g.
+    // someone registered a second ago, or another tab/the applicant just
+    // updated a CV and the realtime listener for it hasn't landed here yet.
+    // Without this, saving from this tab (even for something unrelated, like
+    // approving a different applicant) can replace the server's array with a
+    // stale local snapshot and silently erase that other record. This is the
+    // same "don't trust a single stale snapshot" reasoning as the
+    // collision-proof quiz attempts log above, applied to the applicant lists.
+    var toArr=function(v){ return Array.isArray(v)?v:Object.values(v||{}); };
     return Promise.all([
-      fbWrite('fc_p', stripPhotos(PA)),
-      fbWrite('fc_a', stripPhotos(AA)),
-      fbWrite('fc_h', stripPhotos(HA))
-    ]).then(function(r){
+      _fbDb.ref('data/fc_p').once('value'),
+      _fbDb.ref('data/fc_a').once('value'),
+      _fbDb.ref('data/fc_h').once('value')
+    ]).then(function(snaps){
+      var serverP=toArr(snaps[0].val()), serverA=toArr(snaps[1].val()), serverH=toArr(snaps[2].val());
+      var localKnown={};
+      PA.concat(AA).concat(HA).forEach(function(a){ if(a&&a.email) localKnown[a.email.toLowerCase()]=true; });
+      var extraP=[], extraA=[], extraH=[];
+      var deleted = window._deletedEmails || {};
+      serverP.concat(serverA).concat(serverH).forEach(function(a){
+        if(!a||!a.email) return;
+        var em=a.email.toLowerCase();
+        if(localKnown[em]) return; // this tab already has an opinion about this record — trust local
+        if(deleted[em]) return; // intentionally deleted from this tab — don't resurrect it
+        localKnown[em]=true; // avoid adding the same unknown record twice if it appears in more than one server bucket
+        if(a.status==='approved') extraA.push(a);
+        else if(a.status==='hired') extraH.push(a);
+        else extraP.push(a);
+      });
+      var outP=PA.concat(extraP), outA=AA.concat(extraA), outH=HA.concat(extraH);
+      return Promise.all([
+        fbWrite('fc_p', stripPhotos(outP)),
+        fbWrite('fc_a', stripPhotos(outA)),
+        fbWrite('fc_h', stripPhotos(outH))
+      ]);
+    }).then(function(r){
       window._pendingSaveCount = Math.max(0,(window._pendingSaveCount||1) - 1);
       return r;
     }).catch(function(e){
@@ -25103,8 +25160,10 @@ function viewApp(id){
       +'</div></div>';
   }
   // Full attempt history (every try, pass or fail, with date/time and right/wrong count)
-  var attempts = Array.isArray(a.quizAttempts) && a.quizAttempts.length ? a.quizAttempts.slice() : (qr?[qr]:[]);
-  attempts.sort(function(x,y){ return (y.ts||0)-(x.ts||0); });
+  // Merged with the collision-proof Firebase log so a past race that dropped
+  // entries from this record's local array doesn't hide attempts here.
+  var attempts = getFullAttempts(a);
+  if(!attempts.length && qr) attempts = [qr];
   var histHtml = '';
   if(attempts.length){
     histHtml = '<div class="modal-item" style="grid-column:1/-1;margin-top:0.5rem;">'
@@ -25236,6 +25295,15 @@ function showBlockModal(name,title,msg,icon,color){
 
 function delApp(id){
   if(!confirm('Permanently delete this applicant? This cannot be undone.'))return;
+  // Remember this email as intentionally deleted so saveData()'s reconcile-
+  // with-server step (which folds in records this tab doesn't recognize)
+  // doesn't mistake "not in my local arrays" for "brand new" and resurrect it
+  // from the server copy before the delete transactions below land.
+  var _delApp = getAppById(id);
+  if(_delApp && _delApp.email){
+    window._deletedEmails = window._deletedEmails || {};
+    window._deletedEmails[_delApp.email.toLowerCase()] = true;
+  }
   // Remove from all local arrays
   PA=PA.filter(function(a){return a.id!==id;});
   AA=AA.filter(function(a){return a.id!==id;});
@@ -25247,15 +25315,19 @@ function delApp(id){
   // Permanently delete from Firebase
   if(_fbDb){
     _fbDb.ref('users/'+id).remove().catch(function(){});
-    _fbDb.ref('data/p').transaction(function(list){
+    // NOTE: the actual applicant-list paths are data/fc_p, data/fc_a, data/fc_h
+    // (not data/p, data/a, data/h — that was a mismatched-path bug that meant
+    // this transaction silently touched nothing and deleted applicants could
+    // reappear after a refresh once any tab re-synced from Firebase).
+    _fbDb.ref('data/fc_p').transaction(function(list){
       if(!list) return list;
       return (Array.isArray(list)?list:Object.values(list)).filter(function(a){return a&&a.id!==id;});
     }).catch(function(){});
-    _fbDb.ref('data/a').transaction(function(list){
+    _fbDb.ref('data/fc_a').transaction(function(list){
       if(!list) return list;
       return (Array.isArray(list)?list:Object.values(list)).filter(function(a){return a&&a.id!==id;});
     }).catch(function(){});
-    _fbDb.ref('data/h').transaction(function(list){
+    _fbDb.ref('data/fc_h').transaction(function(list){
       if(!list) return list;
       return (Array.isArray(list)?list:Object.values(list)).filter(function(a){return a&&a.id!==id;});
     }).catch(function(){});
