@@ -2495,16 +2495,19 @@ body { -webkit-overflow-scrolling: touch; overflow-y: auto !important; min-heigh
   overflow: visible !important;
   flex-shrink: 0 !important;
 }
-/* portalCV — always side-by-side row layout, scroll if needed */
+/* portalCV — side-by-side on tablet, stacked on phone (avoids horizontal-scroll clipping) */
 @media(max-width:900px){
   #portalCV .vip-cv { flex-direction: row !important; font-size: clamp(9px,1.2vw,13px); min-width: 520px; }
   #portalCV .cv-side { width: 200px !important; min-width: 180px !important; }
 }
 @media(max-width:600px){
-  #portalCV { overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
-  #portalCV .vip-cv { min-width: 500px !important; font-size: 11px !important; }
-  #portalCV .cv-side { width: 180px !important; min-width: 160px !important; }
-  #portalCV .cv-name { font-size: 18px !important; white-space: normal !important; word-break: break-word !important; }
+  #portalCV { overflow-x: visible !important; }
+  #portalCV .vip-cv { flex-direction: column !important; min-width: 0 !important; width: 100% !important; font-size: 13px !important; }
+  #portalCV .cv-side { width: 100% !important; min-width: 0 !important; max-width: 100% !important; box-sizing: border-box; align-items: stretch !important; }
+  #portalCV .cv-main { width: 100% !important; box-sizing: border-box; }
+  #portalCV .cv-name { font-size: 20px !important; white-space: normal !important; word-break: break-word !important; }
+  #portalCV .cv-contact { justify-content: flex-start; }
+  #portalCV .cv-val { white-space: normal !important; word-break: break-word !important; overflow-wrap: anywhere; }
 }
 
 /* ── MOBILE GLOBAL RESPONSIVE FIXES (Live Server / same-network IP) ── */
