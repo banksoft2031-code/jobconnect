@@ -4581,6 +4581,7 @@ body { -webkit-overflow-scrolling: touch; }
         <button class="btn btn-gold btn-sm" id="btnQuizMgr" onclick="openQuizManager()" title="Quiz Manager" style="display:none;">&#x1F4CB; Quiz Mgr</button>
         <button class="btn btn-gold btn-sm" id="btnBackupToggle" onclick="toggleBackupPanel()" title="Backup" style="display:none;">&#x1F4BE; Backup</button>
         <button class="btn btn-gold btn-sm" id="btnDupCheck" onclick="showDuplicatesPanel()" title="Find Duplicates" style="display:none;">&#x1F465; Duplicates</button>
+        <button class="btn btn-gold btn-sm" id="btnAttAudit" onclick="showAttemptsAuditPanel()" title="Attempts Audit" style="display:none;">&#x1F50D; Attempts Audit</button>
         <button id="btnTrash" onclick="openTrashView()" title="Trash" style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#f87171;border-radius:8px;padding:5px 12px;cursor:pointer;font-family:inherit;font-size:0.75rem;font-weight:700;display:none;">&#x1F5D1; Trash (0)</button>
         <button id="btnAuditLog" onclick="openAuditLog()" title="Audit Log" style="background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.3);color:#a78bfa;border-radius:8px;padding:5px 12px;cursor:pointer;font-family:inherit;font-size:0.75rem;font-weight:700;display:none;">&#x1F4CB; Audit Log</button>
         <button id="btnAutoDelete" onclick="openAutoDeleteSettings()" title="Auto-Delete Settings" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#f87171;border-radius:8px;padding:5px 12px;cursor:pointer;font-family:inherit;font-size:0.75rem;font-weight:700;display:none;">&#x23F1; Auto-Delete</button>
@@ -7198,6 +7199,7 @@ function _initFirebase(){
   firebase.initializeApp(FB_CFG);
   _fbAuth = firebase.auth();
   _fbDb = firebase.database();
+  try{ _fbBindAttemptsLogListener(); }catch(e){}
   // Test connection and show status
   _fbDb.ref('.info/connected').on('value', function(snap){
     if(snap.val() === true){
@@ -7740,6 +7742,51 @@ function fbWriteQuizResult(emailKey, result){
   _fbDb.ref('data/quiz_results/'+key).set(result);
 }
 
+// Collision-proof attempt log: written via push() to its own dedicated path,
+// completely separate from the big PA/AA/HA arrays. A concurrent admin edit
+// that overwrites fc_p/fc_a/fc_h can never erase entries logged here,
+// because each attempt gets its own unique push-generated key rather than
+// living inside an array that gets replaced wholesale on every save.
+function fbLogQuizAttempt(emailKey, attempt){
+  if(!_fbDb) return Promise.resolve();
+  var key = (emailKey||'').toLowerCase().trim().replace(/[.#$\[\]]/g,'_');
+  if(!key) return Promise.resolve();
+  return _fbDb.ref('data/quiz_attempts_log/'+key).push(attempt).catch(function(e){
+    console.error('fbLogQuizAttempt failed', e);
+  });
+}
+
+// Live cache of the collision-proof attempt log, keyed by lowercased email → count.
+// Populated once on startup and kept in sync via a realtime listener so the
+// Attempts column always reflects the true count even if the PA/AA/HA array
+// copy was ever clobbered by a concurrent save.
+window._fbAttemptsLogCount = {};
+function _fbBindAttemptsLogListener(){
+  if(!_fbDb || window._fbAttemptsLogBound) return;
+  window._fbAttemptsLogBound = true;
+  try{
+    _fbDb.ref('data/quiz_attempts_log').on('value', function(snap){
+      var val = snap.val() || {};
+      var counts = {};
+      Object.keys(val).forEach(function(k){
+        var entries = val[k] || {};
+        counts[k] = Object.keys(entries).length;
+      });
+      window._fbAttemptsLogCount = counts;
+    });
+  }catch(e){ console.error('_fbBindAttemptsLogListener failed', e); }
+}
+// True attempts count for an applicant — takes the higher of the locally
+// stored quizAttempts array length and the collision-proof log count, so a
+// past race that dropped entries from the array doesn't under-report once
+// the log (going forward) has more accurate data.
+function trueAttemptsCount(a){
+  var localCount = Array.isArray(a && a.quizAttempts) ? a.quizAttempts.length : ((a && a.quizResult && a.quizResult.correct!=null)?1:0);
+  var emailKey = (a && a.email || '').toLowerCase().trim().replace(/[.#$\[\]]/g,'_');
+  var logCount = (window._fbAttemptsLogCount && window._fbAttemptsLogCount[emailKey]) || 0;
+  return Math.max(localCount, logCount);
+}
+
 
 // ── ADMIN DASHBOARD FUNCTIONS ───────────────────────────────
 
@@ -7757,6 +7804,59 @@ function findDuplicatesByEmail(){
   // Only groups with 2+ records sharing the EXACT SAME (normalized) email
   return Object.keys(groups).filter(function(k){ return groups[k].length>1; })
     .map(function(k){ return {email:k, records:groups[k]}; });
+}
+
+// ── ATTEMPTS AUDIT — shows the true attempt count per applicant, pulled
+// live from Firebase (both the array stored on the applicant record AND the
+// collision-proof quiz_attempts_log), so admin can verify counts themselves.
+function showAttemptsAuditPanel(){
+  var ex=document.getElementById('attAuditModal'); if(ex){ ex.remove(); return; }
+  var m=document.createElement('div');
+  m.className='modal-bg'; m.id='attAuditModal';
+  m.innerHTML = '<div class="modal" style="max-width:900px;">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">'
+    +'<h3 style="margin:0;">&#x1F50D; Attempts Audit — Live from Firebase</h3>'
+    +'<button onclick="document.getElementById(\'attAuditModal\').remove()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#94a3b8;">&times;</button>'
+    +'</div>'
+    +'<div id="attAuditBody" style="max-height:65vh;overflow-y:auto;"><p style="text-align:center;color:#94a3b8;padding:2rem;">&#x23F3; Loading live data from Firebase...</p></div>'
+    +'</div>';
+  document.body.appendChild(m);
+  if(!_fbDb){
+    document.getElementById('attAuditBody').innerHTML = '<p style="color:#ef4444;text-align:center;">Firebase not connected — cannot audit.</p>';
+    return;
+  }
+  _fbDb.ref('data/quiz_attempts_log').once('value').then(function(snap){
+    var logVal = snap.val() || {};
+    var apps = allApps();
+    var rows = apps.map(function(a){
+      var localCount = Array.isArray(a.quizAttempts) ? a.quizAttempts.length : ((a.quizResult&&a.quizResult.correct!=null)?1:0);
+      var emailKey = (a.email||'').toLowerCase().trim().replace(/[.#$\[\]]/g,'_');
+      var logCount = logVal[emailKey] ? Object.keys(logVal[emailKey]).length : 0;
+      var trueCount = Math.max(localCount, logCount);
+      return {name:a.name||'-', email:a.email||'-', localCount:localCount, logCount:logCount, trueCount:trueCount, mismatch: logCount>localCount};
+    }).filter(function(r){ return r.trueCount>0; })
+      .sort(function(x,y){ return y.trueCount-x.trueCount; });
+    var mismatches = rows.filter(function(r){return r.mismatch;});
+    var html = '<p style="color:#94a3b8;font-size:0.85rem;margin-bottom:0.8rem;">Showing every applicant with at least 1 quiz attempt. <b>Array count</b> = what\'s stored on the applicant record. <b>Log count</b> = collision-proof Firebase log (only has entries logged after the fix was deployed). <b>True count</b> = the higher of the two, used everywhere in the app now.'
+      + (mismatches.length ? ' <span style="color:#f59e0b;">&#9888; '+mismatches.length+' applicant(s) below have a HIGHER log count than array count — meaning the array previously lost attempts that the new collision-proof log caught.</span>' : ' <span style="color:#10b981;">No mismatches — array and log agree for every applicant.</span>')
+      + '</p>';
+    html += '<table style="width:100%;border-collapse:collapse;font-size:0.85rem;">'
+      + '<thead><tr style="background:#f59e0b;color:#1a1a1a;"><th style="padding:6px;text-align:left;">Name</th><th style="padding:6px;text-align:left;">Email</th><th style="padding:6px;">Array count</th><th style="padding:6px;">Log count</th><th style="padding:6px;">True count</th></tr></thead><tbody>';
+    rows.forEach(function(r,i){
+      html += '<tr style="background:'+(r.mismatch?'#fef3c7':(i%2?'#f8fafc':'#fff'))+';">'
+        +'<td style="padding:6px;font-weight:700;">'+esc(r.name)+'</td>'
+        +'<td style="padding:6px;">'+esc(r.email)+'</td>'
+        +'<td style="padding:6px;text-align:center;">'+r.localCount+'</td>'
+        +'<td style="padding:6px;text-align:center;">'+r.logCount+'</td>'
+        +'<td style="padding:6px;text-align:center;font-weight:800;">'+r.trueCount+'</td>'
+        +'</tr>';
+    });
+    html += '</tbody></table>';
+    if(!rows.length) html += '<p style="text-align:center;color:#94a3b8;padding:2rem;">No quiz attempts found yet.</p>';
+    document.getElementById('attAuditBody').innerHTML = html;
+  }).catch(function(e){
+    document.getElementById('attAuditBody').innerHTML = '<p style="color:#ef4444;text-align:center;">Failed to load: '+esc(e.message||String(e))+'</p>';
+  });
 }
 
 function showDuplicatesPanel(){
@@ -24716,6 +24816,10 @@ function showResult(savedResult){
       if(!Array.isArray(app.quizAttempts)) app.quizAttempts=[];
       app.quizAttempts.push({correct:correct,wrong:wrong,total:total,passed:passed,date:dateStr,time:timeStr,ts:now.getTime(),answers:qState.answers||[]});
     }
+    // Also log to the collision-proof path — this write can never be lost to
+    // a concurrent admin save overwriting the big applicant array, because
+    // it uses its own push()-generated key rather than living inside PA/AA/HA.
+    try{ fbLogQuizAttempt(qState.email, {correct:correct,wrong:wrong,total:total,passed:passed,date:dateStr,time:timeStr,ts:now.getTime()}); }catch(e){}
     // Never let a retake overwrite a previously PASSED result with a worse one
     if(app && app.quizResult && app.quizResult.passed && !passed){
       result = app.quizResult;
@@ -24970,6 +25074,8 @@ function loadAdminDash(){
   if(backupBtn) backupBtn.style.display=isSA?'':'none';
   var dupBtn=document.getElementById('btnDupCheck');
   if(dupBtn) dupBtn.style.display=isSA?'':'none';
+  var attAuditBtn=document.getElementById('btnAttAudit');
+  if(attAuditBtn) attAuditBtn.style.display=(isSA||_userRole==='admin')?'':'none';
   var userMgrBtn=document.getElementById('btnUserMgr');
   if(userMgrBtn) userMgrBtn.style.display=isSA?'':'none';
   // Auto-Delete button — super_admin only
@@ -26693,8 +26799,8 @@ function printApplicantsList(){
   });
   // Sort by most attempts first (applicants who studied/tried the most come first)
   f.sort(function(a,b){
-    var aAtt = Array.isArray(a.quizAttempts) ? a.quizAttempts.length : ((a.quizResult&&a.quizResult.correct!=null)?1:0);
-    var bAtt = Array.isArray(b.quizAttempts) ? b.quizAttempts.length : ((b.quizResult&&b.quizResult.correct!=null)?1:0);
+    var aAtt = trueAttemptsCount(a);
+    var bAtt = trueAttemptsCount(b);
     if(bAtt !== aAtt) return bAtt-aAtt;
     // tie-break: higher quiz score first
     var ac=(a.quizResult&&a.quizResult.correct)||-1;
@@ -26705,7 +26811,7 @@ function printApplicantsList(){
   var isSA = (_userRole === 'super_admin');
   var rows = f.map(function(a,i){
     var qr = a.quizResult || {};
-    var attemptCount = Array.isArray(a.quizAttempts) ? a.quizAttempts.length : (qr.correct!=null?1:0);
+    var attemptCount = trueAttemptsCount(a);
     var quizInfo = qr.correct!=null ? qr.correct+'/'+qr.total+(qr.passed?' ✓':' ✗') : '—';
     var attemptsInfo = attemptCount ? attemptCount+'x' : '—';
     // Mask email & phone for admin/staff — full only for super_admin
