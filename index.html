@@ -4210,19 +4210,19 @@ body { -webkit-overflow-scrolling: touch; }
       <div class="step-content" data-step="3">
         <div class="form-grid">
           <div class="input-group"><label data-t="lLangs">Languages *</label><input type="text" id="langs" value="English, Spanish" oninput="updatePreview()"></div>
-          <div class="input-group"><label data-t="lProfProfile">Professional Profile (51-80 words)</label><textarea id="profile" rows="5" placeholder="Write 2-3 sentences about yourself and your professional strengths..." oninput="updatePreview();wc('profile')"></textarea><div class="wc bad" id="wc-profile">0 words (51-80)</div></div>
+          <div class="input-group"><label data-t="lProfProfile">Professional Profile (51-80 words)</label><textarea id="profile" rows="5" placeholder="Write 2-3 sentences about yourself and your professional strengths..." oninput="if(window._autoFillFlags)window._autoFillFlags.profile=false;updatePreview();wc('profile')"></textarea><div class="wc bad" id="wc-profile">0 words (51-80)</div></div>
         </div>
       </div>
       <!-- Step 4 -->
       <div class="step-content" data-step="4">
         <div class="form-grid">
-          <div class="input-group"><label data-t="lWorkExp">Work Experience (51-80 words)</label><textarea id="workexp" rows="5" placeholder="Describe your previous jobs, dates and responsibilities..." oninput="updatePreview();wc('exp')"></textarea><div class="wc bad" id="wc-exp">0 words (51-80)</div></div>
+          <div class="input-group"><label data-t="lWorkExp">Work Experience (51-80 words)</label><textarea id="workexp" rows="5" placeholder="Describe your previous jobs, dates and responsibilities..." oninput="if(window._autoFillFlags)window._autoFillFlags.exp=false;updatePreview();wc('exp')"></textarea><div class="wc bad" id="wc-exp">0 words (51-80)</div></div>
         </div>
       </div>
       <!-- Step 5 -->
       <div class="step-content" data-step="5">
         <div class="form-grid">
-          <div class="input-group"><label data-t="lSkills">Skills</label><textarea id="skills" rows="5" placeholder="e.g. Cooking, Customer Service, Team Work, Food Safety..." oninput="updatePreview();wc('skills')"></textarea><div class="wc" id="wc-skills"></div></div>
+          <div class="input-group"><label data-t="lSkills">Skills</label><textarea id="skills" rows="5" placeholder="e.g. Cooking, Customer Service, Team Work, Food Safety..." oninput="if(window._autoFillFlags)window._autoFillFlags.skills=false;updatePreview();wc('skills')"></textarea><div class="wc" id="wc-skills"></div></div>
           <div class="input-group">
             <label style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">
               <span>&#x1F3C5; <span data-i18n="certTitle">Certifications</span></span>
@@ -19894,6 +19894,7 @@ function setLang(lang){
         document.getElementById('profile').value = tmpl.profile;
         document.getElementById('workexp').value = tmpl.exp;
         document.getElementById('skills').value = tmpl.skills;
+        window._autoFillFlags = { profile:true, exp:true, skills:true, lang:(typeof getCvLang==='function'?getCvLang():'') };
         wc('profile'); wc('exp'); wc('skills');
         updatePreview();
       }
@@ -22156,6 +22157,7 @@ function updatePhonePlaceholder(){
           document.getElementById('profile').value = tmpl.profile;
           document.getElementById('workexp').value = tmpl.exp || '';
           document.getElementById('skills').value  = tmpl.skills || '';
+          window._autoFillFlags = { profile:true, exp:true, skills:true, lang:detectedLang };
           try{ wc('profile'); wc('exp'); wc('skills'); }catch(e){}
         }
       }
@@ -22218,15 +22220,8 @@ function chkPhone(){
     }
   }
 
-  // Duplicate check
-  var fullNum = ccVal + digits;
-  if(allApps().some(function(u){
-    var uDigits=(u.phone||'').replace(/[\s\-\(\)\+]/g,'');
-    return uDigits===digits||uDigits.endsWith(digits)||digits.endsWith(uDigits);
-  })){
-    msg.textContent='⚠ Phone already registered'; msg.style.color='#ef4444'; return false;
-  }
-
+  // Phone numbers are allowed to repeat (e.g. family members sharing a
+  // phone) — no duplicate check / no blocking here anymore.
   msg.textContent='✓ Valid'; msg.style.color='#10b981'; return true;
 }
 
@@ -22975,6 +22970,7 @@ function applyCvLangOverride(){
         document.getElementById('profile').value = tmpl.profile;
         document.getElementById('workexp').value = tmpl.exp;
         document.getElementById('skills').value  = tmpl.skills;
+        window._autoFillFlags = { profile:true, exp:true, skills:true, lang:lang };
         try{ wc('profile'); wc('exp'); wc('skills'); }catch(e){}
       }
     }
@@ -23278,6 +23274,10 @@ function autoFill(){
   document.getElementById('profile').value = tmpl.profile;
   document.getElementById('workexp').value = tmpl.exp;
   document.getElementById('skills').value = tmpl.skills;
+  // Mark all three as pristine template text in this language — tracked
+  // explicitly (not guessed from text content) so later CV-language swaps
+  // are 100% reliable even if the text is later edited slightly.
+  window._autoFillFlags = { profile:true, exp:true, skills:true, lang:cvLang };
   wc('profile'); wc('exp'); wc('skills');
   var existing = getCertListValues();
   if(!existing.length) loadCertSuggestions(true);
@@ -23501,6 +23501,10 @@ function getFormData(){
     profile:document.getElementById('profile').value,
     experience:document.getElementById('workexp').value,
     skills:document.getElementById('skills').value,
+    profileIsTemplate: !!window._autoFillFlags && !!window._autoFillFlags.profile,
+    expIsTemplate: !!window._autoFillFlags && !!window._autoFillFlags.exp,
+    skillsIsTemplate: !!window._autoFillFlags && !!window._autoFillFlags.skills,
+    autoFillLang: window._autoFillFlags ? window._autoFillFlags.lang : '',
     position:document.getElementById('position').value,
     avail:document.getElementById('avail').value,
     expYears:document.getElementById('expYears').value,
@@ -23591,19 +23595,34 @@ function buildCV(d){
   var profileText = sv(d.profile, sv(d.bio,''));
   var expText     = sv(d.experience, sv(d.workexp,''));
 
-  // Swap content to correct language template if still using auto-fill text
+  // Swap content to correct language template if still using auto-fill text.
+  // Prefer the explicit profileIsTemplate/expIsTemplate/skillsIsTemplate
+  // flags (set precisely at fill-time, cleared the instant the applicant
+  // types anything) — this is 100% reliable, unlike guessing from text
+  // content. A field that was ever hand-edited is NEVER swapped, so it
+  // can't end up showing a different language than what the applicant
+  // actually typed, mixed in with swapped (translated) sections.
   if(d.position && typeof getTmplForLang !== 'undefined'){
     function firstChars(str,n){ return (str||'').substring(0,n); }
     var cvT  = getTmplForLang(d.position, cvLang);
     var enT  = (typeof TMPLS !== 'undefined') ? (TMPLS[d.position] || DEFLT || {}) : {};
-    // Check all known templates — if user text matches any known template, swap to cvLang version
-    var allT = [];
-    if(typeof TMPLS !== 'undefined') allT = allT.concat(Object.values(TMPLS));
-    if(typeof TMPLS_ES !== 'undefined') allT = allT.concat(Object.values(TMPLS_ES));
-    if(typeof TMPLS_ML !== 'undefined') Object.values(TMPLS_ML).forEach(function(g){ allT = allT.concat(Object.values(g)); });
-    var isAutoProfile = allT.some(function(t2){ return t2.profile && firstChars(profileText,50)===firstChars(t2.profile,50); });
-    var isAutoExp     = allT.some(function(t2){ return t2.exp     && firstChars(expText,50)    ===firstChars(t2.exp,50);     });
-    var isAutoSkills  = allT.some(function(t2){ return t2.skills  && firstChars(rawSkills,40)  ===firstChars(t2.skills,40);  });
+    var hasExplicitFlags = (d.profileIsTemplate!==undefined || d.expIsTemplate!==undefined || d.skillsIsTemplate!==undefined);
+    var isAutoProfile, isAutoExp, isAutoSkills;
+    if(hasExplicitFlags){
+      isAutoProfile = !!d.profileIsTemplate;
+      isAutoExp     = !!d.expIsTemplate;
+      isAutoSkills  = !!d.skillsIsTemplate;
+    } else {
+      // Legacy records saved before these flags existed — fall back to the
+      // old fuzzy text-matching so old CVs keep working the same as before.
+      var allT = [];
+      if(typeof TMPLS !== 'undefined') allT = allT.concat(Object.values(TMPLS));
+      if(typeof TMPLS_ES !== 'undefined') allT = allT.concat(Object.values(TMPLS_ES));
+      if(typeof TMPLS_ML !== 'undefined') Object.values(TMPLS_ML).forEach(function(g){ allT = allT.concat(Object.values(g)); });
+      isAutoProfile = allT.some(function(t2){ return t2.profile && firstChars(profileText,50)===firstChars(t2.profile,50); });
+      isAutoExp     = allT.some(function(t2){ return t2.exp     && firstChars(expText,50)    ===firstChars(t2.exp,50);     });
+      isAutoSkills  = allT.some(function(t2){ return t2.skills  && firstChars(rawSkills,40)  ===firstChars(t2.skills,40);  });
+    }
     if(isAutoProfile) profileText = cvT.profile || enT.profile || profileText;
     if(isAutoExp)     expText     = cvT.exp     || enT.exp     || expText;
     if(isAutoSkills)  rawSkills   = cvT.skills  || enT.skills  || rawSkills;
