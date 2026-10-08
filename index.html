@@ -4185,6 +4185,17 @@ body { -webkit-overflow-scrolling: touch; }
           </div>
           <div class="input-group"><label data-t="lAvail">Availability</label><select id="avail" onchange="updatePreview()"><option data-i18n="optFulltime">Full-time</option><option data-i18n="optParttime">Part-time</option><option data-i18n="optImmediate">Immediate Start</option></select></div>
           <div class="input-group"><label data-t="lExpYears">Years of Experience *</label><select id="expYears" onchange="updatePreview()"><option value="">-- Select --</option>
+              <option value="1 Month" data-i18n-expm="1">1 Month</option>
+              <option value="2 Months" data-i18n-expm="2">2 Months</option>
+              <option value="3 Months" data-i18n-expm="3">3 Months</option>
+              <option value="4 Months" data-i18n-expm="4">4 Months</option>
+              <option value="5 Months" data-i18n-expm="5">5 Months</option>
+              <option value="6 Months" data-i18n-expm="6">6 Months</option>
+              <option value="7 Months" data-i18n-expm="7">7 Months</option>
+              <option value="8 Months" data-i18n-expm="8">8 Months</option>
+              <option value="9 Months" data-i18n-expm="9">9 Months</option>
+              <option value="10 Months" data-i18n-expm="10">10 Months</option>
+              <option value="11 Months" data-i18n-expm="11">11 Months</option>
               <option value="1 Year"  data-i18n-exp="1">1 Year</option>
               <option value="2 Years" data-i18n-exp="2">2 Years</option>
               <option value="3 Years" data-i18n-exp="3">3 Years</option>
@@ -19739,11 +19750,20 @@ function t(key){
   }catch(e){ return key; }
 }
 
+var EXP_MONTH_WORDS = {en:['Month','Months'],es:['Mes','Meses'],fr:['Mois','Mois'],de:['Monat','Monate'],it:['Mese','Mesi'],pt:['Mês','Meses'],ja:['ヶ月','ヶ月'],ko:['개월','개월'],zh:['个月','个月'],hi:['महीना','महीने'],ne:['महिना','महिना'],ar:['شهر','أشهر'],ru:['Месяц','Месяцев'],tr:['Ay','Ay'],id:['Bulan','Bulan'],ms:['Bulan','Bulan'],uk:['Місяць','Місяців'],pl:['Miesiąc','Miesięcy'],ro:['Lună','Luni'],bg:['Месец','Месеца'],sr:['Месец','Месеци'],sq:['Muaj','Muaj'],sw:['Mwezi','Miezi'],nl:['Maand','Maanden'],lt:['Mėnuo','Mėnesiai'],lv:['Mēnesis','Mēneši'],et:['Kuu','Kuud'],sv:['Månad','Månader'],da:['Måned','Måneder'],no:['Måned','Måneder'],fi:['Kuukausi','Kuukautta'],el:['Μήνας','Μήνες'],he:['חודש','חודשים'],fa:['ماه','ماه'],ur:['مہینہ','مہینے'],bn:['মাস','মাস'],th:['เดือน','เดือน'],vi:['Tháng','Tháng'],tl:['Buwan','Buwan'],cs:['Měsíc','Měsíců'],hu:['Hónap','Hónap'],sk:['Mesiac','Mesiacov'],hr:['Mjesec','Mjeseci']};
+function _expMonthLabel(n){
+  var lg=(typeof LANG!=='undefined'&&LANG)||'en';
+  var w=EXP_MONTH_WORDS[lg]||EXP_MONTH_WORDS.en;
+  return n+' '+(n===1?w[0]:w[1]);
+}
 function _translateExpYearsDropdown(){
   var sel = document.getElementById('expYears');
   if(!sel) return;
   var yearSingle = t('expYear') || 'Year';
   var yearPlural = t('expYears') || 'Years';
+  sel.querySelectorAll('option[data-i18n-expm]').forEach(function(opt){
+    opt.textContent = _expMonthLabel(parseInt(opt.getAttribute('data-i18n-expm')));
+  });
   var opts = sel.querySelectorAll('option[data-i18n-exp]');
   opts.forEach(function(opt){
     var n = parseInt(opt.getAttribute('data-i18n-exp'));
@@ -19776,6 +19796,9 @@ function applyTranslations(){
     var n = el.getAttribute('data-i18n-exp');
     var suffix = (n === '1') ? t('expYear') : t('expYears');
     el.textContent = n + ' ' + suffix;
+  });
+  document.querySelectorAll('[data-i18n-expm]').forEach(function(el){
+    el.textContent = _expMonthLabel(parseInt(el.getAttribute('data-i18n-expm')));
   });
   // data-t → innerHTML (legacy)
   document.querySelectorAll('[data-t]').forEach(function(el){
@@ -23737,6 +23760,7 @@ function buildCV(d){
     var m=ev.match(/^(\d+)\s+/);
     if(!m) return ev;
     var n=parseInt(m[1]);
+    if(/month/i.test(ev)) return _expMonthLabel(n);
     var sfx=n===1?(t('expYear')||'Year'):(t('expYears')||'Years');
     return n+' '+sfx;
   })())    +'</div>'
@@ -27917,11 +27941,16 @@ function openCVEditor(){
   }).join('');
 
   // Years options translated
+  var monthOptions = [1,2,3,4,5,6,7,8,9,10,11].map(function(n){
+    var val = n+' '+(n===1?'Month':'Months');
+    return '<option value="'+val+'"'+(u.expYears===val?' selected':'')+'>'+_expMonthLabel(n)+'</option>';
+  }).join('');
   var yrsOptions = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15].map(function(n){
     var val = n+' '+(n===1?'Year':'Years');
     var label = n+' '+(n===1?t('expYear'):t('expYears'));
     return '<option value="'+val+'"'+(u.expYears===val?' selected':'')+'>'+label+'</option>';
   }).join('');
+  yrsOptions = monthOptions + yrsOptions;
 
   // Gender options translated
   var genderOpts = [
