@@ -3117,6 +3117,39 @@ body {
   .numInputWrapper span.arrowDown:after{border-top-color:#fbbf24;}
   #dobFpInput{width:100%;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.12);color:#f1f5f9;border-radius:10px;padding:10px 13px;font-family:inherit;font-size:0.92rem;box-sizing:border-box;cursor:pointer;outline:none;}
   #dobFpInput:focus{border-color:rgba(245,158,11,0.6);}
+  #dobFpInput{cursor:text;letter-spacing:0.04em;}
+  .dob-hint{font-size:0.7rem;color:#94a3b8;margin-top:4px;}
+
+  /* ===== Professional, high-contrast calendar (all flatpickr pickers) ===== */
+  .flatpickr-calendar{width:328px;max-width:calc(100vw - 20px);padding:8px 8px 12px;background:#1e293b;border:1px solid rgba(251,191,36,0.35);border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,0.55);font-size:15px;box-sizing:border-box;}
+  .flatpickr-calendar:before,.flatpickr-calendar:after{display:none;}
+  .flatpickr-innerContainer,.flatpickr-rContainer,.flatpickr-days,.flatpickr-calendar .dayContainer{width:100% !important;min-width:100% !important;max-width:100% !important;box-sizing:border-box;}
+  .flatpickr-months{align-items:center;padding:4px 0 10px;}
+  .flatpickr-months .flatpickr-month{background:transparent;height:44px;border-radius:0;}
+  .flatpickr-current-month{height:44px;padding:0;left:14%;width:72%;display:flex;align-items:center;justify-content:center;gap:8px;font-size:1rem;}
+  .flatpickr-current-month .flatpickr-monthDropdown-months,.flatpickr-current-month select.fp-year-select{background:#0f172a;color:#fde68a;border:1px solid rgba(251,191,36,0.4);border-radius:10px;padding:7px 10px;font-family:inherit;font-size:0.95rem;font-weight:700;height:auto;width:auto;margin:0;cursor:pointer;outline:none;-webkit-appearance:menulist;appearance:menulist;}
+  .flatpickr-current-month .flatpickr-monthDropdown-months:hover,.flatpickr-current-month select.fp-year-select:hover{border-color:#fbbf24;}
+  .flatpickr-current-month .flatpickr-monthDropdown-months .flatpickr-monthDropdown-month,.flatpickr-current-month select.fp-year-select option{background:#0f172a;color:#f1f5f9;font-weight:600;}
+  .flatpickr-months .flatpickr-prev-month,.flatpickr-months .flatpickr-next-month{top:4px;height:44px;width:40px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:10px;}
+  .flatpickr-months .flatpickr-prev-month:hover,.flatpickr-months .flatpickr-next-month:hover{background:rgba(251,191,36,0.15);}
+  .flatpickr-months .flatpickr-prev-month svg,.flatpickr-months .flatpickr-next-month svg{width:14px;height:14px;fill:#fbbf24;}
+  .flatpickr-weekdays{height:34px;background:transparent;}
+  span.flatpickr-weekday{color:#cbd5e1;font-size:0.76rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;background:transparent;}
+  .flatpickr-day{color:#f8fafc;font-size:0.95rem;font-weight:600;height:40px;line-height:40px;max-width:none;flex:0 0 14.2857%;border-radius:10px;border:1.5px solid transparent;margin:0;}
+  .flatpickr-day:hover,.flatpickr-day:focus{background:rgba(251,191,36,0.2);border-color:transparent;color:#fde68a;}
+  .flatpickr-day.today{border-color:#fbbf24;color:#fbbf24;}
+  .flatpickr-day.selected,.flatpickr-day.selected:hover{background:linear-gradient(135deg,#fbbf24,#d97706);border-color:#fbbf24;color:#111827;font-weight:800;}
+  .flatpickr-day.prevMonthDay,.flatpickr-day.nextMonthDay{color:#94a3b8;}
+  .flatpickr-day.flatpickr-disabled,.flatpickr-day.flatpickr-disabled:hover,.flatpickr-day.prevMonthDay.flatpickr-disabled,.flatpickr-day.nextMonthDay.flatpickr-disabled{color:#94a3b8;opacity:0.35;background:transparent;cursor:not-allowed;}
+  [data-theme="light"] .flatpickr-current-month .flatpickr-monthDropdown-months,[data-theme="classic"] .flatpickr-current-month .flatpickr-monthDropdown-months,
+  [data-theme="light"] .flatpickr-current-month select.fp-year-select,[data-theme="classic"] .flatpickr-current-month select.fp-year-select{background:#f8fafc !important;color:#b45309 !important;border-color:rgba(180,83,9,0.35) !important;}
+  [data-theme="light"] .flatpickr-current-month select.fp-year-select option,[data-theme="classic"] .flatpickr-current-month select.fp-year-select option,
+  [data-theme="light"] .flatpickr-monthDropdown-month,[data-theme="classic"] .flatpickr-monthDropdown-month{background:#fff !important;color:#1e293b !important;}
+  [data-theme="light"] span.flatpickr-weekday,[data-theme="classic"] span.flatpickr-weekday{color:#475569 !important;}
+  [data-theme="light"] .flatpickr-day.prevMonthDay,[data-theme="light"] .flatpickr-day.nextMonthDay,[data-theme="classic"] .flatpickr-day.prevMonthDay,[data-theme="classic"] .flatpickr-day.nextMonthDay{color:#94a3b8 !important;}
+  [data-theme="light"] .flatpickr-day.flatpickr-disabled,[data-theme="classic"] .flatpickr-day.flatpickr-disabled{color:#94a3b8 !important;opacity:0.45;}
+  [data-theme="light"] .flatpickr-day.selected,[data-theme="classic"] .flatpickr-day.selected{color:#111827 !important;}
+  [data-theme="light"] .flatpickr-months .flatpickr-prev-month svg,[data-theme="light"] .flatpickr-months .flatpickr-next-month svg,[data-theme="classic"] .flatpickr-months .flatpickr-prev-month svg,[data-theme="classic"] .flatpickr-months .flatpickr-next-month svg{fill:#b45309;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
 <script>
@@ -4007,7 +4040,8 @@ body { -webkit-overflow-scrolling: touch; }
           </div>
           <div class="input-group">
             <label data-t="lDob">Date of Birth *</label>
-            <input type="text" id="dobFpInput" placeholder="DD/MM/YYYY" readonly style="cursor:pointer;">
+            <input type="text" id="dobFpInput" placeholder="DD/MM/YYYY" inputmode="numeric" maxlength="10" autocomplete="off" style="cursor:text;">
+            <div class="dob-hint">&#x1F4C5; DD/MM/YYYY</div>
             <input type="hidden" id="dob" oninput="updatePreview();chkDob()" onchange="chkDob()">
             <div id="dobMsg" style="font-size:0.7rem;margin-top:3px;"></div>
             <!-- DOB CV display option -->
@@ -20829,28 +20863,112 @@ var FP_LOCALE_MAP={
 };
 var _fpInst=null;
 
+// Replace flatpickr's tiny numeric year box with a clear year dropdown
+function _fpYearSelect(fp){
+  try{
+    var cal=fp.calendarContainer;
+    var wrap=cal.querySelector('.flatpickr-current-month .numInputWrapper');
+    if(!wrap) return;
+    var sel=cal.querySelector('select.fp-year-select');
+    if(!sel){
+      sel=document.createElement('select');
+      sel.className='fp-year-select';
+      sel.setAttribute('aria-label','Year');
+      wrap.style.display='none';
+      wrap.parentNode.insertBefore(sel,wrap.nextSibling);
+      sel.addEventListener('change',function(){ fp.changeYear(parseInt(sel.value,10)); });
+    }
+    var minY=fp.config.minDate?fp.config.minDate.getFullYear():fp.currentYear-100;
+    var maxY=fp.config.maxDate?fp.config.maxDate.getFullYear():fp.currentYear+20;
+    if(sel.options.length!==(maxY-minY+1)){
+      sel.innerHTML='';
+      for(var y=maxY;y>=minY;y--){ var o=document.createElement('option'); o.value=y; o.textContent=y; sel.appendChild(o); }
+    }
+    sel.value=String(fp.currentYear);
+  }catch(e){}
+}
+
+// Let people type the date directly: auto-adds slashes, validates as they type
+function _bindDobTyping(){
+  var inp=document.getElementById('dobFpInput');
+  if(!inp||inp._dobTyping) return;
+  inp._dobTyping=1;
+  var hidden=document.getElementById('dob');
+  var msg=document.getElementById('dobMsg');
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function setHidden(v){
+    if(!hidden) return;
+    hidden.value=v;
+    try{ hidden.dispatchEvent(new Event('input')); hidden.dispatchEvent(new Event('change')); }catch(e){}
+  }
+  function bad(){ if(msg){ msg.textContent='\u2717 DD/MM/YYYY'; msg.style.color='#ef4444'; } }
+  inp.addEventListener('input',function(ev){
+    // ignore synthetic input events flatpickr fires itself (e.g. when it clears out-of-range text)
+    if(ev && ev.isTrusted===false) return;
+    var raw=inp.value.replace(/\D/g,'').slice(0,8);
+    var out=raw;
+    if(raw.length>4) out=raw.slice(0,2)+'/'+raw.slice(2,4)+'/'+raw.slice(4);
+    else if(raw.length>2) out=raw.slice(0,2)+'/'+raw.slice(2);
+    if(inp.value!==out) inp.value=out;
+    inp._lastTyped=out;
+    if(raw.length<8){
+      if(hidden&&hidden.value) setHidden('');
+      else if(msg) msg.textContent='';
+      return;
+    }
+    var d=+raw.slice(0,2), m=+raw.slice(2,4), y=+raw.slice(4,8);
+    var dt=new Date(y,m-1,d);
+    if(y<1900||dt.getFullYear()!==y||dt.getMonth()!==m-1||dt.getDate()!==d){ setHidden(''); bad(); return; }
+    setHidden(y+'-'+pad(m)+'-'+pad(d));
+    // keep the calendar in sync when the date is inside the allowed range
+    try{
+      var mx=_fpInst&&_fpInst.config.maxDate, mn=_fpInst&&_fpInst.config.minDate;
+      if(_fpInst&&(!mx||dt<=mx)&&(!mn||dt>=mn)) _fpInst.setDate(dt,false);
+    }catch(e){}
+  });
+  // flatpickr clears out-of-range text on blur — put back what the person typed
+  function restoreTyped(){
+    setTimeout(function(){
+      if(!inp.value && inp._lastTyped) inp.value=inp._lastTyped;
+      var raw=inp.value.replace(/\D/g,'');
+      if(raw.length>0 && raw.length<8) bad();
+    },0);
+  }
+  inp.addEventListener('blur',restoreTyped);
+  inp.addEventListener('keydown',function(e){ if(e.key==='Enter') restoreTyped(); });
+}
+
 function initDobPicker(lang){
   var fpLang=FP_LOCALE_MAP[lang]||'default';
   var dobHidden=document.getElementById('dob');
   var dobInput=document.getElementById('dobFpInput');
   if(!dobInput||typeof flatpickr==='undefined')return;
+  _bindDobTyping();
 
   // Destroy existing instance
   if(_fpInst){try{_fpInst.destroy();}catch(e){} _fpInst=null;}
 
   function createPicker(locale){
+    // Range matches the form rules: must be 18-70 years old
     var maxDate=new Date();
-    maxDate.setFullYear(maxDate.getFullYear()-14);
+    maxDate.setFullYear(maxDate.getFullYear()-18);
     var minDate=new Date();
-    minDate.setFullYear(minDate.getFullYear()-100);
+    minDate.setFullYear(minDate.getFullYear()-71);
+    minDate.setDate(minDate.getDate()+1);
     _fpInst=flatpickr(dobInput,{
       locale: locale||'default',
       dateFormat: 'd/m/Y',
       maxDate: maxDate,
       minDate: minDate,
+      allowInput: true,
       disableMobile: true,
+      onReady: function(sd,ds,fp){ _fpYearSelect(fp); },
+      onOpen: function(sd,ds,fp){ _fpYearSelect(fp); },
+      onMonthChange: function(sd,ds,fp){ _fpYearSelect(fp); },
+      onYearChange: function(sd,ds,fp){ _fpYearSelect(fp); },
       onChange: function(selectedDates, dateStr){
         if(selectedDates.length){
+          dobInput._lastTyped = dobInput.value;
           // Set hidden input as yyyy-mm-dd for existing logic
           var d=selectedDates[0];
           var yyyy=d.getFullYear();
