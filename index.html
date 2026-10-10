@@ -5519,7 +5519,7 @@ function onFirebaseLoginSuccess(){
   }
 
   // Try localStorage first
-  var app = allApps().find(function(a){ return a.email && a.email.toLowerCase()===uEmail; });
+  var app = allApps().find(function(a){ return a.email && a.email.toLowerCase()===uEmail && !_isStubApp(a); });
   if(app){ loadDashboard(app); return; }
 
   // Try _DEMO_USERS directly if not in allApps
@@ -5552,14 +5552,31 @@ function onFirebaseLoginSuccess(){
       var d=snap.val(), toA=function(v){return v?(Array.isArray(v)?v:Object.values(v)):[]; };
       PA=_restorePhotosOnSync(toA(d.fc_p)); AA=_restorePhotosOnSync(toA(d.fc_a)); HA=_restorePhotosOnSync(toA(d.fc_h));
     }
-    var uFromData = allApps().find(function(a){ return a.email && a.email.toLowerCase()===uEmail; });
+    var uFromData = allApps().find(function(a){ return a.email && a.email.toLowerCase()===uEmail && !_isStubApp(a); });
     if(uFromData){ loadDashboard(uFromData); return; }
     // No full applicant record yet — fall back to the lightweight users node
     _fbDb.ref('users').orderByChild('email').equalTo(uEmail).once('value').then(function(uSnap){
       if(uSnap.exists()){
         var users = Object.values(uSnap.val()||{});
         var u = users.find(function(x){return x&&x.email&&x.email.toLowerCase()===uEmail;});
-        if(u){ loadDashboard(u); return; }
+        if(u){
+          // The full record is missing from the lists (lost to an old overwrite) but the users
+          // node still has the CV data: put it back so admin sees it and the CV isn't blank.
+          try{
+            var _gone=(window._deletedEmails&&window._deletedEmails[uEmail])||TRASH.some(function(x){return x&&x.email&&x.email.toLowerCase()===uEmail;});
+            if(!_gone && !_isStubApp(u) && u.status!=='pending'){
+              u.id = u.id || u.uid;
+              if(!allApps().some(function(a){return a.email&&a.email.toLowerCase()===uEmail&&!_isStubApp(a);})){
+                PA=PA.filter(function(a){return !(a&&a.email&&a.email.toLowerCase()===uEmail);});
+                AA=AA.filter(function(a){return !(a&&a.email&&a.email.toLowerCase()===uEmail);});
+                HA=HA.filter(function(a){return !(a&&a.email&&a.email.toLowerCase()===uEmail);});
+                (u.status==='hired'?HA:AA).unshift(u);
+                saveData();
+              }
+            }
+          }catch(e){}
+          loadDashboard(u); return;
+        }
       }
       var nameEl2 = document.getElementById('dash-name');
       if(nameEl2) nameEl2.textContent = _currentUser.email;
@@ -21599,6 +21616,13 @@ function saveData(){
   // it was saved.
   if(_fbDb){
     window._pendingSaveCount = (window._pendingSaveCount||0) + 1;
+    // Self-heal: remove name+email-only stub rows when the real record exists
+    try{
+      var _fullE={};
+      PA.concat(AA).concat(HA).forEach(function(r){ if(r&&r.email&&!_isStubApp(r)) _fullE[String(r.email).toLowerCase().trim()]=1; });
+      var _dropStub=function(arr){ return arr.filter(function(r){ return !(r&&r.email&&_isStubApp(r)&&_fullE[String(r.email).toLowerCase().trim()]); }); };
+      PA=_dropStub(PA); AA=_dropStub(AA); HA=_dropStub(HA);
+    }catch(e){}
     // Before overwriting the server's arrays wholesale, pull the LATEST server
     // copy and fold in any record this tab doesn't already know about — e.g.
     // someone registered a second ago, or another tab/the applicant just
@@ -21621,6 +21645,7 @@ function saveData(){
       var deleted = window._deletedEmails || {};
       serverP.concat(serverA).concat(serverH).forEach(function(a){
         if(!a||!a.email) return;
+        if(_isStubApp(a)) return; // never copy blank placeholder rows back
         var em=a.email.toLowerCase();
         if(localKnown[em]) return; // this tab already has an opinion about this record — trust local
         if(deleted[em]) return; // intentionally deleted from this tab — don't resurrect it
@@ -21665,7 +21690,18 @@ function loadPhotosBack(arr){
     return a;
   });
 }
-function allApps(){return PA.concat(AA).concat(HA);}
+// A "stub" is a name+email-only placeholder row (no position/profile/phone...).
+// Submits used to push one into data/fc_p next to the real record; PA is searched
+// first, so that stub was found instead of the full CV and the CV came out blank.
+function _isStubApp(r){
+  return !!r && !r.position && !r.profile && !r.experience && !r.skills && !r.phone && !r.dob;
+}
+function allApps(){
+  var all=PA.concat(AA).concat(HA);
+  var full={};
+  all.forEach(function(r){ if(r&&r.email&&!_isStubApp(r)) full[String(r.email).toLowerCase().trim()]=1; });
+  return all.filter(function(r){ return !(r&&r.email&&_isStubApp(r)&&full[String(r.email).toLowerCase().trim()]); });
+}
 
 // Restore photos from individual localStorage keys
 function _restorePhoto(a){
@@ -23515,6 +23551,8 @@ var CERT_SUGGESTIONS = {
   "Events Coordinator":        ["Events Management Certificate","Customer Service Excellence","First Aid at Work","Health and Safety at Work","Risk Assessment Training","Project Management Basics"],
   "Spa Therapist":             ["ITEC or CIDESCO Therapy Diploma","COSHH Certificate","First Aid at Work","Allergen Awareness","Manual Handling Training","Customer Service Excellence"],
   "Security Guard":            ["TIP Security Licence (Spain)","First Aid Certificate","Fire Safety Training","CCTV Operations Certificate","Conflict Management Training","Health and Safety at Work"],
+  "Babysitter":                ["First Aid Certificate","Child Care and Safeguarding Certificate","Food Hygiene Certificate","Fire Safety Awareness","Health and Safety at Work","Customer Service Certificate"],
+  "Domestic Helper":           ["Cleaning and Sanitation","Housekeeping Standards","Manual Handling Training","Food Hygiene Certificate","First Aid Awareness","Fire Safety Awareness"],
   "_default":           ["Food Hygiene Certificate","Workplace Safety Training","Basic Customer Service Certificate","Allergen Awareness Training"]
 };
 
@@ -23555,6 +23593,8 @@ var CERT_SUGGESTIONS_ES = {
   "Events Coordinator":        ["Certificado de Gestión de Eventos","Excelencia en Atención al Cliente","Primeros Auxilios en el Trabajo","Salud y Seguridad en el Trabajo","Formación en Evaluación de Riesgos","Fundamentos de Gestión de Proyectos"],
   "Spa Therapist":             ["Diploma de Terapia ITEC o CIDESCO","Certificado COSHH","Primeros Auxilios en el Trabajo","Conciencia sobre Alérgenos","Formación en Manipulación Manual","Excelencia en Atención al Cliente"],
   "Security Guard":            ["Licencia TIP de Seguridad (España)","Certificado de Primeros Auxilios","Formación en Seguridad contra Incendios","Certificado de Operaciones de CCTV","Formación en Gestión de Conflictos","Salud y Seguridad en el Trabajo"],
+  "Babysitter":                ["Certificado de Primeros Auxilios","Certificado de Cuidado y Protección Infantil","Certificado de Higiene Alimentaria","Concienciación sobre Seguridad contra Incendios","Seguridad y Salud en el Trabajo","Certificado de Atención al Cliente"],
+  "Domestic Helper":           ["Limpieza y Desinfección","Estándares de Housekeeping","Formación en Manipulación Manual de Cargas","Certificado de Higiene Alimentaria","Concienciación sobre Primeros Auxilios","Concienciación sobre Seguridad contra Incendios"],
   "_default":           ["Certificado de Higiene Alimentaria","Formación en Seguridad Laboral","Certificado Básico de Atención al Cliente","Formación en Conciencia sobre Alérgenos"]
 };
 
@@ -23865,7 +23905,7 @@ function buildCV(d){
     /* Photo + position chip */
     +'<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;text-align:center;">'
     +photoHtml
-    +'<div class="cv-chip" style="margin:10px auto 0;display:block;text-align:center;">'+esc(getTranslatedPos(d.position||(t('cvPosLabel')||'Position')))+'</div>'
+    +(d.position?'<div class="cv-chip" style="margin:10px auto 0;display:block;text-align:center;">'+esc(getTranslatedPos(d.position))+'</div>':'')
     +qBadge
     +'</div>'
 
@@ -23894,7 +23934,7 @@ function buildCV(d){
     /* Name + title header */
     +'<div class="cv-header-block">'
     +'<div class="cv-name" id="cvNameEl" style="white-space:normal;word-break:break-word;overflow:hidden;max-width:100%;">'+esc(sv(d.name,'MARIA GARCIA LOPEZ'))+'</div>'
-    +'<div class="cv-subtitle">'+esc(getTranslatedPos(sv(d.position,t('cvProfTitle')||'Professional Title')))+'</div>'
+    +'<div class="cv-subtitle">'+esc(d.position?getTranslatedPos(sv(d.position,'')):'')+'</div>'
     +'</div>'
 
     /* Sections wrapped for PDF flex height distribution */
@@ -24246,7 +24286,7 @@ function verifyOtp(){
       status: 'approved',
       createdAt: firebase.database.ServerValue.TIMESTAMP
     };
-    _fbDb.ref('data/fc_p').push(appRecord).catch(function(){});
+    // (removed) pushing a name+email-only stub into data/fc_p caused blank CVs; the full record is already saved by saveData() above
 
     // Also save to users node WITH password for login
     var uid = pendData.id ? String(pendData.id) : String(Date.now());
@@ -24614,8 +24654,33 @@ function setPortalCvLang(lang){
   }catch(e){}
 }
 
+// Shrink text/spacing step by step until BOTH columns fit inside the fixed A4 page.
+// The PDF page has a fixed height with overflow hidden, so long content used to push the bottom
+// sections (certifications, strengths...) off the page and they never appeared in the PDF.
+function _fitCvToPage(root){
+  try{
+    function prep(list){ list.forEach(function(el){ if(!el._b){ var cs=getComputedStyle(el); el._b={fs:parseFloat(cs.fontSize)||12,mb:parseFloat(cs.marginBottom)||0,mt:parseFloat(cs.marginTop)||0,h:(el.classList.contains('cv-wimg')||el.classList.contains('cv-wph'))?(parseFloat(cs.height)||0):0}; } }); }
+    function apply(list,f){ list.forEach(function(el){ el.style.fontSize=(el._b.fs*f)+'px'; el.style.marginBottom=(el._b.mb*f)+'px'; el.style.marginTop=(el._b.mt*f)+'px'; if(el._b.h) el.style.height=(el._b.h*f)+'px'; }); }
+    function fit(box,els,min){
+      if(!box||!els.length) return;
+      prep(els);
+      var f=1;
+      while(box.scrollHeight>box.clientHeight+1 && f>min){ f=Math.round((f-0.03)*100)/100; apply(els,f); }
+    }
+    var wrap=root.querySelector('.cv-sections-wrap');
+    if(wrap) fit(wrap,Array.prototype.slice.call(wrap.querySelectorAll('.cv-sec-body,.cv-cert-item,.skill-tag,.cv-sec-head h3,.cv-sec-head')),0.5);
+    var side=root.querySelector('.cv-side');
+    if(side) fit(side,Array.prototype.slice.call(side.querySelectorAll('.cv-val,.cv-lbl,.cv-contact,.cv-strength-text,.cv-strength-item,.cv-side-title,.cv-wimg,.cv-wph')),0.55);
+  }catch(e){}
+}
+
 function dlCurrentCVDirect(){
   if(!currentUser) return;
+  // A CV with no position/profile/experience would download blank; stop and explain instead
+  if(_isStubApp(currentUser)){
+    toast('\u26A0 Your CV has no details yet. Please log out and log in again, or complete your application.');
+    return;
+  }
   // Sync portal lang selector → cvLangOverride before building
   try{
     var pSel = document.getElementById('portalCvLangSel');
@@ -24728,6 +24793,7 @@ function dlCurrentCVDirect(){
           document.body.appendChild(_wrap);
 
           setTimeout(function(){
+            _fitCvToPage(_wrap);
             html2canvas(_wrap, {
               scale: 2,
               useCORS: true,
@@ -28254,8 +28320,28 @@ function addEditCertRow(){
   container.appendChild(row);
 }
 
+// True when `text` still starts like one of the built-in auto-fill templates (any language)
+function _looksLikeTemplate(text, field){
+  try{
+    var n=(field==='skills')?40:50, key=(field==='experience')?'exp':field;
+    var head=(text||'').substring(0,n); if(!head) return false;
+    var all=[];
+    if(typeof TMPLS!=='undefined') all=all.concat(Object.values(TMPLS));
+    if(typeof TMPLS_ES!=='undefined') all=all.concat(Object.values(TMPLS_ES));
+    if(typeof TMPLS_ML!=='undefined') Object.values(TMPLS_ML).forEach(function(g){ all=all.concat(Object.values(g)); });
+    return all.some(function(t2){ return t2&&t2[key]&&(t2[key]).substring(0,n)===head; });
+  }catch(e){ return false; }
+}
 function saveCVEdits(){
   if(!currentUser){ toast('Not logged in'); return; }
+  // Remember what each text field held BEFORE this edit. buildCV() swaps text that is still flagged as an
+  // auto-fill template back to the template — so a field the person edited must be un-flagged, otherwise
+  // the CV shows the template again and the edit looks "not saved".
+  var _prev={profile:currentUser.profile, experience:currentUser.experience, skills:currentUser.skills};
+  var _flagOf={profile:'profileIsTemplate', experience:'expIsTemplate', skills:'skillsIsTemplate'};
+  Object.keys(_flagOf).forEach(function(f){
+    if(currentUser[_flagOf[f]]===undefined) currentUser[_flagOf[f]]=_looksLikeTemplate(_prev[f],f);
+  });
   // Gather edited cert values
   var editedCerts = [];
   document.querySelectorAll('#editCertList .cert-item input').forEach(function(inp){
@@ -28279,6 +28365,9 @@ function saveCVEdits(){
   currentUser.experience   = (document.getElementById('ed_experience')||{value:''}).value.trim();
   currentUser.skills       = (document.getElementById('ed_skills')||{value:''}).value.trim();
   currentUser.certifications = editedCerts;
+  Object.keys(_flagOf).forEach(function(f){
+    if((currentUser[f]||'')!==(_prev[f]||'')) currentUser[_flagOf[f]]=false; // edited by hand → never swap back to template
+  });
   if(window._editPhotoData) currentUser.photo = window._editPhotoData;
   // Save work photos from editor
   if(window._editWorkPhotos){
