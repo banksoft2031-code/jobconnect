@@ -4218,7 +4218,7 @@ body { -webkit-overflow-scrolling: touch; }
             </select>
           </div>
           <div class="input-group"><label data-t="lAvail">Availability</label><select id="avail" onchange="updatePreview()"><option data-i18n="optFulltime">Full-time</option><option data-i18n="optParttime">Part-time</option><option data-i18n="optImmediate">Immediate Start</option></select></div>
-          <div class="input-group"><label data-t="lExpYears">Years of Experience *</label><select id="expYears" onchange="updatePreview()"><option value="">-- Select --</option>
+          <div class="input-group"><label data-t="lExpYears">Years of Experience *</label><select id="expYears" autocomplete="off" onchange="updatePreview()"><option value="">-- Select --</option>
               <option value="1 Month" data-i18n-expm="1">1 Month</option>
               <option value="2 Months" data-i18n-expm="2">2 Months</option>
               <option value="3 Months" data-i18n-expm="3">3 Months</option>
@@ -7784,6 +7784,7 @@ function fbWrite(key, value){
   if(!_fbDb) return Promise.resolve();
   try{
     var data = typeof value==='string' ? JSON.parse(value) : value;
+    try{ data = JSON.parse(JSON.stringify(data)); }catch(e){} // drops undefined fields that make Firebase reject the write
     return _fbDb.ref('data/'+key).set(data);
   }catch(e){ return _fbDb.ref('data/'+key).set(value); }
 }
@@ -19802,6 +19803,16 @@ function t(key){
 }
 
 var EXP_MONTH_WORDS = {en:['Month','Months'],es:['Mes','Meses'],fr:['Mois','Mois'],de:['Monat','Monate'],it:['Mese','Mesi'],pt:['Mês','Meses'],ja:['ヶ月','ヶ月'],ko:['개월','개월'],zh:['个月','个月'],hi:['महीना','महीने'],ne:['महिना','महिना'],ar:['شهر','أشهر'],ru:['Месяц','Месяцев'],tr:['Ay','Ay'],id:['Bulan','Bulan'],ms:['Bulan','Bulan'],uk:['Місяць','Місяців'],pl:['Miesiąc','Miesięcy'],ro:['Lună','Luni'],bg:['Месец','Месеца'],sr:['Месец','Месеци'],sq:['Muaj','Muaj'],sw:['Mwezi','Miezi'],nl:['Maand','Maanden'],lt:['Mėnuo','Mėnesiai'],lv:['Mēnesis','Mēneši'],et:['Kuu','Kuud'],sv:['Månad','Månader'],da:['Måned','Måneder'],no:['Måned','Måneder'],fi:['Kuukausi','Kuukautta'],el:['Μήνας','Μήνες'],he:['חודש','חודשים'],fa:['ماه','ماه'],ur:['مہینہ','مہینے'],bn:['মাস','মাস'],th:['เดือน','เดือน'],vi:['Tháng','Tháng'],tl:['Buwan','Buwan'],cs:['Měsíc','Měsíců'],hu:['Hónap','Hónap'],sk:['Mesiac','Mesiacov'],hr:['Mjesec','Mjeseci']};
+// Map whatever was stored ("5 Years", "5 años", "2 Months", "2 meses", "5") to one of the real option values
+function _normExpYears(v){
+  v=String(v||'').trim(); if(!v) return '';
+  var m=v.match(/(\d+)/); if(!m) return '';
+  var n=parseInt(m[1],10);
+  var isMonth=/mes|month|mois|monat|mese|maand|måned|månad|kuu|buwan|bulan|ay\b/i.test(v);
+  if(isMonth){ if(n===12) return '1 Year'; if(n>=1&&n<=11) return n+' '+(n===1?'Month':'Months'); return ''; }
+  if(n>=1&&n<=15) return n+' '+(n===1?'Year':'Years');
+  return '';
+}
 function _expMonthLabel(n){
   var lg=(typeof LANG!=='undefined'&&LANG)||'en';
   var w=EXP_MONTH_WORDS[lg]||EXP_MONTH_WORDS.en;
@@ -21718,7 +21729,7 @@ function getAppById(id){
   if(!a) a = all.find(function(a){return a.uid==id || String(a.id)===String(id) || String(a.uid)===String(id);});
   return _restorePhoto(a);
 }
-function toast(m){var d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);setTimeout(function(){d.remove();},3200);}
+function toast(m){var d=document.createElement('div');d.className='toast';try{var _ta=document.createElement('textarea');_ta.innerHTML=String(m);m=_ta.value;}catch(e){}d.textContent=m;document.body.appendChild(d);setTimeout(function(){d.remove();},3200);}
 function quizNotPassedMsg(){toast('Interview invite only available after passing the Interview Preparation Class (16/20 minimum). User must login to My Portal and complete it.');}
 function countW(t){return t?t.trim().split(/\s+/).filter(function(w){return w.length>0;}).length:0;}
 function goodWC(w){return w>=51&&w<=80;}
@@ -28125,16 +28136,17 @@ function openCVEditor(){
   }).join('');
 
   // Years options translated
+  var _curExp = _normExpYears(u.expYears);
   var monthOptions = [1,2,3,4,5,6,7,8,9,10,11].map(function(n){
     var val = n+' '+(n===1?'Month':'Months');
-    return '<option value="'+val+'"'+(u.expYears===val?' selected':'')+'>'+_expMonthLabel(n)+'</option>';
+    return '<option value="'+val+'"'+(_curExp===val?' selected':'')+'>'+_expMonthLabel(n)+'</option>';
   }).join('');
   var yrsOptions = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15].map(function(n){
     var val = n+' '+(n===1?'Year':'Years');
     var label = n+' '+(n===1?t('expYear'):t('expYears'));
-    return '<option value="'+val+'"'+(u.expYears===val?' selected':'')+'>'+label+'</option>';
+    return '<option value="'+val+'"'+(_curExp===val?' selected':'')+'>'+label+'</option>';
   }).join('');
-  yrsOptions = monthOptions + yrsOptions;
+  yrsOptions = '<option value=""'+(_curExp?'':' selected')+'>-- '+(t('lExpYears')||'Experience').replace(/\s*\*\s*$/,'')+' --</option>' + monthOptions + yrsOptions;
 
   // Gender options translated
   var genderOpts = [
@@ -28355,7 +28367,7 @@ function saveCVEdits(){
   currentUser.gender       = (document.getElementById('ed_gender')||{value:''}).value;
   currentUser.address      = (document.getElementById('ed_address')||{value:''}).value.trim();
   currentUser.position     = (document.getElementById('ed_position')||{value:''}).value;
-  currentUser.expYears     = (document.getElementById('ed_expYears')||{value:''}).value;
+  currentUser.expYears     = (document.getElementById('ed_expYears')||{value:''}).value || currentUser.expYears;
   currentUser.avail        = (document.getElementById('ed_avail')||{value:''}).value;
   currentUser.permit       = (document.getElementById('ed_permit')||{value:''}).value;
   currentUser.education    = (document.getElementById('ed_education')||{value:''}).value.trim();
@@ -28417,6 +28429,10 @@ function saveCVEdits(){
   var _origBtnHtml = saveBtn ? saveBtn.innerHTML : null;
   if(saveBtn){ saveBtn.disabled = true; saveBtn.innerHTML = '&#x23F3; Saving...'; }
 
+  var _photoErr = null;
+  _photoPromises = _photoPromises.map(function(pr){
+    return Promise.resolve(pr).catch(function(e){ _photoErr = e; console.error('saveCVEdits: photo upload failed', e); });
+  });
   Promise.all([saveData()].concat(_photoPromises)).then(function(){
     // Refresh live CV preview in portal
     var cvEl = document.getElementById('portalCV');
@@ -28432,10 +28448,12 @@ function saveCVEdits(){
     var modal = document.getElementById('cvEditorModal');
     if(modal) modal.remove();
     toast(t('cvSaved'));
+    if(_photoErr) setTimeout(function(){ toast('\u26A0 Your changes were saved, but a photo could not be uploaded. Try a smaller photo.'); }, 3400);
   }).catch(function(e){
     console.error('saveCVEdits: save failed', e);
     if(saveBtn){ saveBtn.disabled = false; saveBtn.innerHTML = _origBtnHtml; }
-    toast('&#x26A0; Save failed — check your internet connection and try again. Do NOT close this window.');
+    var why = (e && (e.code || e.message)) ? ' ('+String(e.code||e.message).slice(0,90)+')' : '';
+    toast('\u26A0 Save failed'+why+' — check your internet connection and try again. Do NOT close this window.');
   });
 }
 
